@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grammar Worksheet – Fill in + Hint Toggle</title>
+    <title>Worksheet 1 – Grammar: Fill in + Hint Toggle</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .topbar { max-width: 800px; margin: 0 auto 16px; }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: #0056b3; font-weight: bold; padding: 8px 14px; border-radius: 6px; background-color: #e7f3ff; border: 1px solid #cce2ff; }
+        .back-link:hover { background-color: #d6e9ff; }
         .worksheet { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
         h2 { color: #333; text-align: center; margin-bottom: 30px; }
         .box { border: 1px solid #ddd; border-radius: 5px; padding: 15px; margin-bottom: 20px; background-color: #fafafa; }
@@ -30,6 +33,7 @@
         .result-text { margin-top: 10px; font-weight: bold; }
         .result-correct { color: green; }
         .result-wrong { color: red; }
+        #scoreSummary { text-align: center; margin-top: 20px; font-size: 1.1em; font-weight: bold; color: #333; min-height: 1.2em; }
         #appendixPanel {
             display: none;
             margin-top: 30px;
@@ -76,8 +80,12 @@
 </head>
 <body>
 
+<div class="topbar">
+    <a href="index.html" class="back-link">&larr; All worksheets</a>
+</div>
+
 <div class="worksheet" id="grammarWorksheet">
-    <h2>Grammar Worksheet – Fill in + Hint Toggle</h2>
+    <h2>Worksheet 1 – Grammar: Fill in + Hint Toggle</h2>
 
     <!-- Sentences will be dynamically generated here by JavaScript -->
 
@@ -433,7 +441,6 @@
     function generateWorksheet() {
         const worksheetDiv = document.getElementById('grammarWorksheet');
         let sentencesHtml = '';
-        const appendixList = document.getElementById('appendixList');
         let appendixHtml = '';
         const uniqueAppendixWords = new Set(); // To avoid duplicates in appendix
 
@@ -482,6 +489,7 @@
                 <button class="copy-button" onclick="copyToClipboard()">Copy to Google Docs</button>
                 <button class="appendix-button" onclick="toggleAppendix()">Show / Hide Appendix</button>
             </div>
+            <div id="scoreSummary"></div>
             <div id="appendixPanel">
                 <h3>Appendix: Key Vocabulary & Grammar Forms</h3>
                 <ul id="appendixList">
@@ -490,17 +498,17 @@
             </div>
         `;
 
-        worksheetDiv.innerHTML = '<h2>Grammar Worksheet – Fill in + Hint Toggle</h2>' + sentencesHtml + controlsHtml;
-        // Re-get appendixList after innerHTML update
-        document.getElementById('appendixList').innerHTML = appendixHtml;
+        worksheetDiv.innerHTML = '<h2>Worksheet 1 – Grammar: Fill in + Hint Toggle</h2>' + sentencesHtml + controlsHtml;
     }
 
     function toggleHint(id) {
         const hint = document.getElementById(`hint${id}`);
-        hint.style.display = hint.style.display === 'none' ? 'block' : 'none';
+        const isHidden = getComputedStyle(hint).display === 'none';
+        hint.style.display = isHidden ? 'block' : 'none';
     }
 
     function checkAnswers() {
+        let correctCount = 0;
         sentencesData.forEach(sentence => {
             const selectElement = document.getElementById(`ans${sentence.id}`);
             const resultDiv = document.getElementById(`result${sentence.id}`);
@@ -513,6 +521,7 @@
                 resultDiv.textContent = ''; // Clear previous result text
 
                 if (userAnswer === correctAnswer) {
+                    correctCount++;
                     selectElement.classList.add('correct-answer');
                     resultDiv.textContent = 'Correct!';
                     resultDiv.classList.add('result-correct');
@@ -526,12 +535,16 @@
                 }
             }
         });
+
+        const summary = document.getElementById('scoreSummary');
+        if (summary) {
+            summary.textContent = `Score: ${correctCount} / ${sentencesData.length} correct`;
+        }
     }
 
     function resetTest() {
         if (confirm("Naozaj chcete zopakovať test? Všetky vaše odpovede a vyhodnotenia budú vymazané.")) {
             generateWorksheet(); // Regenerate the worksheet to clear all inputs and hints
-            document.getElementById('appendixPanel').style.display = 'none'; // Hide appendix on reset
         }
     }
 
@@ -554,7 +567,8 @@
 
     function toggleAppendix() {
         const appendixPanel = document.getElementById('appendixPanel');
-        appendixPanel.style.display = appendixPanel.style.display === 'none' ? 'block' : 'none';
+        const isHidden = getComputedStyle(appendixPanel).display === 'none';
+        appendixPanel.style.display = isHidden ? 'block' : 'none';
     }
 
     // Initial generation of the worksheet when the page loads
