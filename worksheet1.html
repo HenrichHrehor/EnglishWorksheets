@@ -57,7 +57,7 @@
 </div>
 
 <div class="worksheet" id="grammarWorksheet">
-    </div>
+</div>
 
 <script>
     const sentencesData = [
@@ -72,17 +72,17 @@
             explanation: "Used to express a plan for the future. 'This evening' is a key time expression for plans.",
             appendix: { word: "go", type: "verb", slovak: "ísť", forms: { inf: "go", ps: "went", pp: "gone" } }
         },
-       {
-    id: 2,
-    original: "I ___ play football on Saturdays. (/don't/)",
-    text: "I ___ play football on Saturdays.",
-    options: ["don't", "doesn't"],
-    correct: "don't",
-    grammar: "Present Simple – Negative Form",
-    keyword: "don't play",
-    explanation: "'Don't' is the correct negative form with 'I'. 'Doesn't' is only used with he/she/it.",
-    appendix: { word: "don't", type: "negative auxiliary", slovak: "ne-" }
-       },
+        {
+            id: 2,
+            original: "I ___ play football on Saturdays. (/don't/)",
+            text: "I ___ play football on Saturdays.",
+            options: ["don't", "doesn't"],
+            correct: "don't",
+            grammar: "Present Simple – Negative Form",
+            keyword: "Saturdays",
+            explanation: "'Don't' is the correct negative form with 'I'. 'Doesn't' is only used with he/she/it.",
+            appendix: { word: "don't", type: "negative auxiliary", slovak: "ne-" }
+        },
         {
             id: 3,
             original: "My friends & I are ___ with the fundraising day. (/helping/)",
@@ -96,7 +96,7 @@
         },
         {
             id: 4,
-            original: "___ you see him yesterday? (/Did, didn't/)",
+            original: "___ you see him yesterday? (/Did/)",
             text: "___ you see him yesterday?",
             options: ["Did", "Do"],
             correct: "Did",
@@ -129,7 +129,7 @@
         },
         {
             id: 7,
-            original: "The cups are made of ___ paper, ceramics, glass, ___ (/plastic/)",
+            original: "The cups are made of ___ . (/plastic/)",
             text: "The cups are made of ___.",
             options: ["plastic", "plastics"],
             correct: "plastic",
@@ -167,7 +167,7 @@
             options: ["short-sleeved", "short-sleeve"],
             correct: "short-sleeved",
             grammar: "Compound Adjectives",
-            keyword: "blue",
+            keyword: "shirt",
             explanation: "Compound adjectives describing a noun often end in '-ed' when referring to a feature (e.g., 'long-legged', 'blue-eyed').",
             appendix: { word: "short-sleeved", type: "adjective", slovak: "s krátkymi rukávmi" }
         },
@@ -215,7 +215,7 @@
             explanation: "'Been' is used when someone has visited a place and returned, or has not visited a place. 'Since January' indicates a duration up to the present.",
             appendix: { word: "be", type: "verb", slovak: "byť", forms: { inf: "be", ps: "was/were", pp: "been" } }
         },
-       {
+        {
             id: 15,
             original: "My parents have ___ each other for more than 20 years. (/known/)",
             text: "My parents have ___ each other for more than 20 years.",
@@ -305,7 +305,7 @@
         },
         {
             id: 23,
-            original: "This is the album ___ I like best. (/that, which/)",
+            original: "This is the album ___ I like best. (/that/)",
             text: "This is the album ___ I like best.",
             options: ["that", "who"],
             correct: "that",
@@ -348,7 +348,7 @@
             appendix: { word: "lend", type: "verb", slovak: "požičať", forms: { inf: "lend", ps: "lent", pp: "lent" } }
         },
         {
-            id: 27, // Fixed Duplicate ID from 26 -> 27
+            id: 27,
             original: "I couldn't imagine ___ it away. (/throwing/)",
             text: "I couldn't imagine ___ it away.",
             options: ["throwing", "to throw"],
@@ -359,7 +359,7 @@
             appendix: { word: "throw", type: "verb", slovak: "hodiť/vyhodiť", forms: { inf: "throw", ps: "threw", pp: "thrown" } }
         },
         {
-            id: 28, // Fixed ID shift
+            id: 28,
             original: "Would you mind ___ me a glass of water, please? (/bringing/)",
             text: "Would you mind ___ me a glass of water, please?",
             options: ["bringing", "to bring"],
@@ -369,21 +369,22 @@
             explanation: "The phrase 'would you mind' is always followed by the gerund (-ing form).",
             appendix: { word: "bring", type: "verb", slovak: "priniesť", forms: { inf: "bring", ps: "brought", pp: "brought" } }
         },
-      {
-    id: 29,
-    original: "The trees are just ___ down, and billions of tonnes of greenhouse gases are released into the atmosphere. (/burnt/)",
-    text: "The trees are just ___ down, and billions of tonnes of greenhouse gases are released into the atmosphere.",
-    options: ["burnt", "being burnt"],
-    correct: "burnt",
-    grammar: "Past Participle (Adjective Use)",
-    keyword: "burnt down",
-    explanation: "'Burnt' is the past participle of 'burn' and is used here as an adjective to describe the state of the trees.",
-    appendix: { 
-        word: "burn", 
-        type: "verb", 
-        slovak: "horieť / spáliť", 
-        forms: { inf: "burn", ps: "burnt/burned", pp: "burnt/burned" } 
-      },
+        {
+            id: 29,
+            original: "The trees are just ___ down, and billions of tonnes of greenhouse gases are released into the atmosphere. (/burnt/)",
+            text: "The trees are just ___ down, and billions of tonnes of greenhouse gases are released into the atmosphere.",
+            options: ["burnt", "being burnt"],
+            correct: "burnt",
+            grammar: "Past Participle (Passive State)",
+            keyword: "greenhouse gases",
+            explanation: "'Burnt' is the past participle used here to complete the passive structure, describing the state of the trees as they are destroyed.",
+            appendix: { 
+                word: "burn", 
+                type: "verb", 
+                slovak: "horieť / spáliť", 
+                forms: { inf: "burn", ps: "burnt/burned", pp: "burnt/burned" } 
+            }
+        },
         {
             id: 30,
             original: "The orphan bear's mum ___ killed by the hunter's dogs. (/was/)",
