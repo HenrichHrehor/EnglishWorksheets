@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 2 – Vocabulary: Idioms & Phrasal Verbs</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .topbar { max-width: 800px; margin: 0 auto 16px; }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: #0056b3; font-weight: bold; padding: 8px 14px; border-radius: 6px; background-color: #e7f3ff; border: 1px solid #cce2ff; }
+        .back-link:hover { background-color: #d6e9ff; }
+        .worksheet { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
+        h2 { color: #333; text-align: center; margin-bottom: 30px; }
+        .box { border: 1px solid #ddd; border-radius: 5px; padding: 15px; margin-bottom: 20px; background-color: #fafafa; }
+        .box p { margin-top: 0; margin-bottom: 10px; line-height: 1.5; }
+        .box strong { color: #0056b3; }
+        .box select { border: 1px solid #ccc; border-radius: 4px; padding: 6px; font-size: 1em; width: auto; min-width: 100px; margin-right: 5px; }
+        .box button { background-color: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 0.9em; margin-right: 5px; }
+        .box button:hover { background-color: #0056b3; }
+        .hint-content { display: none; margin-top: 10px; padding: 10px; border-left: 3px solid #007bff; background-color: #e7f3ff; }
+        .hint-content p { margin: 5px 0; }
+        .hint-content strong { color: #0056b3; }
+        .controls { text-align: center; margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .controls button { background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1em; }
+        .controls button:hover { background-color: #218838; }
+        .copy-button { background-color: #6c757d !important; }
+        .copy-button:hover { background-color: #5a6268 !important; }
+        .appendix-button { background-color: #ffc107 !important; color: #333 !important; }
+        .appendix-button:hover { background-color: #e0a800 !important; }
+        .highlight { background-color: yellow; font-weight: bold; } /* For highlighting keywords */
+        .correct-answer { border-color: green !important; background-color: #e6ffe6 !important; }
+        .wrong-answer { border-color: red !important; background-color: #ffe6e6 !important; }
+        .result-text { margin-top: 10px; font-weight: bold; }
+        .result-correct { color: green; }
+        .result-wrong { color: red; }
+        #scoreSummary { text-align: center; margin-top: 20px; font-size: 1.1em; font-weight: bold; color: #333; min-height: 1.2em; }
+        #appendixPanel {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #007bff;
+            border-radius: 8px;
+            background-color: #e7f3ff;
+            text-align: left;
+        }
+        #appendixPanel h3 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #appendixPanel ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-around;
+        }
+        #appendixPanel li {
+            background-color: #f0f8ff;
+            border: 1px solid #cceeff;
+            border-radius: 5px;
+            padding: 10px 15px;
+            width: calc(33% - 20px);
+            box-sizing: border-box;
+            flex-grow: 1;
+            min-width: 250px;
+        }
+        #appendixPanel li strong {
+            color: #0056b3;
+            display: block;
+            margin-bottom: 5px;
+        }
+        #appendixPanel li span {
+            display: block;
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <a href="index.html" class="back-link">&larr; All worksheets</a>
+</div>
+
+<div class="worksheet" id="grammarWorksheet">
+    <h2>Worksheet 2 – Vocabulary: Idioms & Phrasal Verbs</h2>
+
+    <div class="controls">
+        <button onclick="checkAnswers()">Check Answers</button>
+        <button onclick="resetTest()">Zopakovať test</button>
+        <button class="copy-button" onclick="copyToClipboard()">Copy to Google Docs</button>
+        <button class="appendix-button" onclick="toggleAppendix()">Show / Hide Appendix</button>
+    </div>
+
+    <div id="appendixPanel">
+        <h3>Appendix: Key Vocabulary & Grammar Forms</h3>
+        <ul id="appendixList">
+            </ul>
+    </div>
+</div>
+
+<script>
+    const sentencesData = [
+        {
+            id: 1,
+            original: "We had to ___ the meeting because the manager fell ill. (/call off/)",
+            text: "We had to ___ the meeting because the manager fell ill.",
+            options: ["call off", "call on"],
+            correct: "call off",
+            grammar: "Phrasal Verb (Cancel)",
+            keyword: "fell ill",
+            explanation: "'Call off' means to cancel something that was planned.",
+            appendix: { word: "call off", type: "phrasal verb", slovak: "zrušiť / odvolať" }
+        },
+        {
+            id: 2,
+            original: "Don't give up! You should ___ trying your best. (/keep on/)",
+            text: "Don't give up! You should ___ trying your best.",
+            options: ["keep on", "keep out"],
+            correct: "keep on",
+            grammar: "Phrasal Verb (Continue)",
+            keyword: "Don't give up",
+            explanation: "'Keep on' means to continue doing something despite difficulties.",
+            appendix: { word: "keep on", type: "phrasal verb", slovak: "pokračovať v" }
+        },
+        {
+            id: 3,
+            original: "It's raining cats and dogs, so remember to ___ your umbrella. (/bring along/)",
+            text: "It's raining cats and dogs, so remember to ___ your umbrella.",
+            options: ["bring along", "bring up"],
+            correct: "bring along",
+            grammar: "Phrasal Verb (Bring with you)",
+            keyword: "raining cats and dogs",
+            explanation: "'Raining cats and dogs' is an idiom meaning it is raining heavily.",
+            appendix: { word: "raining cats and dogs", type: "idiom", slovak: "liať ako z krhly" }
+        },
+        {
+            id: 4,
+            original: "I didn't mean to ___ her secrets to everyone. (/give away/)",
+            text: "I didn't mean to ___ her secrets to everyone.",
+            options: ["give away", "give in"],
+            correct: "give away",
+            grammar: "Phrasal Verb (Reveal)",
+            keyword: "secrets",
+            explanation: "'Give away' means to accidentally or intentionally reveal hidden information.",
+            appendix: { word: "give away", type: "phrasal verb", slovak: "prezradiť / rozdať" }
+        },
+        {
+            id: 5,
+            original: "Passing that difficult exam was a piece of ___ for him. (/cake/)",
+            text: "Passing that difficult exam was a piece of ___ for him.",
+            options: ["cake", "bread"],
+            correct: "cake",
+            grammar: "Idiom (Very easy)",
+            keyword: "piece of cake",
+            explanation: "A 'piece of cake' describes something that is incredibly easy to achieve.",
+            appendix: { word: "piece of cake", type: "idiom", slovak: "hračka / brnkačka" }
+        },
+        {
+            id: 6,
+            original: "Could you please ___ the volume? I can't hear the news. (/turn up/)",
+            text: "Could you please ___ the volume? I can't hear the news.",
+            options: ["turn up", "turn on"],
+            correct: "turn up",
+            grammar: "Phrasal Verb (Increase)",
+            keyword: "can't hear",
+            explanation: "'Turn up' means to increase the power, sound, or intensity of something.",
+            appendix: { word: "turn up", type: "phrasal verb", slovak: "zosilniť (zvuk) / objaviť sa" }
+        },
+        {
+            id: 7,
+            original: "She always looks ___ her older sister for fashion advice. (/up to/)",
+            text: "She always looks ___ her older sister for fashion advice.",
+            options: ["up to", "down on"],
+            correct: "up to",
+            grammar: "Three-word Phrasal Verb (Admire)",
+            keyword: "looks up to",
+            explanation: "'Look up to someone' means to respect and admire them.",
+            appendix: { word: "look up to", type: "phrasal verb", slovak: "vzhliadať k / vážiť si" }
+        },
+        {
+            id: 8,
+            original: "We ran ___ of milk, so I need to go to the grocery shop. (/out/)",
+            text: "We ran ___ of milk, so I need to go to the grocery shop.",
+            options: ["out", "away"],
+            correct: "out",
+            grammar: "Phrasal Verb (Exhaust supply)",
+            keyword: "ran out of",
+            explanation: "'Run out of' means to use up the available supply of something completely.",
+            appendix: { word: "run out of", type: "phrasal verb", slovak: "minúť sa / už nemieť" }
+        },
+        {
+            id: 9,
+            original: "I am really looking ___ to our summer holiday in Spain. (/forward/)",
+            text: "I am really looking ___ to our summer holiday in Spain.",
+            options: ["forward", "after"],
+            correct: "forward",
+            grammar: "Phrasal Verb (Anticipate with pleasure)",
+            keyword: "looking forward to",
+            explanation: "'Look forward to' means to feel excited about a future event.",
+            appendix: { word: "look forward to", type: "phrasal verb", slovak: "tešiť sa na" }
+        },
+        {
+            id: 10,
+            original: "He decided to ___ smoking to improve his athletic health. (/give up/)",
+            text: "He decided to ___ smoking to improve his athletic health.",
+            options: ["give up", "give out"],
+            correct: "give up",
+            grammar: "Phrasal Verb (Stop a habit)",
+            keyword: "improve his athletic health",
+            explanation: "'Give up' means to stop doing a regular activity or habit completely.",
+            appendix: { word: "give up", type: "phrasal verb", slovak: "vzdať sa / prestať s niečím" }
+        }
+    ];
+
+    function generateWorksheet() {
+        const worksheetDiv = document.getElementById('grammarWorksheet');
+        let sentencesHtml = '';
+        let appendixHtml = '';
+        const uniqueAppendixWords = new Set();
+
+        sentencesData.forEach(sentence => {
+            const highlightedText = sentence.text.replace(sentence.keyword, `<span class="highlight">${sentence.keyword}</span>`);
+            const selectOptions = sentence.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+
+            sentencesHtml += `
+                <div class="box">
+                    <p><strong>${sentence.id}. ${highlightedText.replace("___", `<select id="ans${sentence.id}" data-correct="${sentence.correct}" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
+                        <option value="">Choose...</option>
+                        ${selectOptions}
+                    </select>`)}</strong></p>
+
+                    <button onclick="toggleHint(${sentence.id})">Show / Hide Hint</button>
+                    <div id="hint${sentence.id}" class="hint-content">
+                        <p><strong>Correct answer:</strong> ${sentence.correct}</p>
+                        <p><strong>Context Focus:</strong> ${sentence.grammar}</p>
+                        <p><strong>Keyword Context:</strong> <span class="highlight">${sentence.keyword}</span> – ${sentence.explanation}</p>
+                    </div>
+                    <div id="result${sentence.id}" class="result-text"></div>
+                </div>
+            `;
+
+            if (sentence.appendix && !uniqueAppendixWords.has(sentence.appendix.word)) {
+                uniqueAppendixWords.add(sentence.appendix.word);
+                appendixHtml += `
+                    <li>
+                        <strong>${sentence.appendix.word}</strong>
+                        <span>${sentence.appendix.slovak} (${sentence.appendix.type})</span>
+                    </li>
+                `;
+            }
+        });
+
+        const controlsHtml = `
+            <div class="controls">
+                <button onclick="checkAnswers()">Check Answers</button>
+                <button onclick="resetTest()">Zopakovať test</button>
+                <button class="copy-button" onclick="copyToClipboard()">Copy to Google Docs</button>
+                <button class="appendix-button" onclick="toggleAppendix()">Show / Hide Appendix</button>
+            </div>
+            <div id="scoreSummary"></div>
+            <div id="appendixPanel">
+                <h3>Appendix: Key Vocabulary & Idiomatic Meanings</h3>
+                <ul id="appendixList">
+                    ${appendixHtml}
+                </ul>
+            </div>
+        `;
+
+        worksheetDiv.innerHTML = '<h2>Worksheet 2 – Vocabulary: Idioms & Phrasal Verbs</h2>' + sentencesHtml + controlsHtml;
+    }
+
+    function toggleHint(id) {
+        const hint = document.getElementById(`hint${id}`);
+        const isHidden = getComputedStyle(hint).display === 'none';
+        hint.style.display = isHidden ? 'block' : 'none';
+    }
+
+    function checkAnswers() {
+        let correctCount = 0;
+        sentencesData.forEach(sentence => {
+            const selectElement = document.getElementById(`ans${sentence.id}`);
+            const resultDiv = document.getElementById(`result${sentence.id}`);
+            if (selectElement) {
+                const userAnswer = selectElement.value;
+                const correctAnswer = selectElement.dataset.correct;
+
+                selectElement.classList.remove('correct-answer', 'wrong-answer');
+                resultDiv.classList.remove('result-correct', 'result-wrong');
+                resultDiv.textContent = '';
+
+                if (userAnswer === correctAnswer) {
+                    correctCount++;
+                    selectElement.classList.add('correct-answer');
+                    resultDiv.textContent = 'Correct!';
+                    resultDiv.classList.add('result-correct');
+                } else if (userAnswer === "") {
+                    // Left unanswered
+                } else {
+                    selectElement.classList.add('wrong-answer');
+                    resultDiv.textContent = `Wrong! Correct was: ${correctAnswer}`;
+                    resultDiv.classList.add('result-wrong');
+                }
+            }
+        });
+
+        const summary = document.getElementById('scoreSummary');
+        if (summary) {
+            summary.textContent = `Score: ${correctCount} / ${sentencesData.length} correct`;
+        }
+    }
+
+    function resetTest() {
+        if (confirm("Naozaj chcete zopakovať test? Všetky vaše odpovede a vyhodnotenia budú vymazané.")) {
+            generateWorksheet();
+        }
+    }
+
+    function copyToClipboard() {
+        let textToCopy = "Idioms & Phrasal Verbs Practice:\n\n";
+        sentencesData.forEach(sentence => {
+            const optionsString = `(${sentence.options.join(' / ')})`;
+            const sentenceWithBlankAndOptions = sentence.text.replace("___", " ........") + " " + optionsString;
+            textToCopy += `${sentence.id}. ${sentenceWithBlankAndOptions}\n`;
+        });
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert("Vety skopírované do schránky pre Google Docs!");
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            alert("Nepodarilo sa skopírovať vety. Skúste to prosím manuálne.");
+        });
+    }
+
+    // Toggle showing/hiding the footer definitions layout panel
+    function toggleAppendix() {
+        const appendixPanel = document.getElementById('appendixPanel');
+        const isHidden = getComputedStyle(appendixPanel).display === 'none';
+        appendixPanel.style.display = isHidden ? 'block' : 'none';
+    }
+
+    window.onload = generateWorksheet;
+</script>
+
+</body>
+</html>
