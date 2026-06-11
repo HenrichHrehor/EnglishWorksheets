@@ -87,8 +87,6 @@
 <div class="worksheet" id="grammarWorksheet">
     <h2>Worksheet 1 – Grammar: Fill in + Hint Toggle</h2>
 
-    <!-- Sentences will be dynamically generated here by JavaScript -->
-
     <div class="controls">
         <button onclick="checkAnswers()">Check Answers</button>
         <button onclick="resetTest()">Zopakovať test</button>
@@ -99,8 +97,7 @@
     <div id="appendixPanel">
         <h3>Appendix: Key Vocabulary & Grammar Forms</h3>
         <ul id="appendixList">
-            <!-- Appendix content will be generated here -->
-        </ul>
+            </ul>
     </div>
 </div>
 
@@ -165,12 +162,12 @@
             id: 6,
             original: "What job ___ you think you'll have? (/do/)",
             text: "What job ___ you think you'll have?",
-            options: ["will", "do"],
-            correct: "will",
-            grammar: "Future Simple (Will)",
-            keyword: "you'll have",
-            explanation: "Used to ask about future expectations or predictions regarding a job.",
-            appendix: { word: "will", type: "modal verb", slovak: "bude" }
+            options: ["do", "will"],
+            correct: "do",
+            grammar: "Present Simple Questions",
+            keyword: "you think",
+            explanation: "We use the auxiliary verb 'do' to make questions in the Present Simple tense with the verb 'think'.",
+            appendix: { word: "do", type: "verb", slovak: "robiť", forms: { inf: "do", ps: "did", pp: "done" } }
         },
         {
             id: 7,
@@ -317,13 +314,13 @@
         },
         {
             id: 20,
-            original: "The arm's a lot of different advice at the moment about what we ___ eat to stay healthy. (/should/)",
+            original: "There's a lot of different advice at the moment about what we ___ eat to stay healthy. (/should/)",
             text: "There's a lot of different advice at the moment about what we ___ eat to stay healthy.",
             options: ["should", "must"],
             correct: "should",
             grammar: "Modal Verb (Should)",
             keyword: "what we should eat",
-            explanation: "'Should' is used to give advice or make recommendations. (Adjusted original 'The arm's' to 'There's a lot of advice' for coherence).",
+            explanation: "'Should' is used to give advice or make recommendations.",
             appendix: { word: "should", type: "modal verb", slovak: "mal by" }
         },
         {
@@ -345,7 +342,7 @@
             correct: "that",
             grammar: "Relative Pronouns",
             keyword: "album that",
-            explanation: "'That' is used to refer to things or people in a defining relative clause. 'Which' is also acceptable for things, but 'that' is common.",
+            explanation: "'That' is used to refer to things or people in a defining relative clause.",
             appendix: { word: "that", type: "pronoun", slovak: "ktorý/že" }
         },
         {
@@ -416,12 +413,12 @@
         },
         {
             id: 29,
-            original: "The gases are just released into the atmosphere. ___ (/was/)",
+            original: "The gases just released into the atmosphere ___ the environment.",
             text: "The gases just released into the atmosphere ___ the environment.",
             options: ["damage", "damages"],
             correct: "damage",
             grammar: "Present Simple (Fact/General Truth)",
-            keyword: "gases damage",
+            keyword: "gases just released into the atmosphere ___ the environment.",
             explanation: "Describes a general truth or fact about the effect of gases on the environment. The plural subject 'gases' requires the base form 'damage'.",
             appendix: { word: "damage", type: "verb", slovak: "poškodiť", forms: { inf: "damage", ps: "damaged", pp: "damaged" } }
         },
@@ -445,7 +442,11 @@
         const uniqueAppendixWords = new Set(); // To avoid duplicates in appendix
 
         sentencesData.forEach(sentence => {
-            const highlightedText = sentence.text.replace(sentence.keyword, `<span class="highlight">${sentence.keyword}</span>`);
+            let highlightedText = sentence.text;
+            // Only try to highlight keywords if they exist in the text to avoid rendering issues
+            if (sentence.text.includes(sentence.keyword)) {
+                highlightedText = sentence.text.replace(sentence.keyword, `<span class="highlight">${sentence.keyword}</span>`);
+            }
             const selectOptions = sentence.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
 
             sentencesHtml += `
@@ -459,7 +460,7 @@
                     <div id="hint${sentence.id}" class="hint-content">
                         <p><strong>Correct answer:</strong> ${sentence.correct}</p>
                         <p><strong>Grammar:</strong> ${sentence.grammar}</p>
-                        <p><strong>Keyword:</strong> <span class="highlight">${sentence.keyword}</span> – ${sentence.explanation}</p>
+                        <p><strong>Explanation:</strong> ${sentence.explanation}</p>
                     </div>
                     <div id="result${sentence.id}" class="result-text"></div>
                 </div>
@@ -472,7 +473,7 @@
                     <li>
                         <strong>${sentence.appendix.word}</strong>
                         <span>${sentence.appendix.slovak} (${sentence.appendix.type})</span>
-                        ${sentence.appendix.type === 'verb' ?
+                        ${sentence.appendix.type === 'verb' && sentence.appendix.forms ?
                             `<span>Inf: ${sentence.appendix.forms.inf}</span>
                              <span>PS: ${sentence.appendix.forms.ps}</span>
                              <span>PP: ${sentence.appendix.forms.pp}</span>` : ''
@@ -551,7 +552,6 @@
     function copyToClipboard() {
         let textToCopy = "Grammar Practice:\n\n";
         sentencesData.forEach(sentence => {
-            // Reconstruct the sentence for copying, including the blank and options
             const optionsString = `(${sentence.options.join(' / ')})`;
             const sentenceWithBlankAndOptions = sentence.text.replace("___", " ........") + " " + optionsString;
             textToCopy += `${sentence.id}. ${sentenceWithBlankAndOptions}\n`;
