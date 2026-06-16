@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worksheet 3 – Slovenský jazyk</title>
+<style>
+body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 20px; }
+h2 { color: #2c3e50; }
+.question { margin-bottom: 20px; padding: 10px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+.hint { background-color: #fff3b0; padding: 3px 6px; border-radius: 4px; }
+select { margin-top: 8px; }
+.correct { color: green; font-weight: bold; }
+.incorrect { color: red; font-weight: bold; }
+button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h2>Výstupný test – 3. ročník (Slovenský jazyk)</h2>
+
+<div class="question">
+<p><span class="hint">Náučný štýl</span> – Hlavným cieľom náučného štýlu je:</p>
+<select id="q1">
+<option value="">-- vyber odpoveď --</option>
+<option>b) odborne a presne informovať</option>
+<option>a) esteticky pôsobiť na čitateľa</option>
+<option>c) pobaviť čitateľa</option>
+</select>
+</div>
+
+<div class="question">
+<p>Ktorý z nasledujúcich útvarov patrí do <span class="hint">náučného štýlu</span>?</p>
+<select id="q2">
+<option value="">-- vyber odpoveď --</option>
+<option>b) vedecký článok</option>
+<option>a) rozprávka</option>
+<option>c) bájka</option>
+</select>
+</div>
+
+<div class="question">
+<p>Pre <span class="hint">výkladový slohový postup</span> je typické:</p>
+<select id="q3">
+<option value="">-- vyber odpoveď --</option>
+<option>a) vysvetľovanie príčin a súvislostí javov</option>
+<option>b) rozprávanie deja</option>
+<option>c) opis vzhľadu osoby</option>
+</select>
+</div>
+
+<div class="question">
+<p>Ktorá jazyková vlastnosť je charakteristická pre náučný štýl?</p>
+<select id="q4">
+<option value="">-- vyber odpoveď --</option>
+<option>c) odborná terminológia</option>
+<option>a) citové zafarbenie</option>
+<option>b) slangové výrazy</option>
+</select>
+</div>
+
+<div class="question">
+<p><span class="hint">Expresionizmus</span> ako literárny smer zdôrazňuje najmä:</p>
+<select id="q5">
+<option value="">-- vyber odpoveď --</option>
+<option>b) vnútorné pocity a psychické stavy človeka</option>
+<option>a) objektívne zachytenie reality</option>
+<option>c) humor a satiru</option>
+</select>
+</div>
+
+<div class="question">
+<p>Jozef Cíger Hronský napísal román:</p>
+<select id="q6">
+<option value="">-- vyber odpoveď --</option>
+<option>a) Jozef Mak</option>
+<option>b) Matka</option>
+<option>c) Drak sa vracia</option>
+</select>
+</div>
+
+<div class="question">
+<p><span class="hint">Naturizmus</span> v slovenskej literatúre sa zameriava najmä na:</p>
+<select id="q7">
+<option value="">-- vyber odpoveď --</option>
+<option>b) prírodu a život človeka v súlade s ňou</option>
+<option>a) mestské prostredie a techniku</option>
+<option>c) historické udalosti</option>
+</select>
+</div>
+
+<div class="question">
+<p>Predstaviteľmi slovenského naturizmu sú:</p>
+<select id="q8">
+<option value="">-- vyber odpoveď --</option>
+<option>a) František Švantner, Margita Figuli, Dobroslav Chrobák</option>
+<option>b) Janko Jesenský, Ján Smrek, Ivan Krasko</option>
+<option>c) Martin Kukučín, Pavol Országh Hviezdoslav, Božena Slančíková Timrava</option>
+</select>
+</div>
+
+<div class="question">
+<p><span class="hint">Zvuková rovina jazyka</span> skúma:</p>
+<select id="q9">
+<option value="">-- vyber odpoveď --</option>
+<option>a) hlásky, prízvuk a intonáciu</option>
+<option>b) význam slov</option>
+<option>c) vetnú skladbu</option>
+</select>
+</div>
+
+<button onclick="checkAnswers()">Skontroluj odpovede</button>
+
+<script>
+function checkAnswers() {
+  const correct = {
+    q1: 'b) odborne a presne informovať',
+    q2: 'b) vedecký článok',
+    q3: 'a) vysvetľovanie príčin a súvislostí javov',
+    q4: 'c) odborná terminológia',
+    q5: 'b) vnútorné pocity a psychické stavy človeka',
+    q6: 'a) Jozef Mak',
+    q7: 'b) prírodu a život človeka v súlade s ňou',
+    q8: 'a) František Švantner, Margita Figuli, Dobroslav Chrobák',
+    q9: 'a) hlásky, prízvuk a intonáciu'
+  };
+  for (let id in correct) {
+    const sel = document.getElementById(id);
+    const val = sel.value;
+    sel.style.border = val === correct[id] ? '2px solid green' : '2px solid red';
+  }
+}
+</script>
+
+</body>
+</html>
