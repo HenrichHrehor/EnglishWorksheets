@@ -1,152 +1,315 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>English Worksheets</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
     <style>
+
         :root {
+
             --primary: #007bff;
+
             --primary-dark: #0056b3;
+
             --bg: #f4f4f4;
+
             --card-bg: #ffffff;
+
         }
+
         * { box-sizing: border-box; }
+
         body {
+
             font-family: Arial, sans-serif;
+
             margin: 0;
+
             background-color: var(--bg);
+
             color: #333;
+
             line-height: 1.5;
+
         }
+
         header {
+
             background: linear-gradient(135deg, #0056b3, #007bff);
+
             color: #fff;
+
             padding: 48px 20px 40px;
+
             text-align: center;
+
         }
+
         header h1 { margin: 0 0 10px; font-size: 2.2em; }
+
         header p { margin: 0 auto; max-width: 600px; opacity: 0.95; }
+
         main { max-width: 1100px; margin: 0 auto; padding: 30px 20px 60px; }
+
         .section-title { margin: 10px 0 20px; font-size: 1.3em; color: var(--primary-dark); }
+
         .grid {
+
             display: grid;
+
             grid-template-columns: repeat(3, minmax(0, 1fr));
+
             gap: 20px;
+
         }
+
         @media (max-width: 800px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
         @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+
         .card {
+
             background-color: var(--card-bg);
+
             border: 1px solid #e3e3e3;
+
             border-radius: 10px;
+
             box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+
             padding: 22px;
+
             display: flex;
+
             flex-direction: column;
+
             text-decoration: none;
+
             color: inherit;
+
             min-height: 150px;
+
             transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+
         }
+
         .card:hover {
+
             transform: translateY(-3px);
+
             box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+
             border-color: var(--primary);
+
         }
+
         .card .badge {
+
             align-self: flex-start;
+
             background-color: #e7f3ff;
+
             color: var(--primary-dark);
+
             font-size: 0.78em;
+
             font-weight: bold;
+
             padding: 4px 10px;
+
             border-radius: 999px;
+
             margin-bottom: 12px;
+
         }
+
         .card h3 { margin: 0 0 8px; font-size: 1.15em; color: var(--primary-dark); flex-grow: 1; }
+
         .card .open {
+
             align-self: flex-start;
+
             background-color: var(--primary);
+
             color: #fff;
+
             padding: 8px 16px;
+
             border-radius: 6px;
+
             font-size: 0.9em;
+
             font-weight: bold;
+
             margin-top: 14px;
+
         }
+
         .card:hover .open { background-color: var(--primary-dark); }
+
         .loading { color: #888; }
+
         footer { text-align: center; padding: 24px; color: #888; font-size: 0.85em; }
+
         footer a { color: var(--primary-dark); text-decoration: none; }
+
+    
+        .qr-section { text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid #e3e3e3; }
+        .qr-section h2 { justify-content: center; }
+        .qr-hint { color: #555; margin: 0 0 16px; }
+        .qr-img { width: 200px; height: 200px; border: 1px solid #e3e3e3; border-radius: 10px; padding: 10px; background: #fff; image-rendering: pixelated; }
     </style>
+
 </head>
+
 <body>
 
+
+
 <header>
+
     <h1>English Worksheets</h1>
+
     <p>Interactive grammar and vocabulary practice. Pick a worksheet, fill in the blanks, reveal hints, and check your answers.</p>
+
 </header>
 
+
+
 <main>
+
     <h2 class="section-title">Available worksheets</h2>
+
     <div class="grid" id="worksheetGrid"><p class="loading">Loading worksheets...</p></div>
+
+    <section class="qr-section">
+        <h2 class="section-title">Open on your phone</h2>
+        <p class="qr-hint">Scan this QR code to open these worksheets on your phone.</p>
+        <img class="qr-img" src="data:image/gif;base64,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" alt="QR code to open the English Worksheets site">
+    </section>
 </main>
 
+
+
 <footer>
+
     Built with plain HTML, CSS &amp; JavaScript &middot; <a href="https://github.com/HenrichHrehor/EnglishWorksheets">View on GitHub</a>
+
 </footer>
 
+
+
 <script>
+
     // Worksheets are detected automatically. Just add worksheet4.html, worksheet5.html, ... up to 15.
+
     var MAX_WORKSHEETS = 15;
 
+
+
     async function renderWorksheets() {
+
         var grid = document.getElementById('worksheetGrid');
+
         var tasks = [];
+
         for (var i = 1; i <= MAX_WORKSHEETS; i++) {
+
             (function (n) {
+
                 var file = 'worksheet' + n + '.html';
+
                 tasks.push(
+
                     fetch(file).then(function (r) {
+
                         return r.ok ? r.text() : null;
+
                     }).then(function (html) {
+
                         if (!html) return null;
+
                         var doc = new DOMParser().parseFromString(html, 'text/html');
+
                         var titleEl = doc.querySelector('title');
+
                         var raw = ((titleEl && titleEl.textContent) || ('Worksheet ' + n)).trim();
+
                         var label = 'Worksheet ' + n;
+
                         var topic = raw;
+
                         var sep = raw.indexOf(' – ');
+
                         if (sep < 0) sep = raw.indexOf(' - ');
+
                         if (sep >= 0) {
+
                             label = raw.slice(0, sep).trim();
+
                             topic = raw.slice(sep + 3).trim();
+
                         }
+
                         return { file: file, label: label, topic: topic, n: n };
+
                     }).catch(function () {
+
                         return null;
+
                     })
+
                 );
+
             })(i);
+
         }
+
         var results = (await Promise.all(tasks)).filter(Boolean);
+
         results.sort(function (a, b) { return a.n - b.n; });
+
         if (!results.length) {
+
             grid.innerHTML = '<p class="loading">No worksheets found yet.</p>';
+
             return;
+
         }
+
         grid.innerHTML = results.map(function (ws) {
+
             return '<a class="card" href="' + ws.file + '">' +
+
                    '<span class="badge">' + ws.label + '</span>' +
+
                    '<h3>' + ws.topic + '</h3>' +
+
                    '<span class="open">Open worksheet &rarr;</span>' +
+
                    '</a>';
+
         }).join('');
+
     }
 
+
+
     window.onload = renderWorksheets;
+
 </script>
 
+
+
 </body>
+
 </html>
+
