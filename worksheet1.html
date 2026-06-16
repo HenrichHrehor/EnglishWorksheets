@@ -1,539 +1,1079 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Worksheet 1 – Grammar: Fill in + Hint Toggle</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
     <style>
+
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+
         .topbar { max-width: 800px; margin: 0 auto 16px; }
+
         .back-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: #0056b3; font-weight: bold; padding: 8px 14px; border-radius: 6px; background-color: #e7f3ff; border: 1px solid #cce2ff; }
+
         .back-link:hover { background-color: #d6e9ff; }
+
         .worksheet { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
+
         h2 { color: #333; text-align: center; margin-bottom: 30px; }
+
         .box { border: 1px solid #ddd; border-radius: 5px; padding: 15px; margin-bottom: 20px; background-color: #fafafa; }
+
         .box p { margin-top: 0; margin-bottom: 10px; line-height: 1.5; }
+
         .box strong { color: #0056b3; }
+
         .box select { border: 2px solid #ccc; border-radius: 4px; padding: 6px; font-size: 1em; width: auto; min-width: 120px; margin-right: 5px; transition: all 0.2s ease; }
+
         .box button { background-color: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 0.9em; margin-right: 5px; }
+
         .box button:hover { background-color: #0056b3; }
+
         .hint-content { display: none; margin-top: 10px; padding: 10px; border-left: 3px solid #007bff; background-color: #e7f3ff; }
+
         .hint-content p { margin: 5px 0; }
+
         .hint-content strong { color: #0056b3; }
+
         .controls { text-align: center; margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+
         .controls button { background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1em; }
+
         .controls button:hover { background-color: #218838; }
+
         .copy-button { background-color: #6c757d !important; }
+
         .copy-button:hover { background-color: #5a6268 !important; }
+
         .appendix-button { background-color: #ffc107 !important; color: #333 !important; }
+
         .appendix-button:hover { background-color: #e0a800 !important; }
+
         .highlight { background-color: yellow; font-weight: bold; padding: 0 4px; border-radius: 3px; } 
+
         .correct-answer { border-color: green !important; background-color: #e6ffe6 !important; color: black; }
+
         .wrong-answer { border-color: red !important; background-color: #ffe6e6 !important; color: black; }
+
         .result-text { margin-top: 10px; font-weight: bold; }
+
         .result-correct { color: green; }
+
         .result-wrong { color: red; }
+
         #scoreSummary { text-align: center; margin-top: 20px; font-size: 1.1em; font-weight: bold; color: #333; min-height: 1.2em; }
+
         #appendixPanel {
+
             display: none;
+
             margin-top: 30px;
+
             padding: 20px;
+
             border: 1px solid #007bff;
+
             border-radius: 8px;
+
             background-color: #e7f3ff;
+
             text-align: left;
+
         }
+
         #appendixPanel h3 { color: #0056b3; text-align: center; margin-bottom: 20px; }
+
         #appendixPanel ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-around; }
+
         #appendixPanel li { background-color: #f0f8ff; border: 1px solid #cceeff; border-radius: 5px; padding: 10px 15px; width: calc(33% - 20px); box-sizing: border-box; flex-grow: 1; min-width: 250px; }
+
         #appendixPanel li strong { color: #0056b3; display: block; margin-bottom: 5px; }
+
         #appendixPanel li span { display: block; font-size: 0.9em; color: #555; }
+
     </style>
+
 </head>
+
 <body>
 
+
+
 <div class="topbar">
+
     <a href="index.html" class="back-link">&larr; All worksheets</a>
+
 </div>
+
+
 
 <div class="worksheet" id="grammarWorksheet">
+
 </div>
 
+
+
 <script>
+
     const sentencesData = [
+
         {
+
             id: 1,
+
             original: "What are you ___ to do this evening? (/going/)",
+
             text: "What are you ___ to do this evening?",
+
             options: ["going", "go"],
+
             correct: "going",
+
             grammar: "Future with 'be going to'",
+
             keyword: "this evening",
+
             explanation: "Used to express a plan for the future. 'This evening' is a key time expression for plans.",
+
             appendix: { word: "go", type: "verb", slovak: "ísť", forms: { inf: "go", ps: "went", pp: "gone" } }
+
         },
+
         {
+
             id: 2,
+
             original: "I ___ play football on Saturdays. (/don't/)",
+
             text: "I ___ play football on Saturdays.",
+
             options: ["don't", "doesn't"],
+
             correct: "don't",
+
             grammar: "Present Simple – Negative Form",
+
             keyword: "Saturdays",
+
             explanation: "'Don't' is the correct negative form with 'I'. 'Doesn't' is only used with he/she/it.",
+
             appendix: { word: "don't", type: "negative auxiliary", slovak: "ne-" }
+
         },
+
         {
+
             id: 3,
+
             original: "My friends & I are ___ with the fundraising day. (/helping/)",
+
             text: "My friends & I are ___ with the fundraising day.",
+
             options: ["helping", "help"],
+
             correct: "helping",
+
             grammar: "Present Continuous",
+
             keyword: "fundraising day",
+
             explanation: "Describes an action happening at the moment of speaking or around the present time, often implying ongoing participation.",
+
             appendix: { word: "help", type: "verb", slovak: "pomáhať", forms: { inf: "help", ps: "helped", pp: "helped" } }
+
         },
+
         {
+
             id: 4,
+
             original: "___ you see him yesterday? (/Did/)",
+
             text: "___ you see him yesterday?",
+
             options: ["Did", "Do"],
+
             correct: "Did",
+
             grammar: "Past Simple (Interrogative)",
+
             keyword: "yesterday",
+
             explanation: "Used to ask about a completed action in the past. 'Yesterday' is a clear past time indicator.",
+
             appendix: { word: "do", type: "verb", slovak: "robiť/vykonať", forms: { inf: "do", ps: "did", pp: "done" } }
+
         },
+
         {
+
             id: 5,
+
             original: "I think it ___ be good fun. (/will/)",
+
             text: "I think it ___ be good fun.",
+
             options: ["will", "is"],
+
             correct: "will",
+
             grammar: "Future Simple (Will)",
+
             keyword: "I think",
+
             explanation: "Used for predictions or opinions, especially when preceded by 'I think'.",
+
             appendix: { word: "will", type: "modal verb", slovak: "bude" }
+
         },
+
         {
+
             id: 6,
+
             original: "What job ___ you think you'll have? (/do/)",
+
             text: "What job ___ you think you'll have?",
+
             options: ["do", "will"],
+
             correct: "do",
+
             grammar: "Present Simple Questions",
+
             keyword: "you think",
+
             explanation: "We use the auxiliary verb 'do' to make questions in the Present Simple tense with the verb 'think'.",
+
             appendix: { word: "do", type: "verb", slovak: "robiť", forms: { inf: "do", ps: "did", pp: "done" } }
+
         },
+
         {
+
             id: 7,
+
             original: "The cups are made of ___ . (/plastic/)",
+
             text: "The cups are made of ___.",
+
             options: ["plastic", "plastics"],
+
             correct: "plastic",
+
             grammar: "Nouns (Materials)",
+
             keyword: "made of",
+
             explanation: "When describing the material something is made from, we use the singular form of the noun (e.g., 'made of wood', 'made of metal').",
+
             appendix: { word: "plastic", type: "noun", slovak: "plast" }
+
         },
+
         {
+
             id: 8,
+
             original: "They ___ walking along the path when they saw something in the ice. (/were/)",
+
             text: "They ___ walking along the path when they saw something in the ice.",
+
             options: ["were", "are"],
+
             correct: "were",
+
             grammar: "Past Continuous",
+
             keyword: "when they saw",
+
             explanation: "Describes an ongoing action in the past that was interrupted by another past action ('saw').",
+
             appendix: { word: "be", type: "verb", slovak: "byť", forms: { inf: "be", ps: "was/were", pp: "been" } }
+
         },
+
         {
+
             id: 9,
+
             original: "We ___ to be rivals. (/used/)",
+
             text: "We ___ to be rivals.",
+
             options: ["used", "use"],
+
             correct: "used",
+
             grammar: "Used to",
+
             keyword: "to be rivals",
+
             explanation: "Expresses a past habit or state that no longer exists in the present.",
+
             appendix: { word: "use", type: "verb", slovak: "používať/zvyknúť si", forms: { inf: "use", ps: "used", pp: "used" } }
+
         },
+
         {
+
             id: 10,
+
             original: "This person is wearing a blue ___ shirt. (/short-sleeved/)",
+
             text: "This person is wearing a blue ___ shirt.",
+
             options: ["short-sleeved", "short-sleeve"],
+
             correct: "short-sleeved",
+
             grammar: "Compound Adjectives",
+
             keyword: "shirt",
+
             explanation: "Compound adjectives describing a noun often end in '-ed' when referring to a feature (e.g., 'long-legged', 'blue-eyed').",
+
             appendix: { word: "short-sleeved", type: "adjective", slovak: "s krátkymi rukávmi" }
+
         },
+
         {
+
             id: 11,
+
             original: "Look at these jeans. They're ___ expensive. (/too/)",
+
             text: "Look at these jeans. They're ___ expensive.",
+
             options: ["too", "very"],
+
             correct: "too",
+
             grammar: "Adverbs of Degree (Too)",
+
             keyword: "expensive",
+
             explanation: "'Too' indicates an excessive degree, often implying a negative consequence or exceeding what is desirable.",
+
             appendix: { word: "too", type: "adverb", slovak: "príliš" }
+
         },
+
         {
+
             id: 12,
+
             original: "Don't be mad! Do not drive a car ___ a wall.",
+
             text: "Don't be mad! Do not drive a car ___ a wall.",
+
             options: ["through", "across"],
+
             correct: "through",
+
             grammar: "Prepositions of Movement",
+
             keyword: "a wall",
+
             explanation: "'Through' implies movement from one side to another, or within an enclosed space.",
+
             appendix: { word: "through", type: "preposition", slovak: "cez" }
+
         },
+
         {
+
             id: 13,
+
             original: "I ___ fallen out of bed recently. (/have/)",
+
             text: "I ___ fallen out of bed recently.",
+
             options: ["have", "had"],
+
             correct: "have",
+
             grammar: "Present Perfect",
+
             keyword: "recently",
+
             explanation: "Describes an action that happened at an unspecified time in the recent past, with relevance to the present. 'Recently' is a key time adverb.",
+
             appendix: { word: "have", type: "verb", slovak: "mať", forms: { inf: "have", ps: "had", pp: "had" } }
+
         },
+
         {
+
             id: 14,
+
             original: "We haven't ___ on holiday since January. (/been/)",
+
             text: "We haven't ___ on holiday since January.",
+
             options: ["been", "gone"],
+
             correct: "been",
+
             grammar: "Present Perfect (Been/Gone)",
+
             keyword: "since January",
+
             explanation: "'Been' is used when someone has visited a place and returned, or has not visited a place. 'Since January' indicates a duration up to the present.",
+
             appendix: { word: "be", type: "verb", slovak: "byť", forms: { inf: "be", ps: "was/were", pp: "been" } }
+
         },
+
         {
+
             id: 15,
+
             original: "My parents have ___ each other for more than 20 years. (/known/)",
+
             text: "My parents have ___ each other for more than 20 years.",
+
             options: ["known", "knew"],
+
             correct: "known",
+
             grammar: "Present Perfect Simple (State Verbs)",
+
             keyword: "for more than 20 years",
+
             explanation: "Used with a state verb ('know') to describe a situation that started in the past and continues in the present. 'For' indicates the duration.",
+
             appendix: { word: "know", type: "verb", slovak: "vedieť/poznať", forms: { inf: "know", ps: "knew", pp: "known" } }
+
         },
+
         {
+
             id: 16,
+
             original: "He ___ university seven years ago. (/left/)",
+
             text: "He ___ university seven years ago.",
+
             options: ["left", "has left"],
+
             correct: "left",
+
             grammar: "Past Simple",
+
             keyword: "seven years ago",
+
             explanation: "Describes a completed action at a specific time in the past. 'Seven years ago' is a definite past time marker.",
+
             appendix: { word: "leave", type: "verb", slovak: "opustiť/odísť", forms: { inf: "leave", ps: "left", pp: "left" } }
+
         },
+
         {
+
             id: 17,
+
             original: "They've gone ___ the sports centre. (/to/)",
+
             text: "They've gone ___ the sports centre.",
+
             options: ["to", "at"],
+
             correct: "to",
+
             grammar: "Prepositions of Direction",
+
             keyword: "the sports centre",
+
             explanation: "'To' is used to indicate movement towards a destination.",
+
             appendix: { word: "to", type: "preposition", slovak: "do/k" }
+
         },
+
         {
+
             id: 18,
+
             original: "___ things are often dangerous. (/exciting/)",
+
             text: "___ things are often dangerous.",
+
             options: ["Exciting", "Excited"],
+
             correct: "Exciting",
+
             grammar: "Adjectives (-ing/-ed)",
+
             keyword: "often dangerous",
+
             explanation: "'-ing' adjectives describe the characteristic of a noun (things), while '-ed' adjectives describe a feeling.",
+
             appendix: { word: "exciting", type: "adjective", slovak: "vzrušujúci" }
+
         },
+
         {
+
             id: 19,
+
             original: "To be successful means to have ___ (/success/)",
+
             text: "To be successful means to have ___.",
+
             options: ["success", "successful"],
+
             correct: "success",
+
             grammar: "Nouns/Adjectives",
+
             keyword: "To be successful",
+
             explanation: "'Success' is the noun form, meaning the accomplishment of an aim or purpose. 'Successful' is the adjective.",
+
             appendix: { word: "success", type: "noun", slovak: "úspech" }
+
         },
+
         {
+
             id: 20,
+
             original: "A ___ is between your elbow and wrist. (/forearm/)",
+
             text: "A ___ is between your elbow and wrist.",
+
             options: ["forearm", "shoulder"],
+
             correct: "forearm",
+
             grammar: "Body Part Vocabulary",
+
             keyword: "elbow and wrist",
+
             explanation: "The forearm is the part of the arm between the elbow and the wrist.",
+
             appendix: { word: "forearm", type: "noun", slovak: "predlaktie" }
+
         },
+
         {
+
             id: 21,
+
             original: "There's a lot of different advice at the moment about what we ___ eat to stay healthy. (/should/)",
+
             text: "There's a lot of different advice at the moment about what we ___ eat to stay healthy.",
+
             options: ["should", "must"],
+
             correct: "should",
+
             grammar: "Modal Verb (Should)",
+
             keyword: "to stay healthy",
+
             explanation: "'Should' is used to give advice or recommendations about healthy habits.",
+
             appendix: { word: "should", type: "modal verb", slovak: "mal by" }
+
         },
+
         {
+
             id: 22,
+
             original: "It's a wasp. You ___ be bitten. (/might/)",
+
             text: "It's a wasp. You ___ be bitten.",
+
             options: ["might", "can"],
+
             correct: "might",
+
             grammar: "Modal Verb (Might)",
+
             keyword: "It's a wasp.",
+
             explanation: "'Might' expresses a possibility or a less certain prediction.",
+
             appendix: { word: "might", type: "modal verb", slovak: "mohlo by (sa stať)" }
+
         },
+
         {
+
             id: 23,
+
             original: "This is the album ___ I like best. (/that/)",
+
             text: "This is the album ___ I like best.",
+
             options: ["that", "who"],
+
             correct: "that",
+
             grammar: "Relative Pronouns",
+
             keyword: "I like best",
+
             explanation: "'That' is used to refer to things or people in a defining relative clause.",
+
             appendix: { word: "that", type: "pronoun", slovak: "ktorý/že" }
+
         },
+
         {
+
             id: 24,
+
             original: "My finger is ___ I need a plaster. (/bleeding/)",
+
             text: "My finger is ___ I need a plaster.",
+
             options: ["bleeding", "bleeds"],
+
             correct: "bleeding",
+
             grammar: "Present Continuous",
+
             keyword: "I need a plaster",
+
             explanation: "Describes an action that is currently happening at the moment of speaking, leading to a present need.",
+
             appendix: { word: "bleed", type: "verb", slovak: "krvácať", forms: { inf: "bleed", ps: "bled", pp: "bled" } }
+
         },
+
         {
+
             id: 25,
+
             original: "Lilly & Mike feel really ___ because of the loss in ice-hockey tournament. (/disappointed/)",
+
             text: "Lilly & Mike feel really ___ because of the loss in ice-hockey tournament.",
+
             options: ["disappointed", "disappointing"],
+
             correct: "disappointed",
+
             grammar: "Adjectives (-ed/-ing)",
+
             keyword: "ice-hockey tournament",
+
             explanation: "'-ed' adjectives describe how someone feels. 'Disappointed' describes Lilly and Mike's feeling due to the loss.",
+
             appendix: { word: "disappointed", type: "adjective", slovak: "sklamaný" }
+
         },
+
         {
+
             id: 26,
+
             original: "His friend offered ___ me his phone. (/to lend/)",
+
             text: "His friend offered ___ me his phone.",
+
             options: ["to lend", "lending"],
+
             correct: "to lend",
+
             grammar: "Verbs followed by Infinitive",
+
             keyword: "his phone",
+
             explanation: "Some verbs, like 'offer', are followed by the infinitive with 'to'.",
+
             appendix: { word: "lend", type: "verb", slovak: "požičať", forms: { inf: "lend", ps: "lent", pp: "lent" } }
+
         },
+
         {
+
             id: 27,
+
             original: "I couldn't imagine ___ it away. (/throwing/)",
+
             text: "I couldn't imagine ___ it away.",
+
             options: ["throwing", "to throw"],
+
             correct: "throwing",
+
             grammar: "Verbs followed by Gerund",
+
             keyword: "it away",
+
             explanation: "Some verbs, like 'imagine', are followed by the gerund (-ing form).",
+
             appendix: { word: "throw", type: "verb", slovak: "hodiť/vyhodiť", forms: { inf: "throw", ps: "threw", pp: "thrown" } }
+
         },
+
         {
+
             id: 28,
+
             original: "Would you mind ___ me a glass of water, please? (/bringing/)",
+
             text: "Would you mind ___ me a glass of water, please?",
+
             options: ["bringing", "to bring"],
+
             correct: "bringing",
+
             grammar: "Phrases followed by Gerund",
+
             keyword: "glass of water",
+
             explanation: "The phrase 'would you mind' is always followed by the gerund (-ing form).",
+
             appendix: { word: "bring", type: "verb", slovak: "priniesť", forms: { inf: "bring", ps: "brought", pp: "brought" } }
+
         },
+
         {
+
             id: 29,
+
             original: "The trees are just ___ down, and billions of tonnes of greenhouse gases are released into the atmosphere. (/burnt/)",
+
             text: "The trees are just ___ down, and billions of tonnes of greenhouse gases are released into the atmosphere.",
+
             options: ["burnt", "being burnt"],
+
             correct: "burnt",
+
             grammar: "Past Participle (Passive State)",
+
             keyword: "greenhouse gases",
+
             explanation: "'Burnt' is the past participle used here to complete the passive structure, describing the state of the trees as they are destroyed.",
+
             appendix: { 
+
                 word: "burn", 
+
                 type: "verb", 
+
                 slovak: "horieť / spáliť", 
+
                 forms: { inf: "burn", ps: "burnt/burned", pp: "burnt/burned" } 
+
             }
+
         },
+
         {
+
             id: 30,
+
             original: "The orphan bear's mum ___ killed by the hunter's dogs. (/was/)",
+
             text: "The orphan bear's mum ___ killed by the hunter's dogs.",
+
             options: ["was", "is"],
+
             correct: "was",
+
             grammar: "Past Simple Passive",
+
             keyword: "hunter's dogs.",
+
             explanation: "Describes a completed action in the past performed by an agent ('by the hunter's dogs').",
+
             appendix: { word: "be", type: "verb", slovak: "byť", forms: { inf: "be", ps: "was/were", pp: "been" } }
+
         }
+
     ];
 
+
+
     function generateWorksheet() {
+
         const worksheetDiv = document.getElementById('grammarWorksheet');
+
         let sentencesHtml = '';
+
         let appendixHtml = '';
+
         const uniqueAppendixWords = new Set(); 
 
+
+
         sentencesData.forEach(sentence => {
+
             let highlightedText = sentence.text;
+
             
+
             if (sentence.text.includes(sentence.keyword)) {
+
                 highlightedText = sentence.text.replace(sentence.keyword, `<span class="highlight">${sentence.keyword}</span>`);
+
             }
+
             const selectOptions = sentence.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
 
+
+
             sentencesHtml += `
+
                 <div class="box">
+
                     <p><strong>${sentence.id}. ${highlightedText.replace("___", `<select id="ans${sentence.id}" data-correct="${sentence.correct}">
+
                         <option value="">Choose...</option>
+
                         ${selectOptions}
+
                     </select>`)}</strong></p>
 
+
+
                     <button onclick="toggleHint(${sentence.id})">Show / Hide Hint</button>
+
                     <div id="hint${sentence.id}" class="hint-content">
+
                         <p><strong>Correct answer:</strong> ${sentence.correct}</p>
+
                         <p><strong>Grammar:</strong> ${sentence.grammar}</p>
+
                         <p><strong>Explanation:</strong> ${sentence.explanation}</p>
+
                     </div>
+
                     <div id="result${sentence.id}" class="result-text"></div>
+
                 </div>
+
             `;
 
+
+
             if (sentence.appendix && !uniqueAppendixWords.has(sentence.appendix.word)) {
+
                 uniqueAppendixWords.add(sentence.appendix.word);
+
                 appendixHtml += `
+
                     <li>
+
                         <strong>${sentence.appendix.word}</strong>
+
                         <span>${sentence.appendix.slovak} (${sentence.appendix.type})</span>
+
                         ${sentence.appendix.type === 'verb' && sentence.appendix.forms ?
+
                             `<span>Inf: ${sentence.appendix.forms.inf}</span>
+
                              <span>PS: ${sentence.appendix.forms.ps}</span>
+
                              <span>PP: ${sentence.appendix.forms.pp}</span>` : ''
+
                         }
+
                     </li>
+
                 `;
+
             }
+
         });
+
+
 
         const controlsHtml = `
+
             <div class="controls">
+
                 <button onclick="checkAnswers()">Check Answers</button>
+
                 <button onclick="resetTest()">Zopakovať test</button>
+
                 <button class="copy-button" onclick="copyToClipboard()">Copy to Google Docs</button>
+
                 <button class="appendix-button" onclick="toggleAppendix()">Show / Hide Appendix</button>
+
             </div>
+
             <div id="scoreSummary"></div>
+
             <div id="appendixPanel">
+
                 <h3>Appendix: Key Vocabulary & Grammar Forms</h3>
+
                 <ul id="appendixList">
+
                     ${appendixHtml}
+
                 </ul>
+
             </div>
+
         `;
 
+
+
         worksheetDiv.innerHTML = '<h2>Worksheet 1 – Grammar: Fill in + Hint Toggle</h2>' + sentencesHtml + controlsHtml;
+
     }
+
+
 
     function toggleHint(id) {
+
         const hint = document.getElementById(`hint${id}`);
+
         const isHidden = getComputedStyle(hint).display === 'none';
+
         hint.style.display = isHidden ? 'block' : 'none';
+
     }
+
+
 
     function checkAnswers() {
+
         let correctCount = 0;
+
         sentencesData.forEach(sentence => {
+
             const selectElement = document.getElementById(`ans${sentence.id}`);
+
             const resultDiv = document.getElementById(`result${sentence.id}`);
+
             if (selectElement) {
+
                 const userAnswer = selectElement.value;
+
                 const correctAnswer = selectElement.dataset.correct;
 
+
+
                 selectElement.classList.remove('correct-answer', 'wrong-answer');
+
                 resultDiv.classList.remove('result-correct', 'result-wrong');
+
                 resultDiv.textContent = ''; 
 
+
+
                 if (userAnswer === correctAnswer) {
+
                     correctCount++;
+
                     selectElement.classList.add('correct-answer');
+
                     resultDiv.textContent = 'Correct!';
+
                     resultDiv.classList.add('result-correct');
+
                 } else if (userAnswer === "") {
+
                     // Left blank
+
                 } else {
+
                     selectElement.classList.add('wrong-answer');
+
                     resultDiv.textContent = `Wrong! Correct was: ${correctAnswer}`;
+
                     resultDiv.classList.add('result-wrong');
+
                 }
+
             }
+
         });
+
+
 
         const summary = document.getElementById('scoreSummary');
+
         if (summary) {
+
             summary.textContent = `Score: ${correctCount} / ${sentencesData.length} correct`;
+
         }
+
     }
+
+
 
     function resetTest() {
+
         if (confirm("Naozaj chcete zopakovať test? Všetky vaše odpovede a vyhodnotenia budú vymazané.")) {
+
             generateWorksheet(); 
+
         }
+
     }
+
+
 
     function copyToClipboard() {
+
         let textToCopy = "Grammar Practice:\n\n";
+
         sentencesData.forEach(sentence => {
+
             const optionsString = `(${sentence.options.join(' / ')})`;
+
             const sentenceWithBlankAndOptions = sentence.text.replace("___", " ........") + " " + optionsString;
+
             textToCopy += `${sentence.id}. ${sentenceWithBlankAndOptions}\n`;
+
         });
+
+
 
         navigator.clipboard.writeText(textToCopy).then(() => {
+
             alert("Vety skopírované do schránky pre Google Docs!");
+
         }).catch(err => {
+
             console.error('Failed to copy: ', err);
+
             alert("Nepodarilo sa skopírovať vety. Skúste to prosím manuálne.");
+
         });
+
     }
+
+
 
     function toggleAppendix() {
+
         const appendixPanel = document.getElementById('appendixPanel');
+
         const isHidden = getComputedStyle(appendixPanel).display === 'none';
+
         appendixPanel.style.display = isHidden ? 'block' : 'none';
+
     }
 
+
+
     window.onload = generateWorksheet;
+
 </script>
 
+
+
 </body>
+
 </html>
+
