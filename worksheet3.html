@@ -7,45 +7,102 @@
 <style>
 body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 20px; }
 h2 { color: #2c3e50; }
-.question { margin-bottom: 20px; padding: 10px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-.hint { background-color: #fff3b0; padding: 3px 6px; border-radius: 4px; }
-select { margin-top: 8px; }
-button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+.question { margin-bottom: 20px; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+
+select { margin-top: 8px; padding: 5px; font-size: 14px; }
+button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+button:hover { background-color: #2980b9; }
+#result { margin-top: 15px; font-size: 16px; font-weight: bold; color: #2c3e50; }
+
+/* Stylovanie nápovedy (Tooltipu) */
+.hint-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    background-color: #fff3b0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border-bottom: 1px dashed #e67e22;
+}
+.hint-container .hint-text {
+    visibility: hidden;
+    width: 280px;
+    background-color: #2c3e50;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Zobrazí sa nad textom */
+    left: 50%;
+    margin-left: -140px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.9em;
+    font-weight: normal;
+    line-height: 1.4;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+}
+/* Šípka pod bublinou */
+.hint-container .hint-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #2c3e50 transparent transparent transparent;
+}
+/* Zobrazenie pri hoveri alebo kliknutí */
+.hint-container:hover .hint-text, .hint-container:focus .hint-text {
+    visibility: visible;
+    opacity: 1;
+}
 </style>
 </head>
 <body>
 
 <h2>Worksheet 3 – Slovenský jazyk</h2>
 
-<!-- 1–20 QUESTIONS -->
-
 <div class="question">
-<p>1. Hlavným cieľom <span class="hint">náučného štýlu</span> je:</p>
+<p>1. Hlavným cieľom 
+    <span class="hint-container">náučného štýlu 💡
+        <span class="hint-text"><b>Naučný (odborný) štýl:</b> Jazykový štýl verejnej komunikácie, ktorý sa využíva vo vede, technike a v škole. Jeho cieľom je presne, objektívne a logicky vysvetliť fakty a odovzdať poznatky bez citového zafarbenia.</span>
+    </span> je:
+</p>
 <select id="q1">
 <option value="">-- vyber odpoveď --</option>
-<option>b) odborne a presne informovať</option>
-<option>a) esteticky pôsobiť na čitateľa</option>
-<option>c) pobaviť čitateľa</option>
+<option value="a">a) esteticky pôsobiť na čitateľa</option>
+<option value="b">b) odborne a presne informovať</option>
+<option value="c">c) pobaviť čitateľa</option>
 </select>
 </div>
 
 <div class="question">
-<p>2. Ktorý z nasledujúcich útvarov patrí do <span class="hint">náučného štýlu</span>?</p>
+<p>2. Ktorý z nasledujúcich útvarov patrí do 
+    <span class="hint-container">náučného štýlu 💡
+        <span class="hint-text"><b>Útvary náučného štýlu:</b> Patria sem najmä výklad, referát, vedecká štúdia, prednáška, recenzia, učebnica či encyklopedické heslo.</span>
+    </span>?</p>
 <select id="q2">
 <option value="">-- vyber odpoveď --</option>
-<option>b) vedecký článok</option>
-<option>a) rozprávka</option>
-<option>c) bájka</option>
+<option value="a">a) rozprávka</option>
+<option value="b">b) vedecký článok</option>
+<option value="c">c) bájka</option>
 </select>
 </div>
 
 <div class="question">
-<p>3. Pre <span class="hint">výkladový slohový postup</span> je typické:</p>
+<p>3. Pre 
+    <span class="hint-container">výkladový slohový postup 💡
+        <span class="hint-text"><b>Výkladový slohový postup:</b> Sleduje logicko-príčinné súvislosti medzi javmi. Odpovedá na otázky "prečo" a "ako" niečo vzniklo, pričom využíva argumentáciu, analýzu a dôkazy.</span>
+    </span> je typické:</p>
 <select id="q3">
 <option value="">-- vyber odpoveď --</option>
-<option>a) vysvetľovanie príčin a súvislostí javov</option>
-<option>b) rozprávanie deja</option>
-<option>c) opis vzhľadu osoby</option>
+<option value="a">a) vysvetľovanie príčin a súvislostí javov</option>
+<option value="b">b) rozprávanie deja</option>
+<option value="c">c) opis vzhľadu osoby</option>
 </select>
 </div>
 
@@ -53,19 +110,21 @@ button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color:
 <p>4. Ktorá jazyková vlastnosť je charakteristická pre náučný štýl?</p>
 <select id="q4">
 <option value="">-- vyber odpoveď --</option>
-<option>c) odborná terminológia</option>
-<option>a) citové zafarbenie</option>
-<option>b) slangové výrazy</option>
+<option value="a">a) citové zafarbenie</option>
+<option value="b">b) slangové výrazy</option>
+<option value="c">c) odborná terminológia</option>
 </select>
 </div>
 
 <div class="question">
-<p>5. <span class="hint">Expresionizmus</span> ako literárny smer zdôrazňuje najmä:</p>
+<p>5. <span class="hint-container">Expresionizmus 💡
+        <span class="hint-text"><b>Expresionizmus:</b> Avantgardný umelecký a literárny smer (začiatok 20. stor.), ktorý odmieta pretvárku a zameriava sa na intenzívne vyjadrenie vnútorných pocitov, úzkosti, strachu a psychických stavov človeka zasiahnutého vojnou.</span>
+    </span> ako literárny smer zdôrazňuje najmä:</p>
 <select id="q5">
 <option value="">-- vyber odpoveď --</option>
-<option>b) vnútorné pocity a psychické stavy človeka</option>
-<option>a) objektívne zachytenie reality</option>
-<option>c) humor a satiru</option>
+<option value="a">a) objektívne zachytenie reality</option>
+<option value="b">b) vnútorné pocity a psychické stavy človeka</option>
+<option value="c">c) humor a satiru</option>
 </select>
 </div>
 
@@ -73,19 +132,21 @@ button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color:
 <p>6. Jozef Cíger Hronský napísal román:</p>
 <select id="q6">
 <option value="">-- vyber odpoveď --</option>
-<option>a) Jozef Mak</option>
-<option>b) Matka</option>
-<option>c) Drak sa vracia</option>
+<option value="a">a) Jozef Mak</option>
+<option value="b">b) Matka</option>
+<option value="c">c) Drak sa vracia</option>
 </select>
 </div>
 
 <div class="question">
-<p>7. <span class="hint">Naturizmus</span> v slovenskej literatúre sa zameriava najmä na:</p>
-<select id="q7">
+<p>7. <span class="hint-container">Naturizmus 💡
+        <span class="hint-text"><b>Naturizmus:</b> Smer v medzivojnovej slovenskej próze (próza naturizmu). Charakteristické je prepojenie človeka s prírodou, dedinské prostredie, mýtické motívy a boj dobra s zlom (často s prvkami rozprávkovosti).</span>
+    </span> v slovenskej literatúre sa zameriava najmä na:</p>
+<select id="7">
 <option value="">-- vyber odpoveď --</option>
-<option>b) prírodu a život človeka v súlade s ňou</option>
-<option>a) mestské prostredie a techniku</option>
-<option>c) historické udalosti</option>
+<option value="a">a) mestské prostredie a techniku</option>
+<option value="b">b) prírodu a život človeka v súlade s ňou</option>
+<option value="c">c) historické udalosti</option>
 </select>
 </div>
 
@@ -93,29 +154,33 @@ button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color:
 <p>8. Predstaviteľmi slovenského naturizmu sú:</p>
 <select id="q8">
 <option value="">-- vyber odpoveď --</option>
-<option>a) František Švantner, Margita Figuli, Dobroslav Chrobák</option>
-<option>b) Janko Jesenský, Ján Smrek, Ivan Krasko</option>
-<option>c) Martin Kukučín, Pavol Országh Hviezdoslav, Božena Slančíková Timrava</option>
+<option value="a">a) František Švantner, Margita Figuli, Dobroslav Chrobák</option>
+<option value="b">b) Janko Jesenský, Ján Smrek, Ivan Krasko</option>
+<option value="c">c) Martin Kukučín, Pavol Országh Hviezdoslav, Božena Slančíková Timrava</option>
 </select>
 </div>
 
 <div class="question">
-<p>9. <span class="hint">Zvuková rovina jazyka</span> skúma:</p>
+<p>9. <span class="hint-container">Zvuková rovina jazyka 💡
+        <span class="hint-text"><b>Zvuková rovina jazyka (Fonetika a fonológia):</b> Skúma tvorbu, prenos a vnímanie zvukov reči (hlásky, slabiky) a nadnesené zvukové javy, ako sú prízvuk, dôraz, melódia či tempo reči.</span>
+    </span> skúma:</p>
 <select id="q9">
 <option value="">-- vyber odpoveď --</option>
-<option>a) hlásky, prízvuk a intonáciu</option>
-<option>b) význam slov</option>
-<option>c) vetnú skladbu</option>
+<option value="a">a) hlásky, prízvuk a intonáciu</option>
+<option value="b">b) význam slov</option>
+<option value="c">c) vetnú skladbu</option>
 </select>
 </div>
 
 <div class="question">
-<p>10. Ktorý jav patrí do <span class="hint">zvukovej roviny jazyka</span>?</p>
+<p>10. Ktorý jav patrí do <span class="hint-container">zvukovej roviny jazyka 💡
+        <span class="hint-text"><b>Asimilácia (spodobovanie):</b> Zvuková zmena, pri ktorej splývajú dve susediace spoluhlásky s odlišnou znelosťou do rovnakej znelosti (napr. 'včela' vyslovujeme ako 'fčela'). Ide o typický jav zvukovej roviny.</span>
+    </span>?</p>
 <select id="q10">
 <option value="">-- vyber odpoveď --</option>
-<option>c) asimilácia (spodobovanie)</option>
-<option>a) synonymia</option>
-<option>b) metafora</option>
+<option value="a">a) synonymia</option>
+<option value="b">b) metafora</option>
+<option value="c">c) asimilácia (spodobovanie)</option>
 </select>
 </div>
 
@@ -123,19 +188,21 @@ button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color:
 <p>11. Slovenský jazyk má hlavný prízvuk:</p>
 <select id="q11">
 <option value="">-- vyber odpoveď --</option>
-<option>b) na prvej slabike slova</option>
-<option>a) na poslednej slabike slova</option>
-<option>c) na predposlednej slabike slova</option>
+<option value="a">a) na poslednej slabike slova</option>
+<option value="b">b) na prvej slabike slova</option>
+<option value="c">c) na predposlednej slabike slova</option>
 </select>
 </div>
 
 <div class="question">
-<p>12. Literatúra <span class="hint">sci-fi</span> sa zaoberá:</p>
+<p>12. Literatúra <span class="hint-container">sci-fi 💡
+        <span class="hint-text"><b>Sci-fi (Vedecko-fantastická literatúra):</b> Žáner umeleckej literatúry, v ktorom sa dej opiera o doteraz neuskutočnené objavy vedy, techniky, vesmírne lety alebo alternatívnu budúcnosť ľudstva.</span>
+    </span> zaoberá:</p>
 <select id="q12">
 <option value="">-- vyber odpoveď --</option>
-<option>a) fantastickými javmi založenými na vede a technike</option>
-<option>b) rozprávkovými bytosťami</option>
-<option>c) historickými udalosťami</option>
+<option value="a">a) fantastickými javmi založenými na vede a technike</option>
+<option value="b">b) rozprávkovými bytosťami</option>
+<option value="c">c) historickými udalosťami</option>
 </select>
 </div>
 
@@ -143,29 +210,33 @@ button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color:
 <p>13. Za českého autora sci-fi literatúry sa považuje:</p>
 <select id="q13">
 <option value="">-- vyber odpoveď --</option>
-<option>a) Karel Čapek (napr. R.U.R., Krakatit)</option>
-<option>b) Franz Kafka</option>
-<option>c) Jaroslav Hašek</option>
+<option value="a">a) Karel Čapek (napr. R.U.R., Krakatit)</option>
+<option value="b">b) Franz Kafka</option>
+<option value="c">c) Jaroslav Hašek</option>
 </select>
 </div>
 
 <div class="question">
-<p>14. Predstaviteľom absurdnej literatúry v českej literatúre nie je:</p>
+<p>14. Predstaviteľom absurdnej literatúry v českej literatúre <span class="hint-container">nie je 💡
+        <span class="hint-text"><b>Absurdná literatúra / Absurdná dráma:</b> Zobrazuje svet ako nezmyselný, kde hrdinovia strácajú schopnosť logickej komunikácie a zmysel života. V českom kontexte tam patril Franz Kafka (predchodca) alebo Václav Havel.</span>
+    </span>:</p>
 <select id="q14">
 <option value="">-- vyber odpoveď --</option>
-<option>c) Jaroslav Hašek</option>
-<option>a) Franz Kafka</option>
-<option>b) Karel Čapek</option>
+<option value="a">a) Franz Kafka</option>
+<option value="b">b) Karel Čapek</option>
+<option value="c">c) Jaroslav Hašek</option>
 </select>
 </div>
 
 <div class="question">
-<p>15. Román <span class="hint">Jozef Mak</span> patrí do:</p>
+<p>15. Román <span class="hint-container">Jozef Mak 💡
+        <span class="hint-text"><b>Jozef Mak (1933):</b> Kľúčový román slovenskej medzivojnovej literatúry. Hlavná postava, "človek-milión", pasívne prijíma svoj ťažký osud. Dielo nesie silné znaky expresionizmu.</span>
+    </span> patrí do:</p>
 <select id="q15">
 <option value="">-- vyber odpoveď --</option>
-<option>a) expresionizmu</option>
-<option>b) romantizmu</option>
-<option>c) realizmu</option>
+<option value="a">a) expresionizmu</option>
+<option value="b">b) romantizmu</option>
+<option value="c">c) realizmu</option>
 </select>
 </div>
 
@@ -173,9 +244,9 @@ button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color:
 <p>16. Erich Maria Remarque napísal román:</p>
 <select id="q16">
 <option value="">-- vyber odpoveď --</option>
-<option>b) Na západe nič nového</option>
-<option>a) Zbohom zbraniam</option>
-<option>c) Vojna a mier</option>
+<option value="a">a) Zbohom zbraniam</option>
+<option value="b">b) Na západe nič nového</option>
+<option value="c">c) Vojna a mier</option>
 </select>
 </div>
 
@@ -183,9 +254,9 @@ button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color:
 <p>17. Ráztoky sú dejiskom románu:</p>
 <select id="q17">
 <option value="">-- vyber odpoveď --</option>
-<option>b) Živý bič</option>
-<option>a) Drak sa vracia</option>
-<option>c) Tri gaštanové kone</option>
+<option value="a">a) Drak sa vracia</option>
+<option value="b">b) Živý bič</option>
+<option value="c">c) Tri gaštanové kone</option>
 </select>
 </div>
 
@@ -193,64 +264,67 @@ button { margin-top: 20px; padding: 10px 15px; background-color: #3498db; color:
 <p>18. Časovou moduláciou reči vznikajú:</p>
 <select id="q18">
 <option value="">-- vyber odpoveď --</option>
-<option>c) kvantita, prestávka, tempo, rytmus</option>
-<option>a) melódia, dôraz, sila hlasu</option>
-<option>b) rytmus, výška hlasu, emfáza</option>
+<option value="a">a) melódia, dôraz, sila hlasu</option>
+<option value="b">b) rytmus, výška hlasu, emfáza</option>
+<option value="c">c) kvantita, prestávka, tempo, rytmus</option>
 </select>
 </div>
 
 <div class="question">
-<p>19. Ktorý slohový postup sa najčastejšie využíva v učebniciach?</p>
+<p>19. Ktorý <span class="hint-container">slohový postup 💡
+        <span class="hint-text"><b>Slohový postup:</b> Spôsob, akým autor usporadúva a rozvíja textovú tému. Poznáme informačný, rozprávací, opisný a výkladový (kam patrí aj úvaha) slohový postup.</span>
+    </span> sa najčastejšie využíva v učebniciach?</p>
 <select id="q19">
 <option value="">-- vyber odpoveď --</option>
-<option>b) výkladový</option>
-<option>a) rozprávací</option>
-<option>c) informačný</option>
+<option value="a">a) rozprávací</option>
+<option value="b">b) výkladový</option>
+<option value="c">c) informačný</option>
 </select>
 </div>
 
 <div class="question">
-<p>20. V ktorej možnosti sa nachádzajú iba slová so <span class="hint">slabikotvornými hláskami</span>?</p>
+<p>20. V ktorej možnosti sa nachádzajú iba slová so <span class="hint-container">slabikotvornými hláskami 💡
+        <span class="hint-text"><b>Slabikotvorné hlásky:</b> V slovenčine sú to spoluhlásky 'r', 'ŕ', 'l', 'ĺ', ktoré dokážu v slove nahradiť samohlásku a vytvoriť samostatnú slabiku (napr. s-ln-ko, hŕ-ba). musia sa nachádzať medzi dvoma spoluhláskami.</span>
+    </span>?</p>
 <select id="q20">
 <option value="">-- vyber odpoveď --</option>
-<option>c) slnko, hŕba, obdržať</option>
-<option>a) pierko, chmára, vlna</option>
-<option>b) pravidlo, srdce, prúd</option>
+<option value="a">a) pierko, chmára, vlna</option>
+<option value="b">b) pravidlo, srdce, prúd</option>
+<option value="c">c) slnko, hŕba, obdržať</option>
 </select>
 </div>
 
 <button onclick="checkAnswers()">Skontroluj odpovede</button>
+<div id="result"></div>
 
 <script>
 function checkAnswers() {
   const correct = {
-    q1: 'b) odborne a presne informovať',
-    q2: 'b) vedecký článok',
-    q3: 'a) vysvetľovanie príčin a súvislostí javov',
-    q4: 'c) odborná terminológia',
-    q5: 'b) vnútorné pocity a psychické stavy človeka',
-    q6: 'a) Jozef Mak',
-    q7: 'b) prírodu a život človeka v súlade s ňou',
-    q8: 'a) František Švantner, Margita Figuli, Dobroslav Chrobák',
-    q9: 'a) hlásky, prízvuk a intonáciu',
-    q10: 'c) asimilácia (spodobovanie)',
-    q11: 'b) na prvej slabike slova',
-    q12: 'a) fantastickými javmi založenými na vede a technike',
-    q13: 'a) Karel Čapek (napr. R.U.R., Krakatit)',
-    q14: 'c) Jaroslav Hašek',
-    q15: 'a) expresionizmu',
-    q16: 'b) Na západe nič nového',
-    q17: 'b) Živý bič',
-    q18: 'c) kvantita, prestávka, tempo, rytmus',
-    q19: 'b) výkladový',
-    q20: 'c) slnko, hŕba, obdržať'
+    q1: 'b', q2: 'b', q3: 'a', q4: 'c', q5: 'b',
+    q6: 'a', 7: 'b',  q8: 'a', q9: 'a', q10: 'c',
+    q11: 'b', q12: 'a', q13: 'a', q14: 'c', q15: 'a',
+    q16: 'b', q17: 'b', q18: 'c', q19: 'b', q20: 'c'
   };
+
+  let score = 0;
+  let total = Object.keys(correct).length;
 
   for (let id in correct) {
     const sel = document.getElementById(id);
-    const val = sel.value;
-    sel.style.border = val === correct[id] ? '2px solid green' : '2px solid red';
+    if (sel) {
+      const val = sel.value;
+      if (val === correct[id]) {
+        sel.style.border = '2px solid green';
+        sel.style.backgroundColor = '#e6ffe6';
+        score++;
+      } else {
+        sel.style.border = '2px solid red';
+        sel.style.backgroundColor = '#ffe6e6';
+      }
+    }
   }
+
+  document.getElementById('result').innerText = 'Tvoje skóre je: ' + score + ' z ' + total;
 }
 </script>
 
