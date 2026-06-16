@@ -1,312 +1,152 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>English Worksheets</title>
-
     <style>
-
         :root {
-
             --primary: #007bff;
-
             --primary-dark: #0056b3;
-
             --bg: #f4f4f4;
-
             --card-bg: #ffffff;
-
         }
-
         * { box-sizing: border-box; }
-
         body {
-
             font-family: Arial, sans-serif;
-
             margin: 0;
-
             background-color: var(--bg);
-
             color: #333;
-
             line-height: 1.5;
-
         }
-
         header {
-
             background: linear-gradient(135deg, #0056b3, #007bff);
-
             color: #fff;
-
             padding: 48px 20px 40px;
-
             text-align: center;
-
         }
-
         header h1 { margin: 0 0 10px; font-size: 2.2em; }
-
         header p { margin: 0 auto; max-width: 600px; opacity: 0.95; }
-
-        main { max-width: 960px; margin: 0 auto; padding: 30px 20px 60px; }
-
+        main { max-width: 1100px; margin: 0 auto; padding: 30px 20px 60px; }
         .section-title { margin: 10px 0 20px; font-size: 1.3em; color: var(--primary-dark); }
-
         .grid {
-
             display: grid;
-
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 20px;
-
         }
-
+        @media (max-width: 800px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
         .card {
-
             background-color: var(--card-bg);
-
             border: 1px solid #e3e3e3;
-
             border-radius: 10px;
-
             box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-
             padding: 22px;
-
             display: flex;
-
             flex-direction: column;
-
             text-decoration: none;
-
             color: inherit;
-
+            min-height: 150px;
             transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
-
         }
-
         .card:hover {
-
             transform: translateY(-3px);
-
             box-shadow: 0 8px 18px rgba(0,0,0,0.12);
-
             border-color: var(--primary);
-
         }
-
         .card .badge {
-
             align-self: flex-start;
-
             background-color: #e7f3ff;
-
             color: var(--primary-dark);
-
             font-size: 0.78em;
-
             font-weight: bold;
-
             padding: 4px 10px;
-
             border-radius: 999px;
-
             margin-bottom: 12px;
-
         }
-
-        .card h3 { margin: 0 0 8px; font-size: 1.15em; color: var(--primary-dark); }
-
-        .card p { margin: 0 0 16px; color: #555; font-size: 0.95em; flex-grow: 1; }
-
-        .card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-
-        .card .tag { font-size: 0.75em; background-color: #f0f0f0; color: #666; padding: 3px 8px; border-radius: 4px; }
-
+        .card h3 { margin: 0 0 8px; font-size: 1.15em; color: var(--primary-dark); flex-grow: 1; }
         .card .open {
-
             align-self: flex-start;
-
             background-color: var(--primary);
-
             color: #fff;
-
             padding: 8px 16px;
-
             border-radius: 6px;
-
             font-size: 0.9em;
-
             font-weight: bold;
-
+            margin-top: 14px;
         }
-
         .card:hover .open { background-color: var(--primary-dark); }
-
-        .card.coming-soon { opacity: 0.7; cursor: default; }
-
-        .card.coming-soon:hover { transform: none; box-shadow: 0 2px 6px rgba(0,0,0,0.06); border-color: #e3e3e3; }
-
-        .card.coming-soon .open { background-color: #aaa; }
-
+        .loading { color: #888; }
         footer { text-align: center; padding: 24px; color: #888; font-size: 0.85em; }
-
         footer a { color: var(--primary-dark); text-decoration: none; }
-
     </style>
-
 </head>
-
 <body>
 
-
-
 <header>
-
     <h1>English Worksheets</h1>
-
     <p>Interactive grammar and vocabulary practice. Pick a worksheet, fill in the blanks, reveal hints, and check your answers.</p>
-
 </header>
 
-
-
 <main>
-
     <h2 class="section-title">Available worksheets</h2>
-
-    <div class="grid" id="worksheetGrid"></div>
-
+    <div class="grid" id="worksheetGrid"><p class="loading">Loading worksheets...</p></div>
 </main>
 
-
-
 <footer>
-
     Built with plain HTML, CSS &amp; JavaScript &middot; <a href="https://github.com/HenrichHrehor/EnglishWorksheets">View on GitHub</a>
-
 </footer>
 
-
-
 <script>
+    // Worksheets are detected automatically. Just add worksheet4.html, worksheet5.html, ... up to 15.
+    var MAX_WORKSHEETS = 15;
 
-    // To add a new worksheet, append an entry here and create the matching HTML file.
-
-    const worksheets = [
-
-        {
-
-            file: "worksheet1.html",
-
-            label: "Worksheet 1",
-
-            title: "Grammar: Fill in + Hint Toggle",
-
-            description: "30 mixed grammar questions covering tenses, modals, prepositions, adjectives and more. Includes per-question hints and a vocabulary appendix.",
-
-            tags: ["Grammar", "Tenses", "30 questions"],
-
-            available: true
-
-        },
-        {
-            file: "worksheet2.html",
-            label: "Worksheet 2",
-            title: "Vocabulary: Idioms & Phrasal Verbs",
-            description: "10 questions on common idioms and phrasal verbs (call off, keep on, look up to, run out of...). Includes per-question hints and a vocabulary appendix.",
-            tags: ["Vocabulary", "Phrasal verbs", "Idioms"],
-            available: true
+    async function renderWorksheets() {
+        var grid = document.getElementById('worksheetGrid');
+        var tasks = [];
+        for (var i = 1; i <= MAX_WORKSHEETS; i++) {
+            (function (n) {
+                var file = 'worksheet' + n + '.html';
+                tasks.push(
+                    fetch(file).then(function (r) {
+                        return r.ok ? r.text() : null;
+                    }).then(function (html) {
+                        if (!html) return null;
+                        var doc = new DOMParser().parseFromString(html, 'text/html');
+                        var titleEl = doc.querySelector('title');
+                        var raw = ((titleEl && titleEl.textContent) || ('Worksheet ' + n)).trim();
+                        var label = 'Worksheet ' + n;
+                        var topic = raw;
+                        var sep = raw.indexOf(' – ');
+                        if (sep < 0) sep = raw.indexOf(' - ');
+                        if (sep >= 0) {
+                            label = raw.slice(0, sep).trim();
+                            topic = raw.slice(sep + 3).trim();
+                        }
+                        return { file: file, label: label, topic: topic, n: n };
+                    }).catch(function () {
+                        return null;
+                    })
+                );
+            })(i);
         }
-
-        // Example for the next one:
-
-        // { file: "worksheet_b.html", label: "Worksheet B", title: "...", description: "...", tags: ["..."], available: true }
-
-    ];
-
-
-
-    function renderWorksheets() {
-
-        const grid = document.getElementById('worksheetGrid');
-
-        let html = '';
-
-
-
-        worksheets.forEach(ws => {
-
-            const tagsHtml = (ws.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
-
-            if (ws.available) {
-
-                html += `
-
-                    <a class="card" href="${ws.file}">
-
-                        <span class="badge">${ws.label}</span>
-
-                        <h3>${ws.title}</h3>
-
-                        <p>${ws.description}</p>
-
-                        <div class="tags">${tagsHtml}</div>
-
-                        <span class="open">Open worksheet &rarr;</span>
-
-                    </a>
-
-                `;
-
-            } else {
-
-                html += `
-
-                    <div class="card coming-soon">
-
-                        <span class="badge">${ws.label}</span>
-
-                        <h3>${ws.title}</h3>
-
-                        <p>${ws.description}</p>
-
-                        <div class="tags">${tagsHtml}</div>
-
-                        <span class="open">Coming soon</span>
-
-                    </div>
-
-                `;
-
-            }
-
-        });
-
-
-
-        grid.innerHTML = html;
-
+        var results = (await Promise.all(tasks)).filter(Boolean);
+        results.sort(function (a, b) { return a.n - b.n; });
+        if (!results.length) {
+            grid.innerHTML = '<p class="loading">No worksheets found yet.</p>';
+            return;
+        }
+        grid.innerHTML = results.map(function (ws) {
+            return '<a class="card" href="' + ws.file + '">' +
+                   '<span class="badge">' + ws.label + '</span>' +
+                   '<h3>' + ws.topic + '</h3>' +
+                   '<span class="open">Open worksheet &rarr;</span>' +
+                   '</a>';
+        }).join('');
     }
 
-
-
     window.onload = renderWorksheets;
-
 </script>
 
-
-
 </body>
-
 </html>
-
