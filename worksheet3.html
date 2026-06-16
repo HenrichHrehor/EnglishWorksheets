@@ -79,7 +79,7 @@ button:hover { background-color: #2980b9; }
 </head>
 <body>
 
-<div class="topbar"><a class="back-link" href="index.html">&larr; Všetky pracovné listy</a></div>
+<div class="topbar"><a class="back-link" href="index.html">&larr; All worksheets</a></div>
 
 <h2>Worksheet 3 – Slovenský jazyk</h2>
 
@@ -312,9 +312,9 @@ button:hover { background-color: #2980b9; }
 </div>
 
 <div class="controls">
-<button onclick="checkAnswers()">Skontroluj odpovede</button>
-<button class="reset-btn" onclick="resetTest()">Zopakovať test</button>
-<button class="appendix-btn" onclick="toggleAppendix()">Zobraziť / skryť prílohu</button>
+<button onclick="checkAnswers()">Check answers</button>
+<button class="reset-btn" onclick="resetTest()">Repeat test</button>
+<button class="appendix-btn" onclick="toggleAppendix()">Show / Hide appendix</button>
 </div>
 <div id="result"></div>
 
@@ -367,7 +367,7 @@ function checkAnswers() {
 }
 
 function resetTest() {
-  if (confirm('Naozaj chcete zopakovať test? Všetky odpovede budú vymazané.')) {
+  if (confirm('Do you really want to repeat the test? All answers will be cleared.')) {
     var selects = document.querySelectorAll('select');
     selects.forEach(function(sel){ sel.value = ''; sel.style.border = ''; sel.style.backgroundColor = ''; });
     document.getElementById('result').innerText = '';
