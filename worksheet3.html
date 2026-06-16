@@ -60,9 +60,26 @@ button:hover { background-color: #2980b9; }
     visibility: visible;
     opacity: 1;
 }
+
+.topbar { max-width: 800px; margin: 0 auto 16px; }
+.back-link { display: inline-block; text-decoration: none; color: #2980b9; font-weight: bold; padding: 8px 14px; border-radius: 6px; background-color: #eaf4fb; border: 1px solid #cfe6f7; }
+.back-link:hover { background-color: #d6ebf9; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.reset-btn { background-color: #e67e22; }
+.reset-btn:hover { background-color: #ca6a16; }
+.appendix-btn { background-color: #f1c40f; color: #2c3e50; }
+.appendix-btn:hover { background-color: #d9b00d; }
+#appendixPanel { display: none; max-width: 800px; margin: 25px auto 0; padding: 20px; border: 1px solid #3498db; border-radius: 8px; background-color: #eaf4fb; }
+#appendixPanel h3 { color: #2c3e50; margin-top: 0; }
+#appendixPanel ul { list-style: none; padding: 0; margin: 0; }
+#appendixPanel li { padding: 12px 0; border-bottom: 1px solid #d4e6f3; line-height: 1.5; }
+#appendixPanel li:last-child { border-bottom: none; }
+#appendixPanel li strong { color: #2980b9; display: block; margin-bottom: 4px; }
 </style>
 </head>
 <body>
+
+<div class="topbar"><a class="back-link" href="index.html">&larr; Všetky pracovné listy</a></div>
 
 <h2>Worksheet 3 – Slovenský jazyk</h2>
 
@@ -294,8 +311,30 @@ button:hover { background-color: #2980b9; }
 </select>
 </div>
 
+<div class="controls">
 <button onclick="checkAnswers()">Skontroluj odpovede</button>
+<button class="reset-btn" onclick="resetTest()">Zopakovať test</button>
+<button class="appendix-btn" onclick="toggleAppendix()">Zobraziť / skryť prílohu</button>
+</div>
 <div id="result"></div>
+
+<div id="appendixPanel">
+<h3>Príloha: Kľúčové pojmy a vysvetlenia</h3>
+<ul>
+<li><strong>Náučný (odborný) štýl</strong>Jazykový štýl verejnej komunikácie, ktorý sa využíva vo vede, technike a v škole. Jeho cieľom je presne, objektívne a logicky vysvetliť fakty a odovzdať poznatky bez citového zafarbenia.</li>
+<li><strong>Útvary náučného štýlu</strong>Patria sem najmä výklad, referát, vedecká štúdia, prednáška, recenzia, učebnica či encyklopedické heslo.</li>
+<li><strong>Výkladový slohový postup</strong>Sleduje logicko-príčinné súvislosti medzi javmi. Odpovedá na otázky prečo a ako niečo vzniklo, pričom využíva argumentáciu, analýzu a dôkazy.</li>
+<li><strong>Expresionizmus</strong>Avantgardný umelecký a literárny smer (začiatok 20. stor.), ktorý odmieta pretvárku a zameriava sa na intenzívne vyjadrenie vnútorných pocitov, úzkosti, strachu a psychických stavov človeka zasiahnutého vojnou.</li>
+<li><strong>Naturizmus</strong>Smer v medzivojnovej slovenskej próze. Charakteristické je prepojenie človeka s prírodou, dedinské prostredie, mýtické motívy a boj dobra so zlom (často s prvkami rozprávkovosti).</li>
+<li><strong>Zvuková rovina jazyka (fonetika a fonológia)</strong>Skúma tvorbu, prenos a vnímanie zvukov reči (hlásky, slabiky) a nadnesené zvukové javy, ako sú prízvuk, dôraz, melódia či tempo reči.</li>
+<li><strong>Asimilácia (spodobovanie)</strong>Zvuková zmena, pri ktorej splývajú dve susediace spoluhlásky s odlišnou znelosťou do rovnakej znelosti (napr. slovo včela vyslovujeme ako fčela).</li>
+<li><strong>Sci-fi (vedecko-fantastická literatúra)</strong>Žáner umeleckej literatúry, v ktorom sa dej opiera o doteraz neuskutočnené objavy vedy, techniky, vesmírne lety alebo alternatívnu budúcnosť ľudstva.</li>
+<li><strong>Absurdná literatúra / absurdná dráma</strong>Zobrazuje svet ako nezmyselný, kde hrdinovia strácajú schopnosť logickej komunikácie a zmysel života. V českom kontexte sem patril Franz Kafka (predchodca) alebo Václav Havel.</li>
+<li><strong>Jozef Mak (1933)</strong>Kľúčový román slovenskej medzivojnovej literatúry. Hlavná postava, takzvaný človek-milión, pasívne prijíma svoj ťažký osud. Dielo nesie silné znaky expresionizmu.</li>
+<li><strong>Slohový postup</strong>Spôsob, akým autor usporadúva a rozvíja textovú tému. Poznáme informačný, rozprávací, opisný a výkladový (kam patrí aj úvaha) slohový postup.</li>
+<li><strong>Slabikotvorné hlásky</strong>V slovenčine sú to spoluhlásky r, ŕ, l, ĺ, ktoré dokážu v slove nahradiť samohlásku a vytvoriť samostatnú slabiku (napr. s-ln-ko, hŕ-ba). Musia sa nachádzať medzi dvoma spoluhláskami.</li>
+</ul>
+</div>
 
 <script>
 function checkAnswers() {
@@ -325,6 +364,20 @@ function checkAnswers() {
   }
 
   document.getElementById('result').innerText = 'Tvoje skóre je: ' + score + ' z ' + total;
+}
+
+function resetTest() {
+  if (confirm('Naozaj chcete zopakovať test? Všetky odpovede budú vymazané.')) {
+    var selects = document.querySelectorAll('select');
+    selects.forEach(function(sel){ sel.value = ''; sel.style.border = ''; sel.style.backgroundColor = ''; });
+    document.getElementById('result').innerText = '';
+  }
+}
+
+function toggleAppendix() {
+  var panel = document.getElementById('appendixPanel');
+  var isHidden = getComputedStyle(panel).display === 'none';
+  panel.style.display = isHidden ? 'block' : 'none';
 }
 </script>
 
