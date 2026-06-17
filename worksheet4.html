@@ -65,6 +65,10 @@ button { padding: 10px 20px; color: #fff; border: none; border-radius: 5px; curs
     visibility: visible;
     opacity: 1;
 }
+
+#appendixPanel { display: none; max-width: 800px; margin: 25px auto 0; }
+.btn-appendix { background-color: #f1c40f; color: #2c3e50; }
+.btn-appendix:hover { background-color: #d9b00d; }
 </style>
 </head>
 <body>
@@ -73,50 +77,7 @@ button { padding: 10px 20px; color: #fff; border: none; border-radius: 5px; curs
 
 <h2>Worksheet: Česká medzivojnová literatúra</h2>
 
-<!-- APPENDIX: 7 FAKTOV O KAŽDOM DIELE -->
-<div class="appendix-box">
-    <h3>Appendix – Prehľad 7 kľúčových faktov o dielach</h3>
-    <p><i>Tieto fakty ti pomôžu úspešne zvládnuť test. Prečítaj si ich a použi ich ako správne odpovede.</i></p>
-    
-    <h4>1. Karel Čapek: Válka s mloky</h4>
-    <ul>
-        <li><b>Fakt 1:</b> Žánrovo ide o satirický sci-fi román vydaný v roku 1936.</li>
-        <li><b>Fakt 2:</b> Inteligentné tvory podobné mlokom objaví kapitán Van Toch na ostrove Tana Masa.</li>
-        <li><b>Fakt 3:</b> Podnikateľ G. H. Bondy finančne podporí veľký obchod s mlokmi.</li>
-        <li><b>Fakt 4:</b> Postava Veliteľa Salamandera predstavuje alegóriu nacistickej expanzie a Hitlera.</li>
-        <li><b>Fakt 5:</b> Ľudia poskytnú mlokom nože na obranu pred žralokmi a mloky im za to nosia vzácne perly.</li>
-        <li><b>Fakt 6:</b> V závere sa mlok symbolicky objaví aj vo Vltave, čo dokazuje, že prežijú aj v sladkej vode.</li>
-        <li><b>Fakt 7:</b> Hlavnou myšlienkou románu je varovanie pred fašizmom, nacizmom a ľudskou chamtivosťou.</li>
-    </ul>
-
-    <h4>2. Karel Čapek: R.U.R. (Rossumovi univerzální roboti)</h4>
-    <ul>
-        <li><b>Fakt 8:</b> Ide o vedecko-fantastickú divadelnú hru a varovnú drámu z roku 1920.</li>
-        <li><b>Fakt 9:</b> Návrh svetoznámeho slova „robot“ sa pripisuje bratovi autorovi, maliarovi Josefovi Čapkovi.</li>
-        <li><b>Fakt 10:</b> Dej sa odohráva na Rossumovom ostrove, kde sa v továrni vyrábajú umelé bytosti.</li>
-        <li><b>Fakt 11:</b> Roboti sa napokon vzbúria, vyhlásia vojnu a takmer celé ľudstvo vyhubia.</li>
-        <li><b>Fakt 12:</b> Jediný človek, ktorý vzburu robotov prežije, je Alquist, pretože stále pracuje rukami.</li>
-        <li><b>Fakt 13:</b> V úplnom závere hry prináša nádej dvojica robotov, u ktorých sa prejaví láska a city.</li>
-        <li><b>Fakt 14:</b> Dielo varuje pred rozvojom techniky bez morálky a pred slepou vierou v pokrok.</li>
-    </ul>
-
-    <h4>3. Jaroslav Hašek: Osudy dobrého vojáka Švejka</h4>
-    <ul>
-        <li><b>Fakt 15:</b> Žánrovo je to humoristický a satirický román o 1. svetovej vojne, ktorý zostal nedokončený.</li>
-        <li><b>Fakt 16:</b> Hlavná postava Josef Švejk svojou absurdnou poslušnosťou odhaľuje hlúposť armády a autorít.</li>
-        <li><b>Fakt 17:</b> Na vojenský odvod musí ísť Švejk na vozíku, pretože trpí silnou reumou.</li>
-        <li><b>Fakt 18:</b> Počas služby sa Švejk dostane najprv k poľnému kurátovi a neskôr k nadporučíkovi Lukášovi.</li>
-        <li><b>Fakt 19:</b> Celé dielo sa skladá zo 4 samostatných románov (napr. V zázemí, Na frontě).</li>
-        <li><b>Fakt 20:</b> Príbeh využíva humor a komické situácie ako formu obrany obyčajného človeka proti moci.</li>
-        <li><b>Fakt 21:</b> Román ostro zosmiešňuje militarizmus, byrokraciu a celkový rozpad Rakúsko-Uhorska.</li>
-    </ul>
-</div>
-
-<!-- TEST QUESTIONS (1-21) -->
-<form id="quizForm">
-
-    <!-- SEKCOA 1: VÁLKA S MLOKY (1-7) -->
-    <div class="question">
+<div class="question">
         <p>1. Aký je žáner a rok vydania Čapkovho diela <span class="hint-btn">Válka s mloky 💡<span class="hint-text">Pozri si Fakt 1 v Appendixe. Ide o román z medzivojnového obdobia.</span></span>?</p>
         <select id="q1">
             <option value="">-- vyber odpoveď --</option>
@@ -330,12 +291,57 @@ button { padding: 10px 20px; color: #fff; border: none; border-radius: 5px; curs
 
     <!-- TLAČIDLÁ -->
     <div class="btn-container">
-        <button type="button" class="btn-check" onclick="checkAnswers()">Skontroluj odpovede</button>
-        <button type="button" class="btn-reset" onclick="resetQuiz()">Vynuluj kvíz</button>
+        <button type="button" class="btn-check" onclick="checkAnswers()">Check answers</button>
+        <button type="button" class="btn-reset" onclick="resetQuiz()">Repeat test</button>
+        <button type="button" class="btn-appendix" onclick="toggleAppendix()">Show / Hide appendix</button>
     </div>
 </form>
 
 <div id="result"></div>
+<div id="appendixPanel">
+<div class="appendix-box">
+    <h3>Appendix – Prehľad 7 kľúčových faktov o dielach</h3>
+    <p><i>Tieto fakty ti pomôžu úspešne zvládnuť test. Prečítaj si ich a použi ich ako správne odpovede.</i></p>
+    
+    <h4>1. Karel Čapek: Válka s mloky</h4>
+    <ul>
+        <li><b>Fakt 1:</b> Žánrovo ide o satirický sci-fi román vydaný v roku 1936.</li>
+        <li><b>Fakt 2:</b> Inteligentné tvory podobné mlokom objaví kapitán Van Toch na ostrove Tana Masa.</li>
+        <li><b>Fakt 3:</b> Podnikateľ G. H. Bondy finančne podporí veľký obchod s mlokmi.</li>
+        <li><b>Fakt 4:</b> Postava Veliteľa Salamandera predstavuje alegóriu nacistickej expanzie a Hitlera.</li>
+        <li><b>Fakt 5:</b> Ľudia poskytnú mlokom nože na obranu pred žralokmi a mloky im za to nosia vzácne perly.</li>
+        <li><b>Fakt 6:</b> V závere sa mlok symbolicky objaví aj vo Vltave, čo dokazuje, že prežijú aj v sladkej vode.</li>
+        <li><b>Fakt 7:</b> Hlavnou myšlienkou románu je varovanie pred fašizmom, nacizmom a ľudskou chamtivosťou.</li>
+    </ul>
+
+    <h4>2. Karel Čapek: R.U.R. (Rossumovi univerzální roboti)</h4>
+    <ul>
+        <li><b>Fakt 8:</b> Ide o vedecko-fantastickú divadelnú hru a varovnú drámu z roku 1920.</li>
+        <li><b>Fakt 9:</b> Návrh svetoznámeho slova „robot“ sa pripisuje bratovi autorovi, maliarovi Josefovi Čapkovi.</li>
+        <li><b>Fakt 10:</b> Dej sa odohráva na Rossumovom ostrove, kde sa v továrni vyrábajú umelé bytosti.</li>
+        <li><b>Fakt 11:</b> Roboti sa napokon vzbúria, vyhlásia vojnu a takmer celé ľudstvo vyhubia.</li>
+        <li><b>Fakt 12:</b> Jediný človek, ktorý vzburu robotov prežije, je Alquist, pretože stále pracuje rukami.</li>
+        <li><b>Fakt 13:</b> V úplnom závere hry prináša nádej dvojica robotov, u ktorých sa prejaví láska a city.</li>
+        <li><b>Fakt 14:</b> Dielo varuje pred rozvojom techniky bez morálky a pred slepou vierou v pokrok.</li>
+    </ul>
+
+    <h4>3. Jaroslav Hašek: Osudy dobrého vojáka Švejka</h4>
+    <ul>
+        <li><b>Fakt 15:</b> Žánrovo je to humoristický a satirický román o 1. svetovej vojne, ktorý zostal nedokončený.</li>
+        <li><b>Fakt 16:</b> Hlavná postava Josef Švejk svojou absurdnou poslušnosťou odhaľuje hlúposť armády a autorít.</li>
+        <li><b>Fakt 17:</b> Na vojenský odvod musí ísť Švejk na vozíku, pretože trpí silnou reumou.</li>
+        <li><b>Fakt 18:</b> Počas služby sa Švejk dostane najprv k poľnému kurátovi a neskôr k nadporučíkovi Lukášovi.</li>
+        <li><b>Fakt 19:</b> Celé dielo sa skladá zo 4 samostatných románov (napr. V zázemí, Na frontě).</li>
+        <li><b>Fakt 20:</b> Príbeh využíva humor a komické situácie ako formu obrany obyčajného človeka proti moci.</li>
+        <li><b>Fakt 21:</b> Román ostro zosmiešňuje militarizmus, byrokraciu a celkový rozpad Rakúsko-Uhorska.</li>
+    </ul>
+</div>
+
+<!-- TEST QUESTIONS (1-21) -->
+<form id="quizForm">
+
+    <!-- SEKCOA 1: VÁLKA S MLOKY (1-7) -->
+</div>
 
 <script>
 function checkAnswers() {
@@ -366,6 +372,11 @@ function checkAnswers() {
   document.getElementById('result').innerText = 'Dosiahnuté skóre: ' + score + ' z ' + total;
 }
 
+const STORAGE_KEY = 'englishWorksheets_worksheet4';
+function saveAnswers(){const data={};document.querySelectorAll('select[id^="q"]').forEach(function(sel){if(sel.value)data[sel.id]=sel.value;});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
+function loadAnswers(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');for(const id in data){const sel=document.getElementById(id);if(sel)sel.value=data[id];}}catch(e){}}
+function clearSavedAnswers(){localStorage.removeItem(STORAGE_KEY);}
+function toggleAppendix(){var panel=document.getElementById('appendixPanel');var isHidden=getComputedStyle(panel).display==='none';panel.style.display=isHidden?'block':'none';}
 function resetQuiz() {
   const selects = document.querySelectorAll('select');
   selects.forEach(sel => {
@@ -374,7 +385,10 @@ function resetQuiz() {
     sel.style.backgroundColor = '#fff';
   });
   document.getElementById('result').innerText = '';
+  clearSavedAnswers();
 }
+document.querySelectorAll('select[id^="q"]').forEach(function(sel){sel.addEventListener('change',saveAnswers);});
+loadAnswers();
 </script>
 
 </body>
