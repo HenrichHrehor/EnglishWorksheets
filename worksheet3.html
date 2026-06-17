@@ -338,6 +338,11 @@ button:hover { background-color: #2980b9; }
 </div>
 
 <script>
+const STORAGE_KEY = 'englishWorksheets_worksheet3';
+function saveAnswers(){const data={};document.querySelectorAll('select[id^="q"]').forEach(function(sel){if(sel.value)data[sel.id]=sel.value;});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
+function loadAnswers(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');for(const id in data){const sel=document.getElementById(id);if(sel)sel.value=data[id];}}catch(e){}}
+function clearSavedAnswers(){localStorage.removeItem(STORAGE_KEY);}
+
 function checkAnswers() {
   const correct = {
     q1: 'b', q2: 'b', q3: 'a', q4: 'c', q5: 'b',
@@ -372,6 +377,7 @@ function resetTest() {
     var selects = document.querySelectorAll('select');
     selects.forEach(function(sel){ sel.value = ''; sel.style.border = ''; sel.style.backgroundColor = ''; });
     document.getElementById('result').innerText = '';
+    clearSavedAnswers();
   }
 }
 
@@ -380,6 +386,8 @@ function toggleAppendix() {
   var isHidden = getComputedStyle(panel).display === 'none';
   panel.style.display = isHidden ? 'block' : 'none';
 }
+document.querySelectorAll('select[id^="q"]').forEach(function(sel){sel.addEventListener('change',saveAnswers);});
+loadAnswers();
 </script>
 
 </body>
