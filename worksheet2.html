@@ -103,6 +103,12 @@
 </div>
 
 <script>
+const STORAGE_KEY = 'englishWorksheets_worksheet2';
+function saveAnswers(){const data={};document.querySelectorAll('select[id^="ans"]').forEach(function(sel){if(sel.value)data[sel.id]=sel.value;});localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
+function loadAnswers(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');for(const id in data){const sel=document.getElementById(id);if(sel)sel.value=data[id];}}catch(e){}}
+function clearSavedAnswers(){localStorage.removeItem(STORAGE_KEY);}
+function attachAnswerPersistence(){document.querySelectorAll('select[id^="ans"]').forEach(function(sel){sel.addEventListener('change',saveAnswers);});loadAnswers();}
+
     const sentencesData = [
         {
             id: 1,
@@ -271,6 +277,7 @@
         `;
 
         worksheetDiv.innerHTML = '<h2>Worksheet 2 – Vocabulary: Idioms & Phrasal Verbs</h2>' + sentencesHtml + controlsHtml;
+        attachAnswerPersistence();
     }
 
     function toggleHint(id) {
@@ -315,6 +322,7 @@
 
     function resetTest() {
         if (confirm("Naozaj chcete zopakovať test? Všetky vaše odpovede a vyhodnotenia budú vymazané.")) {
+            clearSavedAnswers();
             generateWorksheet();
         }
     }
