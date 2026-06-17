@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worksheet 3 – Čapek a Hašek</title>
+<style>
+body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 20px; line-height: 1.6; }
+h2, h3 { color: #2c3e50; }
+.appendix-box { background-color: #eef2f7; padding: 15px; border-radius: 8px; border-left: 5px solid #3498db; margin-bottom: 30px; }
+.appendix-box ul { margin: 5px 0; padding-left: 20px; }
+.question { margin-bottom: 20px; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+select { margin-top: 8px; padding: 6px; font-size: 14px; width: 100%; max-width: 450px; border: 1px solid #ccc; border-radius: 4px; }
+.btn-container { margin-top: 20px; display: flex; gap: 10px; }
+button { padding: 10px 20px; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; }
+.btn-check { background-color: #2ecc71; }
+.btn-check:hover { background-color: #27ae60; }
+.btn-reset { background-color: #e74c3c; }
+.btn-reset:hover { background-color: #c0392b; }
+#result { margin-top: 15px; font-size: 18px; font-weight: bold; color: #2c3e50; }
+
+/* Interaktívna nápoveda (Tooltip) */
+.hint-btn {
+    display: inline-block;
+    cursor: pointer;
+    background-color: #fff3b0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border-bottom: 1px dashed #e67e22;
+    font-weight: bold;
+    position: relative;
+}
+.hint-btn .hint-text {
+    visibility: hidden;
+    width: 290px;
+    background-color: #2c3e50;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 10;
+    bottom: 130%;
+    left: 50%;
+    margin-left: -145px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.9em;
+    font-weight: normal;
+    line-height: 1.4;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+}
+.hint-btn .hint-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #2c3e50 transparent transparent transparent;
+}
+.hint-btn:hover .hint-text, .hint-btn:focus .hint-text {
+    visibility: visible;
+    opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<h2>Worksheet: Česká medzivojnová literatúra</h2>
+
+<!-- APPENDIX: 7 FAKTOV O KAŽDOM DIELE -->
+<div class="appendix-box">
+    <h3>Appendix – Prehľad 7 kľúčových faktov o dielach</h3>
+    <p><i>Tieto fakty ti pomôžu úspešne zvládnuť test. Prečítaj si ich a použi ich ako správne odpovede.</i></p>
+    
+    <h4>1. Karel Čapek: Válka s mloky</h4>
+    <ul>
+        <li><b>Fakt 1:</b> Žánrovo ide o satirický sci-fi román vydaný v roku 1936.</li>
+        <li><b>Fakt 2:</b> Inteligentné tvory podobné mlokom objaví kapitán Van Toch na ostrove Tana Masa.</li>
+        <li><b>Fakt 3:</b> Podnikateľ G. H. Bondy finančne podporí veľký obchod s mlokmi.</li>
+        <li><b>Fakt 4:</b> Postava Veliteľa Salamandera predstavuje alegóriu nacistickej expanzie a Hitlera.</li>
+        <li><b>Fakt 5:</b> Ľudia poskytnú mlokom nože na obranu pred žralokmi a mloky im za to nosia vzácne perly.</li>
+        <li><b>Fakt 6:</b> V závere sa mlok symbolicky objaví aj vo Vltave, čo dokazuje, že prežijú aj v sladkej vode.</li>
+        <li><b>Fakt 7:</b> Hlavnou myšlienkou románu je varovanie pred fašizmom, nacizmom a ľudskou chamtivosťou.</li>
+    </ul>
+
+    <h4>2. Karel Čapek: R.U.R. (Rossumovi univerzální roboti)</h4>
+    <ul>
+        <li><b>Fakt 8:</b> Ide o vedecko-fantastickú divadelnú hru a varovnú drámu z roku 1920.</li>
+        <li><b>Fakt 9:</b> Návrh svetoznámeho slova „robot“ sa pripisuje bratovi autorovi, maliarovi Josefovi Čapkovi.</li>
+        <li><b>Fakt 10:</b> Dej sa odohráva na Rossumovom ostrove, kde sa v továrni vyrábajú umelé bytosti.</li>
+        <li><b>Fakt 11:</b> Roboti sa napokon vzbúria, vyhlásia vojnu a takmer celé ľudstvo vyhubia.</li>
+        <li><b>Fakt 12:</b> Jediný človek, ktorý vzburu robotov prežije, je Alquist, pretože stále pracuje rukami.</li>
+        <li><b>Fakt 13:</b> V úplnom závere hry prináša nádej dvojica robotov, u ktorých sa prejaví láska a city.</li>
+        <li><b>Fakt 14:</b> Dielo varuje pred rozvojom techniky bez morálky a pred slepou vierou v pokrok.</li>
+    </ul>
+
+    <h4>3. Jaroslav Hašek: Osudy dobrého vojáka Švejka</h4>
+    <ul>
+        <li><b>Fakt 15:</b> Žánrovo je to humoristický a satirický román o 1. svetovej vojne, ktorý zostal nedokončený.</li>
+        <li><b>Fakt 16:</b> Hlavná postava Josef Švejk svojou absurdnou poslušnosťou odhaľuje hlúposť armády a autorít.</li>
+        <li><b>Fakt 17:</b> Na vojenský odvod musí ísť Švejk na vozíku, pretože trpí silnou reumou.</li>
+        <li><b>Fakt 18:</b> Počas služby sa Švejk dostane najprv k poľnému kurátovi a neskôr k nadporučíkovi Lukášovi.</li>
+        <li><b>Fakt 19:</b> Celé dielo sa skladá zo 4 samostatných románov (napr. V zázemí, Na frontě).</li>
+        <li><b>Fakt 20:</b> Príbeh využíva humor a komické situácie ako formu obrany obyčajného človeka proti moci.</li>
+        <li><b>Fakt 21:</b> Román ostro zosmiešňuje militarizmus, byrokraciu a celkový rozpad Rakúsko-Uhorska.</li>
+    </ul>
+</div>
+
+<!-- TEST QUESTIONS (1-21) -->
+<form id="quizForm">
+
+    <!-- SEKCOA 1: VÁLKA S MLOKY (1-7) -->
+    <div class="question">
+        <p>1. Aký je žáner a rok vydania Čapkovho diela <span class="hint-btn">Válka s mloky 💡<span class="hint-text">Pozri si Fakt 1 v Appendixe. Ide o román z medzivojnového obdobia.</span></span>?</p>
+        <select id="q1">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Je to psychologická dráma zo súčasnosti napísaná v roku 1950</option>
+            <option value="b">b) Žánrovo ide o satirický sci-fi román vydaný v roku 1936</option>
+            <option value="c">c) Ide o historickú biografiu napísanú v roku 1920</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>2. Kto a kde objaví <span class="hint-btn">inteligentné mloky 💡<span class="hint-text">Pozri si Fakt 2 v Appendixe. Hľadaj meno známeho lodného kapitána.</span></span>?</p>
+        <select id="q2">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Inteligentné tvory podobné mlokom objaví kapitán Van Toch na ostrove Tana Masa</option>
+            <option value="b">b) Objaví ich vedec Rossum vo svojom laboratóriu v Prahe</option>
+            <option value="c">c) Našiel ich vojak Švejk počas zákopovej vojny</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>3. Akú úlohu má v diele Válka s mloky postava menom <span class="hint-btn">G. H. Bondy 💡<span class="hint-text">Pozri si Fakt 3 v Appendixe. Bez jeho peňazí by sa obchod nerozbehol.</span></span>?</p>
+        <select id="q3">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Je to lekár, ktorý lieči mloky pred chorobami</option>
+            <option value="b">b) Je to generál, ktorý vedie armádu proti mlokom</option>
+            <option value="c">c) Podnikateľ G. H. Bondy finančne podporí veľký obchod s mlokmi</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>4. Koho symbolizuje postava <span class="hint-btn">Veliteľa Salamandera 💡<span class="hint-text">Pozri si Fakt 4 v Appendixe. Ide o politické varovanie pred hrozbou tridsiatych rokov.</span></span>?</p>
+        <select id="q4">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Postava Veliteľa Salamandera predstavuje alegóriu nacistickej expanzie a Hitlera</option>
+            <option value="b">b) Je to vymyslená rozprávková bytosť prinášajúca mier</option>
+            <option value="c">c) Reprezentuje bežného utláčaného robotníka z továrne</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>5. Ako vyzerá počiatočný <span class="hint-btn">obchod medzi ľuďmi a mlokmi 💡<span class="hint-text">Pozri si Fakt 5 v Appendixe. Výmenný obchod sa týkal zbraní na obranu pred morskými predátormi.</span></span>?</p>
+        <select id="q5">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Ľudia kupujú od mlokov modernú sci-fi technológiu</option>
+            <option value="b">b) Ľudia poskytnú mlokom nože na obranu pred žralokmi a mloky im za to nosia vzácne perly</option>
+            <option value="c">c) Mloky vymieňajú ryby za európske oblečenie</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>6. Čo sa stane v úplnom <span class="hint-btn">závere románu 💡<span class="hint-text">Pozri si Fakt 6 v Appendixe. Sladká voda českej rieky prináša prekvapivý zvrat.</span></span> Válka s mloky?</p>
+        <select id="q6">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Všetky mloky náhle zahynú na neznámu bielu chorobu</option>
+            <option value="b">b) Ľudia s mlokmi uzavrú večný mier na mierovej konferencii</option>
+            <option value="c">c) V závere sa mlok symbolicky objaví aj vo Vltave, čo dokazuje, že prežijú aj v sladkej vode</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>7. Čo je hlavnou <span class="hint-btn">myšlienkou a posolstvom 💡<span class="hint-text">Pozri si Fakt 7 v Appendixe. Čapek chcel otvoriť oči vtedajšej spoločnosti.</span></span> tohto románu?</p>
+        <select id="q7">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Oslava technického pokroku a kolonizácie nových území</option>
+            <option value="b">b) Hlavnou myšlienkou románu je varovanie pred fašizmom, nacizmom a ľudskou chamtivosťou</option>
+            <option value="c">c) Výsmech lekárom a zbytočnému vedeckému výskumu</option>
+        </select>
+    </div>
+
+    <!-- SEKCOA 2: R.U.R. (8-14) -->
+    <div class="question">
+        <p>8. Čo presne charakterizuje literárny druh a žáner diela <span class="hint-btn">R.U.R. 💡<span class="hint-text">Pozri si Fakt 8 v Appendixe. Ide o divadelný formát napísaný hneď po vojne.</span></span>?</p>
+        <select id="q8">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Ide o vedecko-fantastickú divadelnú hru a varovnú drámu z roku 1920</option>
+            <option value="b">b) Je to historický trojdielny román o robotoch</option>
+            <option value="c">c) Ide o lyrickú básnickú zbierku oslavujúcu prácu</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>9. Komu vďačíme za vznik svetoznámeho <span class="hint-btn">slova „robot“ 💡<span class="hint-text">Pozri si Fakt 9 v Appendixe. Autorom bol úspešný maliar a brat slávneho spisovateľa.</span></span>?</p>
+        <select id="q9">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Slovo vymysleli priamo americkí inžinieri v továrni</option>
+            <option value="b">b) Návrh svetoznámeho slova „robot“ sa pripisuje bratovi autorovi, maliarovi Josefovi Čapkovi</option>
+            <option value="c">c) Vymyslel ho Jaroslav Hašek pre svoje postavy</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>10. Kde sa odohráva dej hry R.U.R. a aká <span class="hint-btn">výroba 💡<span class="hint-text">Pozri si Fakt 10 v Appendixe. Hľadaj miesto nesúce meno starého vedca.</span></span> tam prebieha?</p>
+        <select id="q10">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) V pražskej kaviarni, kde roboti slúžia hosťom</option>
+            <option value="b">b) Na fronte počas prvej svetovej vojny, kde vyrábajú tanky</option>
+            <option value="c">c) Dej sa odohráva na Rossumovom ostrove, kde sa v továrni vyrábajú umelé bytosti</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>11. K akému zvratu dôjde vo vzťahu medzi <span class="hint-btn">robotmi a ľuďmi 💡<span class="hint-text">Pozri si Fakt 11 v Appendixe. Stroje zneužívané na prácu a vojny nakoniec stratia trpezlivosť.</span></span>?</p>
+        <select id="q11">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Roboti sa napokon vzbúria, vyhlásia vojnu a takmer celé ľudstvo vyhubia</option>
+            <option value="b">b) Roboti dobrovoľne odovzdajú všetok majetok ľuďom</option>
+            <option value="c">c) Roboti prestanú fungovať kvôli chybe v programe</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>12. Ktorý človek ako jediný prežije <span class="hint-btn">vzbru robotov 💡<span class="hint-text">Pozri si Fakt 12 v Appendixe. Prežil vďaka tomu, že uznával poctivú manuálnu prácu.</span></span> a prečo?</p>
+        <select id="q12">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Prežije kapitán Van Toch, pretože ušiel loďou</option>
+            <option value="b">b) Jediný človek, ktorý vzburu robotov prežije, je Alquist, pretože stále pracuje rukami</option>
+            <option value="c">c) Prežije nadporučík Lukáš, pretože ho roboti schovali</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>13. Čo symbolizuje <span class="hint-btn">nádej pre svet 💡<span class="hint-text">Pozri si Fakt 13 v Appendixe. Na samom konci sa objavia hlboké emócie medzi dvoma strojmi.</span></span> na konci hry R.U.R.?</p>
+        <select id="q13">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) V úplnom závere hry prináša nádej dvojica robotov, u ktorých sa prejaví láska a city</option>
+            <option value="b">b) Alquist objaví stratený návod na kompletne novú výrobu ľudí</option>
+            <option value="c">c) Všetky stroje sa naraz vybijú a prestanú existovať</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>14. Pred čím nás autor v dráme R.U.R. <span class="hint-btn">najviac varuje 💡<span class="hint-text">Pozri si Fakt 14 v Appendixe. Pokrok nesmie predbiehať ľudskú zodpovednosť.</span></span>?</p>
+        <select id="q14">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Pred chovom mlokov a hľadaním perál v mori</option>
+            <option value="b">b) Pred nedostatkom pracovných miest v poľnohospodárstve</option>
+            <option value="c">c) Dielo varuje pred rozvojom techniky bez morálky a pred slepou vierou v pokrok</option>
+        </select>
+    </div>
+
+    <!-- SEKCOA 3: ŠVEJK (15-21) -->
+    <div class="question">
+        <p>15. Aký je žáner románu <span class="hint-btn">Osudy dobrého vojáka Švejka 💡<span class="hint-text">Pozri si Fakt 15 v Appendixe. Hašek toto dielo nestihol pred smrťou dokončiť.</span></span>?</p>
+        <select id="q15">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Žánrovo je to humoristický a satirický román o 1. svetovej vojne, ktorý zostal nedokončený</option>
+            <option value="b">b) Je to utopická sci-fi dráma o robotoch z prvej línie</option>
+            <option value="c">c) Ide o tragický, prísne spisovný historický dokument</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>16. Akým spôsobom hlavná postava <span class="hint-btn">Josef Švejk 💡<span class="hint-text">Pozri si Fakt 16 v Appendixe. Svojím doslovným plnením nezmyselných rozkazov privádza veliteľov do zúfalstva.</span></span> poukazuje na absurditu vojny?</p>
+        <select id="q16">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Organizuje tajné nočné útoky a sabotáže v táboroch</option>
+            <option value="b">b) Hlavná postava Josef Švejk svojou absurdnou poslušnosťou odhaľuje hlúposť armády a autorít</option>
+            <option value="c">c) Neustále otvorene protestuje a píše politické články</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>17. Prečo ide Švejk na <span class="hint-btn">vojenský odvod na vozíku 💡<span class="hint-text">Pozri si Fakt 17 v Appendixe. Jeho výkrik „Na Belehrad!“ z vozíka je ikonický.</span></span>?</p>
+        <select id="q17">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Stratil nohu pri nehoráznej nehode v továrni</option>
+            <option value="b">b) Ukradol vozík lekárom, aby sa vyhol vyšetreniu</option>
+            <option value="c">c) Na vojenský odvod musí ísť Švejk na vozíku, pretože trpí silnou reumou</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>18. K akým <span class="hint-btn">nadriadeným vojenským postavám 💡<span class="hint-text">Pozri si Fakt 18 v Appendixe. Prvý rád pil a hazardoval, druhý bol nešťastný zo Švejkových prešľapov.</span></span> sa Švejk postupne dostane do služby?</p>
+        <select id="q18">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Počas služby sa Švejk dostane najprv k poľnému kurátovi a neskôr k nadporučíkovi Lukášovi</option>
+            <option value="b">b) Slúži priamo kapitánovi Van Tochovi na jeho obchodnej lodi</option>
+            <option value="c">c) Dostane sa do osobnej stráže samotného rakúskeho cisára</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>19. Z koľkých <span class="hint-btn">samostatných románov 💡<span class="hint-text">Pozri si Fakt 19 v Appendixe. Skladá sa z viacerých kníh zachytávajúcich cestu na front.</span></span> sa toto Haškovo dielo skladá?</p>
+        <select id="q19">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Je to jedna krátka jednodejová divadelná hra</option>
+            <option value="b">b) Celé dielo sa skladá zo 4 samostatných románov (napr. V zázemí, Na frontě)</option>
+            <option value="c">c) Pozostáva z 10 prepojených básnických skladieb</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>20. Čo v románe slúži bežnému človeku ako <span class="hint-btn">hlavná forma obrany 💡<span class="hint-text">Pozri si Fakt 20 v Appendixe. Umožňuje prežiť aj tie najhoršie situácie s nadhľadom.</span></span> proti krutosti systému?</p>
+        <select id="q20">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Príbeh využíva humor a komické situácie ako formu obrany obyčajného človeka proti moci</option>
+            <option value="b">b) Agresívny fyzický boj a používanie moderných zbraní</option>
+            <option value="c">c) Slepá a bezhraničná viera v neomylnosť generálov</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <p>21. Čo všetko Hašek prostredníctvom Švejkových dobrodružstiev <span class="hint-btn">ostro zosmiešňuje 💡<span class="hint-text">Pozri si Fakt 21 v Appendixe. Kritika smeruje na nefunkčný a rúcajúci sa štátny aparát.</span></span>?</p>
+        <select id="q21">
+            <option value="">-- vyber odpoveď --</option>
+            <option value="a">a) Pokrok vedy, objavovanie perál a robotizáciu krajiny</option>
+            <option value="b">b) Román ostro zosmiešňuje militarizmus, byrokraciu a celkový rozpad Rakúsko-Uhorska</option>
+            <option value="c">c) Prácu poctivých robotníkov a robotnícke hnutia</option>
+        </select>
+    </div>
+
+    <!-- TLAČIDLÁ -->
+    <div class="btn-container">
+        <button type="button" class="btn-check" onclick="checkAnswers()">Skontroluj odpovede</button>
+        <button type="button" class="btn-reset" onclick="resetQuiz()">Vynuluj kvíz</button>
+    </div>
+</form>
+
+<div id="result"></div>
+
+<script>
+function checkAnswers() {
+  const correct = {
+    q1: 'b', q2: 'a', q3: 'c', q4: 'a', q5: 'b', q6: 'c', q7: 'b',
+    q8: 'a', q9: 'b', q10: 'c', q11: 'a', q12: 'b', q13: 'a', q14: 'c',
+    q15: 'a', q16: 'b', q17: 'c', q18: 'a', q19: 'b', q20: 'a', q21: 'b'
+  };
+
+  let score = 0;
+  let total = Object.keys(correct).length;
+
+  for (let id in correct) {
+    const sel = document.getElementById(id);
+    if (sel) {
+      const val = sel.value;
+      if (val === correct[id]) {
+        sel.style.border = '2px solid green';
+        sel.style.backgroundColor = '#e6ffe6';
+        score++;
+      } else {
+        sel.style.border = '2px solid red';
+        sel.style.backgroundColor = '#ffe6e6';
+      }
+    }
+  }
+
+  document.getElementById('result').innerText = 'Dosiahnuté skóre: ' + score + ' z ' + total;
+}
+
+function resetQuiz() {
+  const selects = document.querySelectorAll('select');
+  selects.forEach(sel => {
+    sel.value = "";
+    sel.style.border = '1px solid #ccc';
+    sel.style.backgroundColor = '#fff';
+  });
+  document.getElementById('result').innerText = '';
+}
+</script>
+
+</body>
+</html>
