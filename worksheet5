@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worksheet 4 (upravené) – Čapek a Hašek</title>
+<style>
+body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 20px; line-height: 1.6; }
+h2, h3 { color: #2c3e50; }
+.intro-note { max-width: 800px; margin: 0 auto 18px; background:#fff8e1; border-left:5px solid #f1c40f; padding:12px 15px; border-radius:8px; font-size:14px; }
+
+.tabs { max-width: 800px; margin: 0 auto 18px; display:flex; gap:8px; flex-wrap:wrap; }
+.tab-btn { flex:1; min-width:110px; padding:10px 8px; border:2px solid #bcd9ee; background:#eaf4fb; color:#2c3e50; border-radius:8px; font-weight:bold; font-size:14px; cursor:pointer; }
+.tab-btn.active { background:#2980b9; color:#fff; border-color:#2980b9; }
+
+.appendix-box { background-color: #eef2f7; padding: 15px; border-radius: 8px; border-left: 5px solid #3498db; margin-bottom: 30px; max-width:800px; margin-left:auto; margin-right:auto; }
+.appendix-box ul { margin: 5px 0; padding-left: 20px; }
+.question { margin-bottom: 18px; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); max-width:800px; margin-left:auto; margin-right:auto; }
+.question p { font-size: 16px; }
+select { margin-top: 10px; padding: 10px; font-size: 16px; width: 100%; max-width: 450px; border: 1px solid #ccc; border-radius: 6px; }
+.btn-container { margin-top: 20px; display: flex; gap: 10px; max-width:800px; margin-left:auto; margin-right:auto; flex-wrap:wrap; }
+button { padding: 10px 18px; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
+.btn-check { background-color: #2ecc71; }
+.btn-check:hover { background-color: #27ae60; }
+.btn-reset { background-color: #e74c3c; }
+.btn-reset:hover { background-color: #c0392b; }
+.btn-appendix { background-color: #f1c40f; color: #2c3e50; }
+.btn-appendix:hover { background-color: #d9b00d; }
+#result { margin-top: 15px; font-size: 18px; font-weight: bold; color: #2c3e50; max-width:800px; margin-left:auto; margin-right:auto; }
+
+/* Dvojstupňová nápoveda – funguje na klik/dotyk, takže ide aj na mobile */
+.hint-wrap { display: inline-block; margin-left: 4px; }
+.hint-btn {
+    display: inline-block;
+    cursor: pointer;
+    background-color: #fff3b0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px dashed #e67e22;
+    font-weight: bold;
+    font-size: 13px;
+    color: #6b4500;
+}
+.hint-btn:disabled { cursor: default; opacity: 0.75; }
+.hint-reveal {
+    display: none;
+    margin-top: 6px;
+    background-color: #2c3e50;
+    color: #fff;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.4;
+    max-width: 450px;
+}
+
+#appendixPanel { display: none; max-width: 800px; margin: 25px auto 0; }
+</style>
+</head>
+<body>
+
+<div style="max-width:800px;margin:0 auto 16px;"><a href="index.html" style="display:inline-block;text-decoration:none;color:#2980b9;font-weight:bold;padding:8px 14px;border-radius:6px;background:#eaf4fb;border:1px solid #cfe6f7;">&larr; All worksheets</a></div>
+
+<h2 style="max-width:800px;margin:0 auto 8px;">Worksheet: Česká medzivojnová literatúra (upravená verzia)</h2>
+<div class="intro-note">Tento test je rozdelený na 3 časti. Stačí robiť jednu časť na jedno sedenie – krátko a častejšie je lepšie ako všetko naraz. Nápoveda sa zobrazí na klik: prvá nápoveda je len malý tip, druhá ti až ukáže priamo fakt.</div>
+
+<div class="tabs">
+    <button type="button" class="tab-btn active" id="tabBtn1" onclick="showPart(1)">Part 1: Mloky</button>
+    <button type="button" class="tab-btn" id="tabBtn2" onclick="showPart(2)">Part 2: R.U.R.</button>
+    <button type="button" class="tab-btn" id="tabBtn3" onclick="showPart(3)">Part 3: Švejk</button>
+</div>
+
+<form id="quizForm">
+
+<!-- ČASŤ 1: VÁLKA S MLOKY -->
+<div class="question" data-part="1">
+    <p>1. Aký žáner má dielo Válka s mloky a kedy vyšlo?
+    <span class="hint-wrap" data-hint1="Skús si predstaviť, do akej doby kniha patrí – vojna ešte nezačala, ale už sa blížila." data-hint2="Fakt: Žánrovo ide o satirický sci-fi román vydaný v roku 1936.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q1">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) satirický sci-fi román, rok 1936</option>
+        <option value="b">b) psychologická dráma zo súčasnosti, rok 1950</option>
+    </select>
+</div>
+
+<div class="question" data-part="1">
+    <p>2. Kto objavil inteligentné mloky a kde?
+    <span class="hint-wrap" data-hint1="Premýšľaj o mužovi, ktorý sa plaví loďou po mori – nie o vedcovi v laboratóriu." data-hint2="Fakt: Inteligentné tvory podobné mlokom objaví kapitán Van Toch na ostrove Tana Masa.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q2">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) vedec Rossum v laboratóriu v Prahe</option>
+        <option value="b">b) kapitán Van Toch na ostrove Tana Masa</option>
+    </select>
+</div>
+
+<div class="question" data-part="1">
+    <p>3. Akú úlohu má v príbehu G. H. Bondy?
+    <span class="hint-wrap" data-hint1="Mysli na peniaze – kto v príbehu obchod zaplatí?" data-hint2="Fakt: Podnikateľ G. H. Bondy finančne podporí veľký obchod s mlokmi.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q3">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) podnikateľ, ktorý financuje obchod s mlokmi</option>
+        <option value="b">b) generál, ktorý vedie armádu proti mlokom</option>
+    </select>
+</div>
+
+<div class="question" data-part="1">
+    <p>4. Koho symbolizuje postava Veliteľa Salamandra?
+    <span class="hint-wrap" data-hint1="Predstav si vojnu, ktorá prišla krátko po napísaní knihy – kto bol jej najväčšou hrozbou?" data-hint2="Fakt: Veliteľ Salamander symbolizuje Hitlera a nástup nacizmu.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q4">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) obyčajného pracujúceho človeka</option>
+        <option value="b">b) Hitlera a nacizmus</option>
+    </select>
+</div>
+
+<div class="question" data-part="1">
+    <p>5. Čo si ľudia a mloky na začiatku medzi sebou vymieňali?
+    <span class="hint-wrap" data-hint1="Mloky potrebovali obranu pred žralokmi – čím im ľudia pomohli?" data-hint2="Fakt: Ľudia dali mlokom nože na obranu pred žralokmi a mloky im za to nosili perly.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q5">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) nože za perly</option>
+        <option value="b">b) modernú techniku za ryby</option>
+    </select>
+</div>
+
+<div class="question" data-part="1">
+    <p>6. Čo sa stane na konci románu?
+    <span class="hint-wrap" data-hint1="Sleduj, kam až sa mloky dokážu rozšíriť – aj do riek?" data-hint2="Fakt: Na konci sa mlok objaví aj vo Vltave, čo dokazuje, že prežijú aj v sladkej vode.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q6">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) mloky uzavrú s ľuďmi večný mier</option>
+        <option value="b">b) mlok sa objaví aj vo Vltave – prežije aj v sladkej vode</option>
+    </select>
+</div>
+
+<div class="question" data-part="1">
+    <p>7. Aké je hlavné posolstvo románu Válka s mloky?
+    <span class="hint-wrap" data-hint1="Premýšľaj, prečo Čapek písal o nebezpečnom nepriateľovi tesne pred 2. svetovou vojnou." data-hint2="Fakt: Hlavnou myšlienkou je varovanie pred fašizmom, nacizmom a ľudskou chamtivosťou.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q7">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) varovanie pred fašizmom a ľudskou chamtivosťou</option>
+        <option value="b">b) oslava vedeckého pokroku</option>
+    </select>
+</div>
+
+<!-- ČASŤ 2: R.U.R. -->
+<div class="question" data-part="2">
+    <p>8. Aký žáner má dielo R.U.R. a kedy vzniklo?
+    <span class="hint-wrap" data-hint1="Predstav si javisko, nie knihu na čítanie." data-hint2="Fakt: Ide o vedecko-fantastickú divadelnú hru z roku 1920.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q8">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) historický román o robotoch</option>
+        <option value="b">b) sci-fi divadelná hra, rok 1920</option>
+    </select>
+</div>
+
+<div class="question" data-part="2">
+    <p>9. Kto vymyslel slovo „robot“?
+    <span class="hint-wrap" data-hint1="Hľadaj v rodine autora, nie v zahraničí." data-hint2="Fakt: Slovo „robot“ sa pripisuje bratovi autora, maliarovi Josefovi Čapkovi.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q9">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) Josef Čapek, maliar a brat autora</option>
+        <option value="b">b) americkí inžinieri</option>
+    </select>
+</div>
+
+<div class="question" data-part="2">
+    <p>10. Kde sa odohráva dej hry R.U.R.?
+    <span class="hint-wrap" data-hint1="Miesto má v názve meno vedca, ktorý ho založil." data-hint2="Fakt: Dej sa odohráva na Rossumovom ostrove, kde sa v továrni vyrábajú umelé bytosti.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q10">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) v pražskej kaviarni</option>
+        <option value="b">b) na Rossumovom ostrove, v továrni na umelé bytosti</option>
+    </select>
+</div>
+
+<div class="question" data-part="2">
+    <p>11. Čo sa stane medzi robotmi a ľuďmi?
+    <span class="hint-wrap" data-hint1="Premýšľaj, čo sa stane, keď stroje, ktoré dlho pracujú a bojujú vo vojnách, prestanú poslúchať." data-hint2="Fakt: Roboti sa napokon vzbúria, vyhlásia vojnu a takmer celé ľudstvo vyhubia.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q11">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) roboti sa vzbúria a takmer vyhubia ľudstvo</option>
+        <option value="b">b) roboti odovzdajú celý majetok ľuďom</option>
+    </select>
+</div>
+
+<div class="question" data-part="2">
+    <p>12. Kto jediný prežije vzburu robotov a prečo?
+    <span class="hint-wrap" data-hint1="Roboti rešpektujú človeka, ktorý robí poctivú manuálnu prácu." data-hint2="Fakt: Jediný, kto vzburu prežije, je Alquist, pretože stále pracuje rukami.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q12">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) kapitán Van Toch, pretože ušiel loďou</option>
+        <option value="b">b) Alquist, pretože stále pracuje rukami</option>
+    </select>
+</div>
+
+<div class="question" data-part="2">
+    <p>13. Čo sa stane na úplnom konci hry R.U.R.?
+    <span class="hint-wrap" data-hint1="Sleduj posledné chvíle – objaví sa niečo veľmi ľudské medzi dvoma strojmi." data-hint2="Fakt: Na konci hry prináša nádej dvojica robotov, u ktorých sa prejaví láska a city.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q13">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) u dvoch robotov sa objaví láska a city</option>
+        <option value="b">b) Alquist nájde stratený návod na výrobu ľudí</option>
+    </select>
+</div>
+
+<div class="question" data-part="2">
+    <p>14. Pred čím dráma R.U.R. najviac varuje?
+    <span class="hint-wrap" data-hint1="Mysli na to, čo sa stane, keď veda a technika idú príliš rýchlo dopredu bez zodpovednosti." data-hint2="Fakt: Dielo varuje pred rozvojom techniky bez morálky a pred slepou vierou v pokrok.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q14">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) pred nedostatkom práce v poľnohospodárstve</option>
+        <option value="b">b) pred technikou bez morálky a slepou vierou v pokrok</option>
+    </select>
+</div>
+
+<!-- ČASŤ 3: ŠVEJK -->
+<div class="question" data-part="3">
+    <p>15. Aký žáner má román o Švejkovi?
+    <span class="hint-wrap" data-hint1="Mysli na smiech, nie na smútok." data-hint2="Fakt: Je to humoristický a satirický román o 1. svetovej vojne, ktorý zostal nedokončený.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q15">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) humoristický a satirický román, nedokončený</option>
+        <option value="b">b) tragický historický dokument</option>
+    </select>
+</div>
+
+<div class="question" data-part="3">
+    <p>16. Akým spôsobom Švejk poukazuje na absurditu vojny?
+    <span class="hint-wrap" data-hint1="Švejk neprotestuje – naopak, robí presne to, čo mu povedia, a tým ukáže, aké je to nezmyselné." data-hint2="Fakt: Švejk svojou absurdnou poslušnosťou odhaľuje hlúposť armády a autorít.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q16">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) tajnými útokmi a sabotážami</option>
+        <option value="b">b) doslovným, „poslušným“ plnením nezmyselných rozkazov</option>
+    </select>
+</div>
+
+<div class="question" data-part="3">
+    <p>17. Prečo ide Švejk na vojenský odvod na vozíku?
+    <span class="hint-wrap" data-hint1="Nie je to nehoda – je to dlhotrvajúca choroba kĺbov." data-hint2="Fakt: Na odvod musí ísť na vozíku, pretože trpí silnou reumou.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q17">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) trpí silnou reumou</option>
+        <option value="b">b) stratil nohu pri nehode v továrni</option>
+    </select>
+</div>
+
+<div class="question" data-part="3">
+    <p>18. K akým dvom nadriadeným sa Švejk počas služby dostane?
+    <span class="hint-wrap" data-hint1="Prvý z nich rád pil a hazardoval, druhý mal z neho samé starosti." data-hint2="Fakt: Švejk sa dostane najprv k poľnému kurátovi a neskôr k nadporučíkovi Lukášovi.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q18">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) priamo k rakúskemu cisárovi</option>
+        <option value="b">b) k poľnému kurátovi a neskôr k nadporučíkovi Lukášovi</option>
+    </select>
+</div>
+
+<div class="question" data-part="3">
+    <p>19. Z koľkých samostatných románov sa dielo o Švejkovi skladá?
+    <span class="hint-wrap" data-hint1="Je to viac kníh, ktoré spolu zachytávajú cestu na front." data-hint2="Fakt: Celé dielo sa skladá zo 4 samostatných románov.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q19">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) zo 4 románov</option>
+        <option value="b">b) je to jedna jednodejová hra</option>
+    </select>
+</div>
+
+<div class="question" data-part="3">
+    <p>20. Čo slúži Švejkovi ako hlavná zbraň proti krutosti vojny?
+    <span class="hint-wrap" data-hint1="Švejk neútočí silou – bráni sa niečím úplne iným." data-hint2="Fakt: Humor a komické situácie slúžia ako forma obrany obyčajného človeka proti moci.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q20">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) fyzický boj a moderné zbrane</option>
+        <option value="b">b) humor a komické situácie</option>
+    </select>
+</div>
+
+<div class="question" data-part="3">
+    <p>21. Čo Hašek najviac zosmiešňuje prostredníctvom Švejka?
+    <span class="hint-wrap" data-hint1="Mysli na štát a armádu, ktoré sa rozpadávajú – nie na bežných ľudí, ktorí pracujú." data-hint2="Fakt: Román zosmiešňuje militarizmus, byrokraciu a rozpad Rakúsko-Uhorska.">
+        <button type="button" class="hint-btn" onclick="hintClick(this)">💡 Pomoc</button>
+        <span class="hint-reveal"></span>
+    </span></p>
+    <select id="q21">
+        <option value="">-- vyber odpoveď --</option>
+        <option value="a">a) militarizmus a byrokraciu Rakúsko-Uhorska</option>
+        <option value="b">b) prácu poctivých robotníkov</option>
+    </select>
+</div>
+
+<!-- TLAČIDLÁ -->
+<div class="btn-container">
+    <button type="button" class="btn-check" onclick="checkAnswers()">Check answers</button>
+    <button type="button" class="btn-reset" onclick="resetPart()">Repeat / New</button>
+    <button type="button" class="btn-appendix" onclick="toggleAppendix()">Show / Hide summary</button>
+</div>
+</form>
+
+<div id="result"></div>
+
+<div id="appendixPanel">
+<div class="appendix-box">
+    <h3>Zhrnutie faktov – na prečítanie PRED testom</h3>
+    <p><i>Najlepšie funguje takto: najprv si toto zhrnutie spolu prečítajte, potom zatvor túto časť a skús test bez pozerania sem. Nápoveda v teste ti pomôže, ak si nebudeš vedieť spomenúť.</i></p>
+
+    <h4>1. Karel Čapek: Válka s mloky</h4>
+    <ul>
+        <li>Satirický sci-fi román, vydaný v roku 1936.</li>
+        <li>Mloky objaví kapitán Van Toch na ostrove Tana Masa.</li>
+        <li>Podnikateľ G. H. Bondy financuje veľký obchod s mlokmi.</li>
+        <li>Veliteľ Salamander symbolizuje Hitlera a nacizmus.</li>
+        <li>Ľudia dajú mlokom nože, mloky za to nosia perly.</li>
+        <li>Na konci sa mlok objaví aj vo Vltave – prežijú aj v sladkej vode.</li>
+        <li>Hlavná myšlienka: varovanie pred fašizmom a chamtivosťou.</li>
+    </ul>
+
+    <h4>2. Karel Čapek: R.U.R.</h4>
+    <ul>
+        <li>Sci-fi divadelná hra z roku 1920.</li>
+        <li>Slovo „robot“ vymyslel Josef Čapek, brat autora.</li>
+        <li>Dej sa odohráva na Rossumovom ostrove, v továrni na umelé bytosti.</li>
+        <li>Roboti sa vzbúria a takmer vyhubia ľudstvo.</li>
+        <li>Prežije len Alquist, pretože pracuje rukami.</li>
+        <li>Na konci sa u dvoch robotov objaví láska – nádej pre svet.</li>
+        <li>Dielo varuje pred technikou bez morálky.</li>
+    </ul>
+
+    <h4>3. Jaroslav Hašek: Osudy dobrého vojáka Švejka</h4>
+    <ul>
+        <li>Humoristický a satirický román, nedokončený.</li>
+        <li>Švejk svojou „poslušnosťou“ ukazuje hlúposť armády.</li>
+        <li>Na odvod ide na vozíku, pretože má reumu.</li>
+        <li>Slúži u poľného kuráta a neskôr u nadporučíka Lukáša.</li>
+        <li>Dielo má 4 samostatné romány.</li>
+        <li>Hlavná zbraň proti vojne je humor.</li>
+        <li>Zosmiešňuje militarizmus a byrokraciu Rakúsko-Uhorska.</li>
+    </ul>
+</div>
+</div>
+
+<script>
+const correct = {
+  q1: 'a', q2: 'b', q3: 'a', q4: 'b', q5: 'a', q6: 'b', q7: 'a',
+  q8: 'b', q9: 'a', q10: 'b', q11: 'a', q12: 'b', q13: 'a', q14: 'b',
+  q15: 'a', q16: 'b', q17: 'a', q18: 'b', q19: 'a', q20: 'b', q21: 'a'
+};
+
+let currentPart = 1;
+
+function showPart(n) {
+  currentPart = n;
+  document.querySelectorAll('.question').forEach(function(q){
+    q.style.display = (q.dataset.part === String(n)) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tabBtn' + n).classList.add('active');
+  document.getElementById('result').textContent = '';
+}
+
+function hintClick(btn) {
+  const wrap = btn.parentElement;
+  const reveal = wrap.querySelector('.hint-reveal');
+  const stage = wrap.dataset.stage || "0";
+  if (stage === "0") {
+    reveal.textContent = wrap.dataset.hint1;
+    reveal.style.display = 'block';
+    btn.textContent = '💡 Ešte nápoveda?';
+    wrap.dataset.stage = "1";
+  } else if (stage === "1") {
+    reveal.textContent = wrap.dataset.hint2;
+    reveal.style.display = 'block';
+    btn.textContent = '🙈 Skryť fakt';
+    wrap.dataset.stage = "2";
+  } else if (stage === "2") {
+    reveal.style.display = 'none';
+    btn.textContent = '👁️ Zobraziť fakt';
+    wrap.dataset.stage = "3";
+  } else if (stage === "3") {
+    reveal.style.display = 'block';
+    btn.textContent = '🙈 Skryť fakt';
+    wrap.dataset.stage = "2";
+  }
+}
+
+function resetHints() {
+  document.querySelectorAll('.hint-wrap').forEach(function(wrap){
+    if (wrap.closest('.question').dataset.part !== String(currentPart)) return;
+    wrap.dataset.stage = "0";
+    const reveal = wrap.querySelector('.hint-reveal');
+    reveal.style.display = 'none';
+    reveal.textContent = '';
+    const btn = wrap.querySelector('.hint-btn');
+    btn.textContent = '💡 Pomoc';
+    btn.disabled = false;
+  });
+}
+
+function checkAnswers() {
+  let score = 0, total = 0;
+  document.querySelectorAll('.question').forEach(function(q){
+    if (q.dataset.part !== String(currentPart)) return;
+    const sel = q.querySelector('select');
+    if (!sel) return;
+    total++;
+    if (sel.value === correct[sel.id]) {
+      sel.style.border = '2px solid green';
+      sel.style.backgroundColor = '#e6ffe6';
+      score++;
+    } else if (sel.value === '') {
+      sel.style.border = '1px solid #ccc';
+      sel.style.backgroundColor = '#fff';
+    } else {
+      sel.style.border = '2px solid red';
+      sel.style.backgroundColor = '#ffe6e6';
+    }
+  });
+  document.getElementById('result').textContent = 'Skóre za túto časť: ' + score + ' z ' + total;
+}
+
+function resetPart() {
+  document.querySelectorAll('.question').forEach(function(q){
+    if (q.dataset.part !== String(currentPart)) return;
+    const sel = q.querySelector('select');
+    if (sel) {
+      sel.value = "";
+      sel.style.border = '1px solid #ccc';
+      sel.style.backgroundColor = '#fff';
+    }
+  });
+  resetHints();
+  document.getElementById('result').textContent = '';
+  saveAnswers();
+}
+
+function toggleAppendix() {
+  const panel = document.getElementById('appendixPanel');
+  const isHidden = getComputedStyle(panel).display === 'none';
+  panel.style.display = isHidden ? 'block' : 'none';
+}
+
+const STORAGE_KEY = 'englishWorksheets_worksheet4_v2';
+function saveAnswers(){
+  const data = {};
+  document.querySelectorAll('select[id^="q"]').forEach(function(sel){ if (sel.value) data[sel.id] = sel.value; });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+function loadAnswers(){
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    for (const id in data) {
+      const sel = document.getElementById(id);
+      if (sel) sel.value = data[id];
+    }
+  } catch(e) {}
+}
+document.querySelectorAll('select[id^="q"]').forEach(function(sel){ sel.addEventListener('change', saveAnswers); });
+
+loadAnswers();
+showPart(1);
+</script>
+
+</body>
+</html>
