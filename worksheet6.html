@@ -13,20 +13,26 @@
         .back-link:hover { background-color: #d6e9ff; }
         .worksheet { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
         h2 { color: #333; text-align: center; margin-bottom: 12px; }
-        .intro { max-width: 760px; margin: 0 auto 24px; padding: 12px 14px; background: #fff8e1; border-left: 4px solid #f1c40f; border-radius: 6px; color: #444; font-size: 0.95em; line-height: 1.5; }
+        .intro { max-width: 760px; margin: 0 auto 16px; padding: 12px 14px; background: #fff8e1; border-left: 4px solid #f1c40f; border-radius: 6px; color: #444; font-size: 0.95em; line-height: 1.5; }
+        .mode-bar { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 0 auto 12px; max-width: 760px; }
+        .mode-btn { border: 2px solid #007bff; background: #fff; color: #0056b3; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .mode-btn.active { background: #007bff; color: #fff; }
+        .set-meta { text-align: center; color: #555; font-size: 0.9em; margin-bottom: 18px; }
         .box { border: 1px solid #ddd; border-radius: 5px; padding: 15px; margin-bottom: 20px; background-color: #fafafa; }
         .box p { margin: 8px 0; line-height: 1.5; }
         .box strong { color: #0056b3; }
         .time-badge { display: inline-block; font-family: Consolas, "Courier New", monospace; font-size: 1.35em; background: #2c3e50; color: #fff; padding: 4px 12px; border-radius: 8px; letter-spacing: 1px; margin-left: 6px; vertical-align: middle; }
-        .answer-line { font-size: 1.05em; }
-        .box select { border: 2px solid #ccc; border-radius: 4px; padding: 8px 10px; font-size: 1em; width: 100%; max-width: 420px; margin-top: 4px; }
-        .box button { background-color: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 0.9em; }
-        .box button:hover { background-color: #0056b3; }
+        .answer-line { font-size: 1.05em; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+        .box select, .box input[type="text"] { border: 2px solid #ccc; border-radius: 4px; padding: 8px 10px; font-size: 1em; flex: 1; min-width: 200px; max-width: 420px; }
+        .box button.hint-toggle { background-color: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 0.9em; }
+        .box button.hint-toggle:hover { background-color: #0056b3; }
         .hint-content { display: none; margin-top: 10px; padding: 10px; border-left: 3px solid #007bff; background-color: #e7f3ff; }
         .hint-content p { margin: 5px 0; font-size: 0.95em; }
         .controls { text-align: center; margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
         .controls button { background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1em; }
         .controls button:hover { background-color: #218838; }
+        .newset-button { background-color: #007bff !important; }
+        .newset-button:hover { background-color: #0056b3 !important; }
         .copy-button { background-color: #6c757d !important; }
         .copy-button:hover { background-color: #5a6268 !important; }
         .appendix-button { background-color: #ffc107 !important; color: #333 !important; }
@@ -50,114 +56,209 @@
     <a href="index.html" class="back-link">&larr; All worksheets</a>
 </div>
 
-<div class="worksheet" id="timeWorksheet">
-    <h2>Worksheet 6 – Telling the Time: What time is it?</h2>
-    <p class="intro">Look at the digital time. Answer in full English: <strong>It's …</strong> Use <em>o'clock</em>, <em>past</em>, <em>to</em>, <em>half past</em>, and <em>quarter past / quarter to</em>.</p>
-</div>
+<div class="worksheet" id="timeWorksheet"></div>
 
 <script>
-const STORAGE_KEY = 'englishWorksheets_worksheet6';
+var SET_SIZE = 10;
+var STORAGE_KEY = 'englishWorksheets_worksheet6_v2';
 
-function saveAnswers() {
-    const data = {};
-    document.querySelectorAll('select[id^="ans"]').forEach(function (sel) {
-        if (sel.value) data[sel.id] = sel.value;
-    });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+/** Full question pool — each item picked at most once per set */
+var QUESTION_POOL = [
+    { id: 't0700', time: '7:00', correct: "seven o'clock", options: ["seven o'clock", "quarter past seven", "half past seven", "seven fifteen"], grammar: 'Exact hour', hint: "Minutes are :00 — use o'clock after the hour.", appendix: { phrase: "… o'clock", slovak: 'presne … hodín' } },
+    { id: 't1200', time: '12:00', correct: "twelve o'clock", options: ["twelve o'clock", "half past twelve", "quarter to twelve", "twelve thirty"], grammar: 'Exact hour', hint: "Say twelve o'clock.", appendix: null },
+    { id: 't0100', time: '1:00', correct: "one o'clock", options: ["one o'clock", "quarter past one", "ten to one", "one fifteen"], grammar: 'Exact hour', hint: 'Hour first, then o\'clock.', appendix: null },
+    { id: 't0600', time: '6:00', correct: "six o'clock", options: ["six o'clock", "half past six", "quarter past six", "six thirty"], grammar: 'Exact hour', hint: 'Exactly on the hour.', appendix: null },
+    { id: 't0200', time: '2:00', correct: "two o'clock", options: ["two o'clock", "half past two", "quarter to two", "two thirty"], grammar: 'Exact hour', hint: 'No minutes — two o\'clock.', appendix: null },
+    { id: 't0900', time: '9:00', correct: "nine o'clock", options: ["nine o'clock", "quarter past nine", "nine fifteen", "half to nine"], grammar: 'Exact hour', hint: 'Nine o\'clock = 9:00.', appendix: null },
+    { id: 't1100', time: '11:00', correct: "eleven o'clock", options: ["eleven o'clock", "ten past eleven", "quarter to eleven", "eleven thirty"], grammar: 'Exact hour', hint: 'Eleven on the dot.', appendix: null },
+    { id: 't0615', time: '6:15', correct: 'quarter past six', options: ['quarter past six', 'quarter to six', 'half past six', "six fifteen o'clock"], grammar: 'Quarter past', hint: ':15 = quarter after six.', appendix: { phrase: 'quarter past …', slovak: 'štvrť po …' } },
+    { id: 't0315', time: '3:15', correct: 'quarter past three', options: ['quarter past three', 'quarter to three', 'half past three', 'three forty-five'], grammar: 'Quarter past', hint: 'Still the three o\'clock hour.', appendix: null },
+    { id: 't1215', time: '12:15', correct: 'quarter past twelve', options: ['quarter past twelve', 'quarter to twelve', 'half past twelve', 'twelve forty-five'], grammar: 'Quarter past', hint: 'Fifteen minutes after twelve.', appendix: null },
+    { id: 't0430', time: '4:30', correct: 'half past four', options: ['half past four', 'half to four', 'quarter past four', 'fourteen thirty'], grammar: 'Half past', hint: ':30 = half past four.', appendix: { phrase: 'half past …', slovak: 'pol … (pol piatej)' } },
+    { id: 't0830', time: '8:30', correct: 'half past eight', options: ['half past eight', 'half to eight', 'quarter to nine', 'eight fifteen'], grammar: 'Half past', hint: 'Thirty minutes past eight.', appendix: null },
+    { id: 't1230', time: '12:30', correct: 'half past twelve', options: ['half past twelve', 'half to twelve', 'quarter past twelve', 'twelve fifteen'], grammar: 'Half past', hint: 'Midday + half an hour.', appendix: null },
+    { id: 't0230', time: '2:30', correct: 'half past two', options: ['half past two', 'two thirty o\'clock', 'quarter to two', 'twenty past two'], grammar: 'Half past', hint: 'Half way through the two o\'clock hour.', appendix: null },
+    { id: 't0645', time: '6:45', correct: 'quarter to seven', options: ['quarter to seven', 'quarter past six', 'half past six', 'six forty-five past'], grammar: 'Quarter to', hint: ':45 → next hour is seven.', appendix: { phrase: 'quarter to …', slovak: 'štvrť na …' } },
+    { id: 't1045', time: '10:45', correct: 'quarter to eleven', options: ['quarter to eleven', 'quarter past ten', 'half past ten', 'ten forty-five'], grammar: 'Quarter to', hint: 'Close to eleven.', appendix: null },
+    { id: 't0145', time: '1:45', correct: 'quarter to two', options: ['quarter to two', 'quarter past one', 'half past one', 'one forty-five'], grammar: 'Quarter to', hint: 'Fifteen minutes before two.', appendix: null },
+    { id: 't0605', time: '6:05', correct: 'five past six', options: ['five past six', 'five to six', 'quarter past six', 'six fifty-five'], grammar: 'Minutes past', hint: 'Five minutes after six.', appendix: { phrase: '… past …', slovak: '… po …' } },
+    { id: 't1205', time: '12:05', correct: 'five past twelve', options: ['five past twelve', 'five to twelve', 'quarter past twelve', 'twelve fifty-five'], grammar: 'Minutes past', hint: 'Just after twelve.', appendix: null },
+    { id: 't0210', time: '2:10', correct: 'ten past two', options: ['ten past two', 'ten to two', "two ten o'clock", 'quarter to two'], grammar: 'Minutes past', hint: 'Ten minutes after two.', appendix: null },
+    { id: 't0710', time: '7:10', correct: 'ten past seven', options: ['ten past seven', 'ten to seven', 'quarter past seven', 'seven fifty'], grammar: 'Minutes past', hint: 'Ten past seven.', appendix: null },
+    { id: 't0520', time: '5:20', correct: 'twenty past five', options: ['twenty past five', 'twenty to five', 'half past five', "five twenty o'clock"], grammar: 'Minutes past', hint: 'Twenty after five.', appendix: null },
+    { id: 't0620', time: '6:20', correct: 'twenty past six', options: ['twenty past six', 'twenty to six', 'quarter past six', 'six forty'], grammar: 'Minutes past', hint: 'Twenty minutes past six.', appendix: null },
+    { id: 't0925', time: '9:25', correct: 'twenty-five past nine', options: ['twenty-five past nine', 'twenty-five to nine', 'quarter past nine', "nine twenty-five o'clock"], grammar: 'Minutes past', hint: 'Before half past — use past nine.', appendix: null },
+    { id: 't1125', time: '11:25', correct: 'twenty-five past eleven', options: ['twenty-five past eleven', 'twenty-five to eleven', 'half past eleven', 'eleven thirty-five'], grammar: 'Minutes past', hint: 'Twenty-five past eleven.', appendix: null },
+    { id: 't0735', time: '7:35', correct: 'twenty-five to eight', options: ['twenty-five to eight', 'twenty-five past seven', 'half past seven', 'seven thirty-five past'], grammar: 'Minutes to', hint: 'After half past — count to eight.', appendix: { phrase: '… to …', slovak: '… do / na …' } },
+    { id: 't0135', time: '1:35', correct: 'twenty-five to two', options: ['twenty-five to two', 'twenty-five past one', 'half past one', 'one thirty-five'], grammar: 'Minutes to', hint: 'Twenty-five minutes before two.', appendix: null },
+    { id: 't0440', time: '4:40', correct: 'twenty to five', options: ['twenty to five', 'twenty past four', 'forty past four', 'quarter past four'], grammar: 'Minutes to', hint: 'Twenty before five.', appendix: null },
+    { id: 't0940', time: '9:40', correct: 'twenty to ten', options: ['twenty to ten', 'twenty past nine', 'nine forty past', 'quarter to ten'], grammar: 'Minutes to', hint: 'Twenty minutes to ten.', appendix: null },
+    { id: 't1150', time: '11:50', correct: 'ten to twelve', options: ['ten to twelve', 'ten past eleven', 'fifty past eleven', 'quarter to twelve'], grammar: 'Minutes to', hint: 'Ten minutes before twelve.', appendix: null },
+    { id: 't0750', time: '7:50', correct: 'ten to eight', options: ['ten to eight', 'ten past seven', 'seven fifty past', 'quarter to eight'], grammar: 'Minutes to', hint: 'Ten to eight.', appendix: null },
+    { id: 't0355', time: '3:55', correct: 'five to four', options: ['five to four', 'five past three', 'quarter to four', 'three fifty-five past'], grammar: 'Minutes to', hint: 'Almost four o\'clock.', appendix: null },
+    { id: 't0155', time: '1:55', correct: 'five to two', options: ['five to two', 'five past one', 'quarter to two', 'one fifty-five'], grammar: 'Minutes to', hint: 'Five minutes before two.', appendix: null },
+    { id: 't0855', time: '8:55', correct: 'five to nine', options: ['five to nine', 'five past eight', 'quarter to nine', 'eight forty-five'], grammar: 'Minutes to', hint: 'Nearly nine.', appendix: null },
+    { id: 't0505', time: '5:05', correct: 'five past five', options: ['five past five', 'five to five', 'quarter past five', 'five fifty-five'], grammar: 'Minutes past', hint: 'Five past five.', appendix: null },
+    { id: 't1015', time: '10:15', correct: 'quarter past ten', options: ['quarter past ten', 'quarter to ten', 'half past ten', 'ten forty-five'], grammar: 'Quarter past', hint: 'Quarter after ten.', appendix: null }
+];
+
+var poolById = {};
+QUESTION_POOL.forEach(function (q) { poolById[q.id] = q; });
+
+var state = {
+    mode: 'select',
+    setIds: [],
+    activeSet: []
+};
+
+function loadState() {
+    try {
+        var raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        if (!raw || !Array.isArray(raw.setIds) || raw.setIds.length !== SET_SIZE) return false;
+        if (!raw.setIds.every(function (id) { return poolById[id]; })) return false;
+        state.mode = raw.mode === 'fill' ? 'fill' : 'select';
+        state.setIds = raw.setIds.slice();
+        state.activeSet = state.setIds.map(function (id, i) {
+            var q = poolById[id];
+            return { num: i + 1, poolId: id, time: q.time, correct: q.correct, options: q.options, grammar: q.grammar, hint: q.hint, appendix: q.appendix };
+        });
+        return true;
+    } catch (e) {
+        return false;
+    }
 }
 
-function loadAnswers() {
+function saveState() {
+    var answersSelect = {};
+    var answersFill = {};
+    document.querySelectorAll('[data-answer-kind="select"]').forEach(function (el) {
+        if (el.value) answersSelect[el.id] = el.value;
+    });
+    document.querySelectorAll('[data-answer-kind="fill"]').forEach(function (el) {
+        if (el.value) answersFill[el.id] = el.value;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        mode: state.mode,
+        setIds: state.setIds,
+        answersSelect: answersSelect,
+        answersFill: answersFill
+    }));
+}
+
+function restoreAnswers() {
     try {
-        const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-        for (const id in data) {
-            const sel = document.getElementById(id);
-            if (sel) sel.value = data[id];
+        var raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        var map = state.mode === 'fill' ? (raw.answersFill || {}) : (raw.answersSelect || {});
+        for (var id in map) {
+            var el = document.getElementById(id);
+            if (el) el.value = map[id];
         }
     } catch (e) {}
 }
 
 function clearSavedAnswers() {
-    localStorage.removeItem(STORAGE_KEY);
+    try {
+        var raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        raw.answersSelect = {};
+        raw.answersFill = {};
+        raw.mode = state.mode;
+        raw.setIds = state.setIds;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(raw));
+    } catch (e) {
+        localStorage.removeItem(STORAGE_KEY);
+    }
 }
 
-function attachAnswerPersistence() {
-    document.querySelectorAll('select[id^="ans"]').forEach(function (sel) {
-        sel.addEventListener('change', saveAnswers);
+function pickRandomSet() {
+    var copy = QUESTION_POOL.slice();
+    for (var i = copy.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = copy[i];
+        copy[i] = copy[j];
+        copy[j] = t;
+    }
+    state.setIds = copy.slice(0, SET_SIZE).map(function (q) { return q.id; });
+    state.activeSet = state.setIds.map(function (id, i) {
+        var q = poolById[id];
+        return { num: i + 1, poolId: id, time: q.time, correct: q.correct, options: q.options, grammar: q.grammar, hint: q.hint, appendix: q.appendix };
     });
-    loadAnswers();
 }
-
-const timeData = [
-    { id: 1, time: "7:00", correct: "seven o'clock", options: ["seven o'clock", "quarter past seven", "half past seven", "seven fifteen"], grammar: "Exact hour", hint: "Minutes are :00 — use o'clock after the hour.", appendix: { phrase: "… o'clock", slovak: "presne … hodín (napr. seven o'clock)" } },
-    { id: 2, time: "12:00", correct: "twelve o'clock", options: ["twelve o'clock", "half past twelve", "quarter to twelve", "twelve thirty"], grammar: "Exact hour", hint: "No minutes again — say twelve o'clock.", appendix: null },
-    { id: 3, time: "1:00", correct: "one o'clock", options: ["one o'clock", "quarter past one", "ten to one", "one fifteen"], grammar: "Exact hour", hint: "The hour comes first, then o'clock.", appendix: null },
-    { id: 4, time: "6:15", correct: "quarter past six", options: ["quarter past six", "quarter to six", "half past six", "six fifteen o'clock"], grammar: "Quarter past", hint: ":15 = a quarter of an hour after six.", appendix: { phrase: "quarter past …", slovak: "štvrť po …" } },
-    { id: 5, time: "3:15", correct: "quarter past three", options: ["quarter past three", "quarter to three", "half past three", "three forty-five"], grammar: "Quarter past", hint: "Past means after the hour — still in the three o'clock hour.", appendix: null },
-    { id: 6, time: "4:30", correct: "half past four", options: ["half past four", "half to four", "quarter past four", "fourteen thirty"], grammar: "Half past", hint: ":30 is half an hour — half past four.", appendix: { phrase: "half past …", slovak: "pol … (pol piatej = half past four)" } },
-    { id: 7, time: "8:30", correct: "half past eight", options: ["half past eight", "half to eight", "quarter to nine", "eight fifteen"], grammar: "Half past", hint: "Thirty minutes = half past the hour.", appendix: null },
-    { id: 8, time: "6:45", correct: "quarter to seven", options: ["quarter to seven", "quarter past six", "half past six", "six forty-five past"], grammar: "Quarter to", hint: ":45 is 15 minutes before the next hour — seven.", appendix: { phrase: "quarter to …", slovak: "štvrť na … (na siedmu)" } },
-    { id: 9, time: "10:45", correct: "quarter to eleven", options: ["quarter to eleven", "quarter past ten", "half past ten", "ten forty-five"], grammar: "Quarter to", hint: "You are close to eleven, not ten.", appendix: null },
-    { id: 10, time: "6:05", correct: "five past six", options: ["five past six", "five to six", "quarter past six", "six fifty-five"], grammar: "Minutes past", hint: "Only five minutes after six — use past.", appendix: { phrase: "… past …", slovak: "… po … (five past six = päť po šiestej)" } },
-    { id: 11, time: "2:10", correct: "ten past two", options: ["ten past two", "ten to two", "two ten o'clock", "quarter to two"], grammar: "Minutes past", hint: "Ten minutes after two.", appendix: null },
-    { id: 12, time: "5:20", correct: "twenty past five", options: ["twenty past five", "twenty to five", "half past five", "five twenty o'clock"], grammar: "Minutes past", hint: "Twenty minutes after five.", appendix: null },
-    { id: 13, time: "9:25", correct: "twenty-five past nine", options: ["twenty-five past nine", "twenty-five to nine", "quarter past nine", "nine twenty-five o'clock"], grammar: "Minutes past", hint: "Still before half past — stay with past nine.", appendix: null },
-    { id: 14, time: "7:35", correct: "twenty-five to eight", options: ["twenty-five to eight", "twenty-five past seven", "half past seven", "seven thirty-five past"], grammar: "Minutes to", hint: "After half past, count to the next hour (eight).", appendix: { phrase: "… to …", slovak: "… do … / na … (twenty-five to eight)" } },
-    { id: 15, time: "4:40", correct: "twenty to five", options: ["twenty to five", "twenty past four", "forty past four", "quarter past four"], grammar: "Minutes to", hint: "Twenty minutes before five.", appendix: null },
-    { id: 16, time: "11:50", correct: "ten to twelve", options: ["ten to twelve", "ten past eleven", "fifty past eleven", "quarter to twelve"], grammar: "Minutes to", hint: "Ten minutes before twelve.", appendix: null },
-    { id: 17, time: "3:55", correct: "five to four", options: ["five to four", "five past three", "quarter to four", "three fifty-five past"], grammar: "Minutes to", hint: "Almost four — only five minutes left.", appendix: null },
-    { id: 18, time: "6:00", correct: "six o'clock", options: ["six o'clock", "half past six", "quarter past six", "six thirty"], grammar: "Exact hour", hint: "Exactly on the hour — six o'clock.", appendix: null }
-];
 
 function shuffleOptions(options, correct) {
-    const arr = options.slice();
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const tmp = arr[i];
+    var arr = options.slice();
+    for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
     }
-    if (!arr.includes(correct)) arr.unshift(correct);
+    if (arr.indexOf(correct) < 0) arr.unshift(correct);
     return arr;
 }
 
-function generateWorksheet() {
-    const worksheetDiv = document.getElementById('timeWorksheet');
-    let questionsHtml = '';
-    let appendixHtml = '';
-    const seenAppendix = new Set();
+function escapeAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
 
-    timeData.forEach(function (item) {
-        const opts = shuffleOptions(item.options, item.correct);
-        const selectOptions = opts.map(function (opt) {
-            return '<option value="' + opt.replace(/"/g, '&quot;') + '">' + opt + '</option>';
-        }).join('');
+function buildAppendixHtml() {
+    var seen = {};
+    var html = '';
+    QUESTION_POOL.forEach(function (item) {
+        if (!item.appendix || seen[item.appendix.phrase]) return;
+        seen[item.appendix.phrase] = true;
+        html += '<li><strong>' + item.appendix.phrase + '</strong> — ' + item.appendix.slovak + '</li>';
+    });
+    return html;
+}
+
+function renderWorksheet() {
+    var root = document.getElementById('timeWorksheet');
+    var questionsHtml = '';
+    var fillMode = state.mode === 'fill';
+
+    state.activeSet.forEach(function (item) {
+        var inputHtml;
+        if (fillMode) {
+            inputHtml = '<input type="text" id="ans' + item.num + '" data-answer-kind="fill" data-correct="' + escapeAttr(item.correct) + '" placeholder="type the time phrase" autocomplete="off" spellcheck="false">';
+        } else {
+            var opts = shuffleOptions(item.options, item.correct);
+            var optHtml = opts.map(function (opt) {
+                return '<option value="' + escapeAttr(opt) + '">' + opt + '</option>';
+            }).join('');
+            inputHtml = '<select id="ans' + item.num + '" data-answer-kind="select" data-correct="' + escapeAttr(item.correct) + '">'
+                + '<option value="">Choose the correct answer…</option>' + optHtml + '</select>';
+        }
 
         questionsHtml += ''
-            + '<div class="box">'
-            + '<p><strong>' + item.id + '. What time is it?</strong> <span class="time-badge">' + item.time + '</span></p>'
-            + '<p class="answer-line">It\'s '
-            + '<select id="ans' + item.id + '" data-correct="' + item.correct.replace(/"/g, '&quot;') + '">'
-            + '<option value="">Choose the correct answer…</option>'
-            + selectOptions
-            + '</select>.</p>'
-            + '<button type="button" onclick="toggleHint(' + item.id + ')">Show / Hide Hint</button>'
-            + '<div id="hint' + item.id + '" class="hint-content">'
+            + '<div class="box" data-pool-id="' + item.poolId + '">'
+            + '<p><strong>' + item.num + '. What time is it?</strong> <span class="time-badge">' + item.time + '</span></p>'
+            + '<p class="answer-line"><span>It\'s</span> ' + inputHtml + '<span>.</span></p>'
+            + '<button type="button" class="hint-toggle" onclick="toggleHint(' + item.num + ')">Show / Hide Hint</button>'
+            + '<div id="hint' + item.num + '" class="hint-content">'
             + '<p><strong>Pattern:</strong> ' + item.grammar + '</p>'
             + '<p><strong>Tip:</strong> ' + item.hint + '</p>'
             + '<p><strong>Correct answer:</strong> It\'s ' + item.correct + '.</p>'
             + '</div>'
-            + '<div id="result' + item.id + '" class="result-text"></div>'
+            + '<div id="result' + item.num + '" class="result-text"></div>'
             + '</div>';
-
-        if (item.appendix && !seenAppendix.has(item.appendix.phrase)) {
-            seenAppendix.add(item.appendix.phrase);
-            appendixHtml += '<li><strong>' + item.appendix.phrase + '</strong> — ' + item.appendix.slovak + '</li>';
-        }
     });
 
-    const controlsHtml = ''
+    var modeIntro = fillMode
+        ? 'Type the full phrase after <strong>It\'s</strong> (e.g. <em>quarter past six</em>). You don\'t need to type "It\'s" again.'
+        : 'Choose the correct phrase after <strong>It\'s</strong>. Use <em>o\'clock</em>, <em>past</em>, <em>to</em>, <em>half past</em>, and <em>quarter past / quarter to</em>.';
+
+    root.innerHTML = ''
+        + '<h2>Worksheet 6 – Telling the Time: What time is it?</h2>'
+        + '<p class="intro">' + modeIntro + '</p>'
+        + '<div class="mode-bar">'
+        + '<button type="button" class="mode-btn' + (fillMode ? '' : ' active') + '" onclick="setMode(\'select\')">Choose answer</button>'
+        + '<button type="button" class="mode-btn' + (fillMode ? ' active' : '') + '" onclick="setMode(\'fill\')">Type answer</button>'
+        + '</div>'
+        + '<p class="set-meta">' + SET_SIZE + ' questions in this set · pool of ' + QUESTION_POOL.length + ' · <strong>New set</strong> picks different times</p>'
+        + questionsHtml
         + '<div class="controls">'
         + '<button type="button" onclick="checkAnswers()">Check Answers</button>'
+        + '<button type="button" class="newset-button" onclick="newSet()">New set</button>'
         + '<button type="button" onclick="resetTest()">Zopakovať test</button>'
         + '<button type="button" class="copy-button" onclick="copyToClipboard()">Copy to Google Docs</button>'
         + '<button type="button" class="appendix-button" onclick="toggleAppendix()">Show / Hide Appendix</button>'
@@ -165,71 +266,106 @@ function generateWorksheet() {
         + '<div id="scoreSummary"></div>'
         + '<div id="appendixPanel">'
         + '<h3>Appendix: Telling the time in English</h3>'
-        + '<ul id="appendixList">' + appendixHtml + '</ul>'
+        + '<ul id="appendixList">' + buildAppendixHtml() + '</ul>'
         + '</div>';
 
-    worksheetDiv.innerHTML = ''
-        + '<h2>Worksheet 6 – Telling the Time: What time is it?</h2>'
-        + '<p class="intro">Look at the digital time. Answer in full English: <strong>It\'s …</strong> Use <em>o\'clock</em>, <em>past</em>, <em>to</em>, <em>half past</em>, and <em>quarter past / quarter to</em>.</p>'
-        + questionsHtml
-        + controlsHtml;
-
-    attachAnswerPersistence();
+    document.querySelectorAll('[data-answer-kind]').forEach(function (el) {
+        el.addEventListener('input', saveState);
+        el.addEventListener('change', saveState);
+    });
+    restoreAnswers();
+    saveState();
 }
 
-function toggleHint(id) {
-    const hint = document.getElementById('hint' + id);
-    const isHidden = getComputedStyle(hint).display === 'none';
+function setMode(mode) {
+    if (state.mode === mode) return;
+    saveState();
+    state.mode = mode === 'fill' ? 'fill' : 'select';
+    renderWorksheet();
+}
+
+function newSet() {
+    if (!confirm('New set: ' + SET_SIZE + ' new random questions. Your current answers will be cleared.')) return;
+    pickRandomSet();
+    clearSavedAnswers();
+    renderWorksheet();
+}
+
+function normalizeFillAnswer(text) {
+    return String(text || '')
+        .toLowerCase()
+        .trim()
+        .replace(/^it['']s\s+/, '')
+        .replace(/\s+/g, ' ')
+        .replace(/['']/g, "'");
+}
+
+function answersMatchFill(user, correct) {
+    return normalizeFillAnswer(user) === normalizeFillAnswer(correct);
+}
+
+function toggleHint(num) {
+    var hint = document.getElementById('hint' + num);
+    var isHidden = getComputedStyle(hint).display === 'none';
     hint.style.display = isHidden ? 'block' : 'none';
 }
 
 function checkAnswers() {
-    let correctCount = 0;
-    timeData.forEach(function (item) {
-        const selectElement = document.getElementById('ans' + item.id);
-        const resultDiv = document.getElementById('result' + item.id);
-        if (!selectElement) return;
+    var correctCount = 0;
+    var fillMode = state.mode === 'fill';
 
-        const userAnswer = selectElement.value;
-        const correctAnswer = selectElement.dataset.correct;
+    state.activeSet.forEach(function (item) {
+        var el = document.getElementById('ans' + item.num);
+        var resultDiv = document.getElementById('result' + item.num);
+        if (!el) return;
 
-        selectElement.classList.remove('correct-answer', 'wrong-answer');
+        var correctAnswer = el.getAttribute('data-correct');
+        var userAnswer = el.value;
+        var ok = fillMode
+            ? (userAnswer.trim() !== '' && answersMatchFill(userAnswer, correctAnswer))
+            : (userAnswer === correctAnswer);
+
+        el.classList.remove('correct-answer', 'wrong-answer');
         resultDiv.classList.remove('result-correct', 'result-wrong');
         resultDiv.textContent = '';
 
-        if (userAnswer === correctAnswer) {
+        if (userAnswer === '' || userAnswer === null) return;
+
+        if (ok) {
             correctCount++;
-            selectElement.classList.add('correct-answer');
+            el.classList.add('correct-answer');
             resultDiv.textContent = 'Correct!';
             resultDiv.classList.add('result-correct');
-        } else if (userAnswer !== '') {
-            selectElement.classList.add('wrong-answer');
+        } else {
+            el.classList.add('wrong-answer');
             resultDiv.textContent = 'Wrong! Correct: It\'s ' + correctAnswer + '.';
             resultDiv.classList.add('result-wrong');
         }
     });
 
-    const summary = document.getElementById('scoreSummary');
-    if (summary) {
-        summary.textContent = 'Score: ' + correctCount + ' / ' + timeData.length + ' correct';
-    }
-    saveAnswers();
+    var summary = document.getElementById('scoreSummary');
+    if (summary) summary.textContent = 'Score: ' + correctCount + ' / ' + state.activeSet.length + ' correct';
+    saveState();
 }
 
 function resetTest() {
-    if (confirm('Naozaj chcete zopakovať test? Všetky vaše odpovede a vyhodnotenia budú vymazané.')) {
-        clearSavedAnswers();
-        generateWorksheet();
-    }
+    if (!confirm('Zopakovať test? Odpovede sa vymažú, otázky v sade ostanú rovnaké.')) return;
+    document.querySelectorAll('.result-text').forEach(function (el) { el.textContent = ''; });
+    document.querySelectorAll('[data-answer-kind]').forEach(function (el) {
+        el.value = '';
+        el.classList.remove('correct-answer', 'wrong-answer');
+    });
+    var summary = document.getElementById('scoreSummary');
+    if (summary) summary.textContent = '';
+    clearSavedAnswers();
 }
 
 function copyToClipboard() {
-    let textToCopy = 'Telling the Time – What time is it?\n\n';
-    timeData.forEach(function (item) {
-        textToCopy += item.id + '. What time is it? ' + item.time + '\n';
+    var textToCopy = 'Telling the Time – What time is it? (' + (state.mode === 'fill' ? 'fill in' : 'multiple choice') + ')\n\n';
+    state.activeSet.forEach(function (item) {
+        textToCopy += item.num + '. What time is it? ' + item.time + '\n';
         textToCopy += '   It\'s ................................ ' + item.correct + '.\n\n';
     });
-
     navigator.clipboard.writeText(textToCopy).then(function () {
         alert('Otázky skopírované do schránky pre Google Docs!');
     }).catch(function () {
@@ -238,12 +374,26 @@ function copyToClipboard() {
 }
 
 function toggleAppendix() {
-    const appendixPanel = document.getElementById('appendixPanel');
-    const isHidden = getComputedStyle(appendixPanel).display === 'none';
+    var appendixPanel = document.getElementById('appendixPanel');
+    var isHidden = getComputedStyle(appendixPanel).display === 'none';
     appendixPanel.style.display = isHidden ? 'block' : 'none';
 }
 
-window.onload = generateWorksheet;
+function boot() {
+    if (!loadState()) {
+        pickRandomSet();
+    }
+    renderWorksheet();
+}
+
+window.onload = boot;
+window.setMode = setMode;
+window.newSet = newSet;
+window.checkAnswers = checkAnswers;
+window.resetTest = resetTest;
+window.copyToClipboard = copyToClipboard;
+window.toggleAppendix = toggleAppendix;
+window.toggleHint = toggleHint;
 </script>
 
 </body>
