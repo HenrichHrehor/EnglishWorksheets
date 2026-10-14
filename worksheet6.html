@@ -232,17 +232,51 @@ function isAnswerCorrect(el) {
     return userAnswer === correctAnswer;
 }
 
-function evaluateQuestionEl(el) {
+function clearQuestionFeedback(el) {
+    var resultDiv = document.getElementById('result' + el.id.replace('ans', ''));
+    el.classList.remove('correct-answer', 'wrong-answer');
+    if (resultDiv) {
+        resultDiv.classList.remove('result-correct', 'result-wrong');
+        resultDiv.textContent = '';
+    }
+}
+
+function evaluateQuestionEl(el, options) {
+    var live = options && options.live;
+    var onBlur = options && options.onBlur;
     var resultDiv = document.getElementById('result' + el.id.replace('ans', ''));
     if (!resultDiv) return;
 
     var correctAnswer = el.getAttribute('data-correct');
+    var fillMode = el.getAttribute('data-answer-kind') === 'fill';
+
+    if (live && fillMode) {
+        var okFill = isAnswerCorrect(el);
+        if (!onBlur) {
+            clearQuestionFeedback(el);
+            if (okFill === true) {
+                el.classList.add('correct-answer');
+                resultDiv.textContent = 'Correct!';
+                resultDiv.classList.add('result-correct');
+            }
+            return;
+        }
+        clearQuestionFeedback(el);
+        if (okFill === null) return;
+        if (okFill === true) {
+            el.classList.add('correct-answer');
+            resultDiv.textContent = 'Correct!';
+            resultDiv.classList.add('result-correct');
+            return;
+        }
+        el.classList.add('wrong-answer');
+        resultDiv.textContent = 'Wrong — try again.';
+        resultDiv.classList.add('result-wrong');
+        return;
+    }
+
     var ok = isAnswerCorrect(el);
-
-    el.classList.remove('correct-answer', 'wrong-answer');
-    resultDiv.classList.remove('result-correct', 'result-wrong');
-    resultDiv.textContent = '';
-
+    clearQuestionFeedback(el);
     if (ok === null) return;
 
     if (ok) {
@@ -251,7 +285,11 @@ function evaluateQuestionEl(el) {
         resultDiv.classList.add('result-correct');
     } else {
         el.classList.add('wrong-answer');
-        resultDiv.textContent = 'Wrong! Correct: It\'s ' + correctAnswer + '.';
+        if (live) {
+            resultDiv.textContent = 'Wrong — try again.';
+        } else {
+            resultDiv.textContent = 'Wrong! Correct: It\'s ' + correctAnswer + '.';
+        }
         resultDiv.classList.add('result-wrong');
     }
 }
@@ -272,7 +310,7 @@ function attachAnswerFieldListeners() {
         el.addEventListener('change', function () {
             saveState();
             if (state.liveCheckEnabled) {
-                evaluateQuestionEl(el);
+                evaluateQuestionEl(el, { live: true });
                 updateScoreSummary();
             }
         });
@@ -282,9 +320,14 @@ function attachAnswerFieldListeners() {
                 if (!state.liveCheckEnabled) return;
                 clearTimeout(fillDebounceTimers[el.id]);
                 fillDebounceTimers[el.id] = setTimeout(function () {
-                    evaluateQuestionEl(el);
+                    evaluateQuestionEl(el, { live: true, onBlur: false });
                     updateScoreSummary();
                 }, 350);
+            });
+            el.addEventListener('blur', function () {
+                if (!state.liveCheckEnabled) return;
+                evaluateQuestionEl(el, { live: true, onBlur: true });
+                updateScoreSummary();
             });
         }
     });
@@ -392,7 +435,7 @@ function checkAnswers() {
     state.liveCheckEnabled = true;
     state.activeSet.forEach(function (item) {
         var el = document.getElementById('ans' + item.num);
-        if (el) evaluateQuestionEl(el);
+        if (el) evaluateQuestionEl(el, { live: false });
     });
     updateScoreSummary();
     saveState();
