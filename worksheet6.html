@@ -108,8 +108,11 @@ QUESTION_POOL.forEach(function (q) { poolById[q.id] = q; });
 var state = {
     mode: 'select',
     setIds: [],
-    activeSet: []
+    activeSet: [],
+    liveCheckEnabled: false
 };
+
+var fillDebounceTimers = {};
 
 function loadState() {
     try {
@@ -211,7 +214,85 @@ function buildAppendixHtml() {
     return html;
 }
 
+function scrollQuestionIntoView(el) {
+    var box = el.closest('.box');
+    if (box) {
+        box.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+}
+
+function isAnswerCorrect(el) {
+    var fillMode = state.mode === 'fill';
+    var userAnswer = el.value;
+    var correctAnswer = el.getAttribute('data-correct');
+    if (userAnswer === '' || userAnswer === null) return null;
+    if (fillMode) {
+        return answersMatchFill(userAnswer, correctAnswer);
+    }
+    return userAnswer === correctAnswer;
+}
+
+function evaluateQuestionEl(el) {
+    var resultDiv = document.getElementById('result' + el.id.replace('ans', ''));
+    if (!resultDiv) return;
+
+    var correctAnswer = el.getAttribute('data-correct');
+    var ok = isAnswerCorrect(el);
+
+    el.classList.remove('correct-answer', 'wrong-answer');
+    resultDiv.classList.remove('result-correct', 'result-wrong');
+    resultDiv.textContent = '';
+
+    if (ok === null) return;
+
+    if (ok) {
+        el.classList.add('correct-answer');
+        resultDiv.textContent = 'Correct!';
+        resultDiv.classList.add('result-correct');
+    } else {
+        el.classList.add('wrong-answer');
+        resultDiv.textContent = 'Wrong! Correct: It\'s ' + correctAnswer + '.';
+        resultDiv.classList.add('result-wrong');
+    }
+}
+
+function updateScoreSummary() {
+    if (!state.liveCheckEnabled) return;
+    var summary = document.getElementById('scoreSummary');
+    if (!summary) return;
+    var correctCount = document.querySelectorAll('[data-answer-kind].correct-answer').length;
+    summary.textContent = 'Score: ' + correctCount + ' / ' + state.activeSet.length + ' correct';
+}
+
+function attachAnswerFieldListeners() {
+    document.querySelectorAll('[data-answer-kind]').forEach(function (el) {
+        el.addEventListener('focus', function () {
+            scrollQuestionIntoView(el);
+        });
+        el.addEventListener('change', function () {
+            saveState();
+            if (state.liveCheckEnabled) {
+                evaluateQuestionEl(el);
+                updateScoreSummary();
+            }
+        });
+        if (el.getAttribute('data-answer-kind') === 'fill') {
+            el.addEventListener('input', function () {
+                saveState();
+                if (!state.liveCheckEnabled) return;
+                clearTimeout(fillDebounceTimers[el.id]);
+                fillDebounceTimers[el.id] = setTimeout(function () {
+                    evaluateQuestionEl(el);
+                    updateScoreSummary();
+                }, 350);
+            });
+        }
+    });
+}
+
 function renderWorksheet() {
+    state.liveCheckEnabled = false;
+    fillDebounceTimers = {};
     var root = document.getElementById('timeWorksheet');
     var questionsHtml = '';
     var fillMode = state.mode === 'fill';
@@ -269,10 +350,7 @@ function renderWorksheet() {
         + '<ul id="appendixList">' + buildAppendixHtml() + '</ul>'
         + '</div>';
 
-    document.querySelectorAll('[data-answer-kind]').forEach(function (el) {
-        el.addEventListener('input', saveState);
-        el.addEventListener('change', saveState);
-    });
+    attachAnswerFieldListeners();
     restoreAnswers();
     saveState();
 }
@@ -311,45 +389,18 @@ function toggleHint(num) {
 }
 
 function checkAnswers() {
-    var correctCount = 0;
-    var fillMode = state.mode === 'fill';
-
+    state.liveCheckEnabled = true;
     state.activeSet.forEach(function (item) {
         var el = document.getElementById('ans' + item.num);
-        var resultDiv = document.getElementById('result' + item.num);
-        if (!el) return;
-
-        var correctAnswer = el.getAttribute('data-correct');
-        var userAnswer = el.value;
-        var ok = fillMode
-            ? (userAnswer.trim() !== '' && answersMatchFill(userAnswer, correctAnswer))
-            : (userAnswer === correctAnswer);
-
-        el.classList.remove('correct-answer', 'wrong-answer');
-        resultDiv.classList.remove('result-correct', 'result-wrong');
-        resultDiv.textContent = '';
-
-        if (userAnswer === '' || userAnswer === null) return;
-
-        if (ok) {
-            correctCount++;
-            el.classList.add('correct-answer');
-            resultDiv.textContent = 'Correct!';
-            resultDiv.classList.add('result-correct');
-        } else {
-            el.classList.add('wrong-answer');
-            resultDiv.textContent = 'Wrong! Correct: It\'s ' + correctAnswer + '.';
-            resultDiv.classList.add('result-wrong');
-        }
+        if (el) evaluateQuestionEl(el);
     });
-
-    var summary = document.getElementById('scoreSummary');
-    if (summary) summary.textContent = 'Score: ' + correctCount + ' / ' + state.activeSet.length + ' correct';
+    updateScoreSummary();
     saveState();
 }
 
 function resetTest() {
     if (!confirm('Zopakovať test? Odpovede sa vymažú, otázky v sade ostanú rovnaké.')) return;
+    state.liveCheckEnabled = false;
     document.querySelectorAll('.result-text').forEach(function (el) { el.textContent = ''; });
     document.querySelectorAll('[data-answer-kind]').forEach(function (el) {
         el.value = '';
