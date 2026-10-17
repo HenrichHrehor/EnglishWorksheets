@@ -98,7 +98,7 @@ var QUESTION_POOL = [
     { id: 'p03', tier: 'core', prep: 'in', subject: 'The mouse', object: 'the box', correct: 'in', options: ['in', 'on', 'under', 'next to'], hint: 'Inside the container.', appendix: { phrase: 'in', slovak: 'v / vo' } },
     { id: 'p04', tier: 'core', prep: 'next to', subject: 'The tree', object: 'the house', correct: 'next to', options: ['next to', 'in', 'on', 'behind'], hint: 'Beside the house — not inside.', appendix: { phrase: 'next to', slovak: 'vedľa' } },
     { id: 'p05', tier: 'core', prep: 'on', subject: 'The book', object: 'the desk', correct: 'on', options: ['on', 'in', 'under', 'below'], hint: 'On the flat surface of the desk.', appendix: null },
-    { id: 'p06', tier: 'core', prep: 'under', subject: 'The shoes', object: 'the bed', correct: 'under', options: ['under', 'on', 'in', 'above'], hint: 'Under the bed.', appendix: null },
+    { id: 'p06', tier: 'core', prep: 'under', subject: 'The shoes', verb: 'are', object: 'the bed', correct: 'under', options: ['under', 'on', 'in', 'above'], hint: 'Under the bed.', appendix: null },
     { id: 'p07', tier: 'core', prep: 'in', subject: 'The fish', object: 'the bowl', correct: 'in', options: ['in', 'on', 'under', 'next to'], hint: 'In the bowl.', appendix: null },
     { id: 'p08', tier: 'core', prep: 'next to', subject: 'The car', object: 'the bus', correct: 'next to', options: ['next to', 'behind', 'in', 'on'], hint: 'Parked beside the bus.', appendix: null },
     { id: 'p09', tier: 'core', prep: 'on', subject: 'The phone', object: 'the shelf', correct: 'on', options: ['on', 'in', 'under', 'behind'], hint: 'Resting on the shelf.', appendix: null },
@@ -118,7 +118,7 @@ var QUESTION_POOL = [
     { id: 'p23', tier: 'extended', prep: 'behind', subject: 'The dog', object: 'the fence', correct: 'behind', options: ['behind', 'in front of', 'next to', 'on'], hint: 'On the other side of the fence from you.', appendix: null },
     { id: 'p24', tier: 'extended', prep: 'in front of', subject: 'The statue', object: 'the museum', correct: 'in front of', options: ['in front of', 'behind', 'inside', 'above'], hint: 'Before the museum entrance.', appendix: null },
     { id: 'p25', tier: 'extended', prep: 'above', subject: 'The picture', object: 'the fireplace', correct: 'above', options: ['above', 'below', 'on', 'behind'], hint: 'Hung over the fireplace.', appendix: null },
-    { id: 'p26', tier: 'extended', prep: 'below', subject: 'The keys', object: 'the mirror', correct: 'below', options: ['below', 'above', 'on', 'in'], hint: 'Under the mirror.', appendix: null }
+    { id: 'p26', tier: 'extended', prep: 'below', subject: 'The keys', verb: 'are', object: 'the mirror', correct: 'below', options: ['below', 'above', 'on', 'in'], hint: 'Under the mirror.', appendix: null }
 ];
 
 var poolById = {};
@@ -175,7 +175,7 @@ function applySetIds(ids) {
     state.setIds = ids.slice();
     state.activeSet = state.setIds.map(function (id, i) {
         var q = poolById[id];
-        return { num: i + 1, poolId: id, subject: q.subject, object: q.object, correct: q.correct, options: q.options, prep: q.prep, hint: q.hint, appendix: q.appendix };
+        return { num: i + 1, poolId: id, subject: q.subject, verb: q.verb || 'is', object: q.object, correct: q.correct, options: q.options, prep: q.prep, hint: q.hint, appendix: q.appendix };
     });
 }
 
@@ -326,7 +326,7 @@ function buildSceneHtml(prep) {
 }
 
 function sentenceHtml(item) {
-    return item.subject + ' is <span class="blank">___</span> ' + item.object + '.';
+    return item.subject + ' ' + item.verb + ' <span class="blank">___</span> ' + item.object + '.';
 }
 
 function shuffleOptions(options, correct) {
@@ -583,7 +583,7 @@ function resetTest() {
 function copyToClipboard() {
     var textToCopy = 'Prepositions of Place (' + (state.mode === 'fill' ? 'type in' : 'choose') + ')\n\n';
     state.activeSet.forEach(function (item) {
-        textToCopy += item.num + '. ' + item.subject + ' is ........ ' + item.object + '. (' + item.correct + ')\n';
+        textToCopy += item.num + '. ' + item.subject + ' ' + item.verb + ' ........ ' + item.object + '. (' + item.correct + ')\n';
     });
     navigator.clipboard.writeText(textToCopy).then(function () {
         alert('Otázky skopírované do schránky pre Google Docs!');
