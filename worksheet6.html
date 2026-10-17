@@ -8,9 +8,15 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
-        .topbar { max-width: 800px; margin: 0 auto 16px; }
+        .topbar { max-width: 800px; margin: 0 auto 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
         .back-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: #0056b3; font-weight: bold; padding: 8px 14px; border-radius: 6px; background-color: #e7f3ff; border: 1px solid #cce2ff; }
         .back-link:hover { background-color: #d6e9ff; }
+        .level-switch { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; justify-content: flex-end; }
+        .level-switch a { display: inline-flex; align-items: center; gap: 5px; text-decoration: none; font-size: 0.85em; font-weight: bold; padding: 7px 12px; border-radius: 8px; border: 1px solid #dde3ea; background: #f8fafc; color: #334; }
+        .level-switch a:hover { border-color: #007bff; background: #eef6ff; color: #0056b3; }
+        .level-switch a.active { border-color: #007bff; background: #007bff; color: #fff; }
+        .level-switch a.active svg { stroke: #fff; }
+        .level-switch svg { width: 18px; height: 18px; flex-shrink: 0; }
         .worksheet { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
         h2 { color: #333; text-align: center; margin-bottom: 12px; }
         .intro { max-width: 760px; margin: 0 auto 16px; padding: 12px 14px; background: #fff8e1; border-left: 4px solid #f1c40f; border-radius: 6px; color: #444; font-size: 0.95em; line-height: 1.5; }
@@ -57,7 +63,8 @@
 <body>
 
 <div class="topbar">
-    <a href="index.html" class="back-link">&larr; All worksheets</a>
+    <a href="index.html" class="back-link">&larr; Home</a>
+    <nav class="level-switch" id="levelSwitch" aria-label="Difficulty level"></nav>
 </div>
 
 <div class="worksheet" id="timeWorksheet"></div>
@@ -138,8 +145,36 @@ function profileLabel() {
     return 'Advanced · full practice';
 }
 
+var LEVEL_NAV = [
+    { level: 'easy', href: 'worksheet6.html?level=easy', label: 'Easy' },
+    { level: 'supported', href: 'worksheet6.html?level=supported', label: 'Supported' },
+    { level: 'advanced', href: 'worksheet6.html?level=advanced', label: 'Advanced' }
+];
+
+function levelIconSvg(level) {
+    if (level === 'easy') {
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>';
+    }
+    if (level === 'supported') {
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="8" cy="12" r="6"/><path d="M14 8l6 4-6 4V8z"/></svg>';
+    }
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 18V6M12 18V4M18 18v-8"/></svg>';
+}
+
+function buildLevelSwitch() {
+    var nav = document.getElementById('levelSwitch');
+    if (!nav) return;
+    nav.innerHTML = LEVEL_NAV.map(function (item) {
+        var active = profile.level === item.level ? ' active' : '';
+        return '<a href="' + item.href + '" class="' + active.trim() + '" title="' + item.label + '">'
+            + levelIconSvg(item.level) + item.label + '</a>';
+    }).join('');
+}
+
 function applyProfileFromUrl() {
+    document.documentElement.classList.remove('ui-supported');
     var level = (new URLSearchParams(location.search).get('level') || 'advanced').toLowerCase();
+    if (level === 'expert') level = 'advanced';
     if (level === 'easy') {
         profile.level = 'easy';
         profile.lockMode = true;
@@ -524,6 +559,7 @@ function toggleAppendix() {
 
 function boot() {
     applyProfileFromUrl();
+    buildLevelSwitch();
     if (!loadState()) {
         pickRandomSet();
     }
