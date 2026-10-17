@@ -22,6 +22,11 @@ header p { margin:0 auto; max-width:680px; opacity:0.95; }
 .subject-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
 .content { flex:1; min-width:0; }
 .section-title { margin:10px 0 6px; font-size:1.3em; color:var(--primary-dark); }
+.subject-float { position:relative; height:92px; margin-bottom:20px; border-radius:12px; background:linear-gradient(165deg,#fff 0%,#f8fafc 100%); border:1px solid #e8ecef; overflow:hidden; pointer-events:none; box-shadow:0 1px 4px rgba(0,0,0,0.04); }
+.subject-float-tag { position:absolute; font-size:0.8em; font-weight:600; padding:7px 15px; border-radius:999px; letter-spacing:0.02em; opacity:0.5; white-space:nowrap; animation:subject-drift var(--float-dur,20s) ease-in-out infinite; animation-delay:var(--float-delay,0s); will-change:transform; border:1px solid rgba(0,0,0,0.06); }
+@keyframes subject-drift { 0%,100% { transform:translate3d(0,0,0) rotate(-0.6deg); } 35% { transform:translate3d(8px,-14px,0) rotate(0.8deg); } 70% { transform:translate3d(-6px,10px,0) rotate(-0.3deg); } }
+@media (prefers-reduced-motion:reduce){ .subject-float-tag { animation:none; opacity:0.38; } }
+@media (max-width:520px){ .subject-float { height:72px; margin-bottom:16px; } .subject-float-tag { font-size:0.72em; padding:5px 11px; opacity:0.45; } }
 .search-panel { background:#fff; border:1px solid #e3e3e3; border-radius:12px; padding:20px; margin-bottom:28px; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
 .search-panel-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
 .search-panel-title { margin:0 0 6px; font-size:1.25em; color:var(--primary-dark); }
@@ -68,6 +73,7 @@ footer a { color:var(--primary-dark); text-decoration:none; }
 <nav class="subject-nav" id="subjectNav"></nav>
 </aside>
 <div class="content">
+<div class="subject-float" id="subjectFloat" aria-hidden="true"></div>
 <section class="search-panel" aria-label="Find worksheets">
 <div class="search-panel-head">
 <div><h2 class="search-panel-title">Find a worksheet</h2><p class="search-panel-lead">Filter by subject on the left, or search by keyword.</p></div>
@@ -106,11 +112,13 @@ function setActiveSubject(slug){activeSubject=slug||'';document.querySelectorAll
 
 function buildSubjectNav(){var nav=document.getElementById('subjectNav');var html='<button type="button" data-subject="" class="active"><span class="subject-dot" style="background:#666"></span>All subjects</button>';Object.keys(SUBJECTS).forEach(function(slug){var s=SUBJECTS[slug];html+='<button type="button" data-subject="'+slug+'"><span class="subject-dot" style="background:'+s.color+'"></span>'+escapeHtml(s.label)+'</button>';});nav.innerHTML=html;nav.addEventListener('click',function(e){var btn=e.target.closest('button[data-subject]');if(!btn)return;setActiveSubject(btn.getAttribute('data-subject')||'');});}
 
+function buildSubjectFloat(){var wrap=document.getElementById('subjectFloat');if(!wrap)return;var slugs=Object.keys(SUBJECTS);var slots=[{left:6,top:22,dur:23,delay:0},{left:38,top:48,dur:27,delay:-5},{left:68,top:18,dur:21,delay:-2},{left:18,top:58,dur:25,delay:-8},{left:52,top:12,dur:24,delay:-11},{left:78,top:52,dur:28,delay:-3},{left:28,top:8,dur:22,delay:-14},{left:58,top:62,dur:26,delay:-6}];wrap.innerHTML=slots.map(function(slot,i){var slug=slugs[i%slugs.length];var s=SUBJECTS[slug];return '<span class="subject-float-tag" style="left:'+slot.left+'%;top:'+slot.top+'%;color:'+s.color+';background:'+s.bg+';--float-dur:'+slot.dur+'s;--float-delay:'+slot.delay+'s">'+escapeHtml(s.label)+'</span>';}).join('');}
+
 function clearSearch(){document.getElementById('search-input').value='';setActiveSubject('');}
 
 function initSearch(){var toggleBtn=document.getElementById('btnToggleSearch');var panel=document.getElementById('advanced-search');toggleBtn.addEventListener('click',function(){var open=panel.classList.contains('search-panel-body--hidden');panel.classList.toggle('search-panel-body--hidden',!open);toggleBtn.setAttribute('aria-expanded',open?'true':'false');toggleBtn.textContent=open?'Hide search':'Show search';});document.getElementById('btnSearch').addEventListener('click',renderGrid);document.getElementById('btnClearSearch').addEventListener('click',clearSearch);var input=document.getElementById('search-input');input.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();renderGrid();}});input.addEventListener('input',function(){if(searchDebounceTimer)clearTimeout(searchDebounceTimer);searchDebounceTimer=setTimeout(renderGrid,220);});}
 
-async function boot(){allWorksheets=await loadWorksheets();buildSubjectNav();initSearch();renderGrid();}
+async function boot(){buildSubjectNav();buildSubjectFloat();initSearch();allWorksheets=await loadWorksheets();renderGrid();}
 window.onload=boot;
 </script>
 </body>
