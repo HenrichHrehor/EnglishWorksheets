@@ -26,6 +26,7 @@ Aliases (still work in URLs): `easy` → starter, `expert` → advanced.
 
 ## Worksheet 7 (prepositions)
 
+- **Picture appendix** — `worksheet7-appendix.html?level=…` lists all 9 prepositions with scenes; worksheet intro says *appendix first*; back link restores the same level (choose/type progress stays in localStorage).
 - **Picture + sentence + hint** — not context alone; CSS scene shows position (essential for *behind* / *in front of*).
 - **Starter / Supported:** `core` pool (in, on, under, next to) · 10 questions.
 - **Expert:** full pool (+ behind, opposite, in front of, above, below) · 15 choose + 15 type (separate sets).

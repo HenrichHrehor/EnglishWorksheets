@@ -66,17 +66,14 @@
         .copy-button:hover { background-color: #5a6268 !important; }
         .appendix-button { background-color: #ffc107 !important; color: #333 !important; }
         .appendix-button:hover { background-color: #e0a800 !important; }
+        a.appendix-button { display: inline-block; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 1em; font-weight: bold; }
+        .intro a { color: #0056b3; font-weight: bold; }
         .correct-answer { border-color: green !important; background-color: #e6ffe6 !important; }
         .wrong-answer { border-color: red !important; background-color: #ffe6e6 !important; }
         .result-text { margin-top: 10px; font-weight: bold; }
         .result-correct { color: green; }
         .result-wrong { color: red; }
         #scoreSummary { text-align: center; margin-top: 20px; font-size: 1.1em; font-weight: bold; color: #333; min-height: 1.2em; }
-        #appendixPanel { display: none; margin-top: 30px; padding: 20px; border: 1px solid #007bff; border-radius: 8px; background-color: #e7f3ff; text-align: left; }
-        #appendixPanel h3 { color: #0056b3; text-align: center; margin-bottom: 16px; }
-        #appendixPanel ul { list-style: none; padding: 0; margin: 0; }
-        #appendixPanel li { background: #f0f8ff; border: 1px solid #cceeff; border-radius: 5px; padding: 10px 14px; margin-bottom: 10px; }
-        #appendixPanel li strong { color: #0056b3; }
         .profile-badge { display: inline-block; margin-left: 8px; font-size: 0.55em; vertical-align: middle; padding: 4px 10px; border-radius: 999px; font-weight: bold; background: #e8eaf6; color: #3949ab; }
         html.ui-supported .box select, html.ui-supported .box input[type="text"] { font-size: 1.12em; padding: 10px 12px; }
     </style>
@@ -140,6 +137,10 @@ function activeQuestionPool() {
 }
 
 function profileLabel() { return EnglishLevels.profileBadgeText(profile.level); }
+
+function appendixHref() {
+    return 'worksheet7-appendix.html?level=' + encodeURIComponent(profile.level);
+}
 
 function applyProfileFromUrl() {
     var level = EnglishLevels.normalizeLevel(new URLSearchParams(location.search).get('level') || 'advanced');
@@ -271,17 +272,6 @@ function shuffleOptions(options, correct) {
     }
     if (arr.indexOf(correct) < 0) arr.unshift(correct);
     return arr;
-}
-
-function buildAppendixHtml() {
-    var seen = {};
-    var html = '';
-    state.activeSet.forEach(function (item) {
-        if (!item.appendix || seen[item.appendix.phrase]) return;
-        seen[item.appendix.phrase] = true;
-        html += '<li><strong>' + item.appendix.phrase + '</strong> — ' + item.appendix.slovak + '</li>';
-    });
-    return html || '<li>Use the picture and the sentence together. Red dot = the subject (cat, ball…).</li>';
 }
 
 function scrollQuestionIntoView(el) {
@@ -441,7 +431,10 @@ function renderWorksheet() {
 
     root.innerHTML = ''
         + '<h2>Worksheet 7 – Prepositions of Place <span class="profile-badge">' + profileLabel() + '</span></h2>'
-        + '<p class="intro">Place prepositions: <em>in, on, under, next to, behind, opposite, in front of, above, below</em>. '
+        + '<p class="intro"><strong>Tip — appendix first:</strong> If these words are new, open the '
+        + '<a href="' + appendixHref() + '">picture appendix</a> (all 9 prepositions with the same drawings). '
+        + 'Use <em>Back to Worksheet 7</em> on that page when you are ready — you keep the same level.<br><br>'
+        + 'Place prepositions: <em>in, on, under, next to, behind, opposite, in front of, above, below</em>. '
         + 'Each task has a <strong>picture clue</strong> (red dot = the subject) and a sentence — use <strong>both</strong>, not only the text. '
         + modeIntro + '</p>'
         + modeBarHtml
@@ -452,10 +445,9 @@ function renderWorksheet() {
         + '<button type="button" class="newset-button" onclick="newSet()">New set</button>'
         + '<button type="button" onclick="resetTest()">Zopakovať test</button>'
         + '<button type="button" class="copy-button" onclick="copyToClipboard()">Copy to Google Docs</button>'
-        + '<button type="button" class="appendix-button" onclick="toggleAppendix()">Show / Hide Appendix</button>'
+        + '<a class="appendix-button" href="' + appendixHref() + '">Picture appendix (all 9)</a>'
         + '</div>'
-        + '<div id="scoreSummary"></div>'
-        + '<div id="appendixPanel"><h3>Appendix: Prepositions</h3><ul id="appendixList">' + buildAppendixHtml() + '</ul></div>';
+        + '<div id="scoreSummary"></div>';
 
     attachAnswerFieldListeners();
     restoreAnswers();
@@ -526,12 +518,6 @@ function copyToClipboard() {
     }).catch(function () { alert('Nepodarilo sa skopírovať.'); });
 }
 
-function toggleAppendix() {
-    var panel = document.getElementById('appendixPanel');
-    var isHidden = getComputedStyle(panel).display === 'none';
-    panel.style.display = isHidden ? 'block' : 'none';
-}
-
 function boot() {
     applyProfileFromUrl();
     EnglishLevels.buildWorksheetLevelSwitch('worksheet7.html', profile.level);
@@ -545,7 +531,6 @@ window.newSet = newSet;
 window.checkAnswers = checkAnswers;
 window.resetTest = resetTest;
 window.copyToClipboard = copyToClipboard;
-window.toggleAppendix = toggleAppendix;
 window.toggleHint = toggleHint;
 </script>
 </body>
