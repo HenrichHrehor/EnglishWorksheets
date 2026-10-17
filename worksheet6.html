@@ -48,6 +48,10 @@
         #appendixPanel ul { list-style: none; padding: 0; margin: 0; }
         #appendixPanel li { background: #f0f8ff; border: 1px solid #cceeff; border-radius: 5px; padding: 10px 14px; margin-bottom: 10px; }
         #appendixPanel li strong { color: #0056b3; }
+        .profile-badge { display: inline-block; margin-left: 8px; font-size: 0.55em; vertical-align: middle; padding: 4px 10px; border-radius: 999px; font-weight: bold; background: #e8eaf6; color: #3949ab; }
+        html.ui-supported .box select,
+        html.ui-supported .box input[type="text"] { font-size: 1.12em; padding: 10px 12px; }
+        html.ui-supported .intro { font-size: 1.02em; }
     </style>
 </head>
 <body>
@@ -59,8 +63,9 @@
 <div class="worksheet" id="timeWorksheet"></div>
 
 <script>
-var SET_SIZE = 10;
 var STORAGE_KEY = 'englishWorksheets_worksheet6_v2';
+var EASY_GRAMMAR = { 'Exact hour': true, 'Quarter past': true, 'Quarter to': true, 'Half past': true };
+var profile = { level: 'advanced', lockMode: false, setSize: 10 };
 
 /** Full question pool — each item picked at most once per set */
 var QUESTION_POOL = [
@@ -114,10 +119,49 @@ var state = {
 
 var fillDebounceTimers = {};
 
+function getSetSize() {
+    return profile.setSize;
+}
+
+function storageKey() {
+    return STORAGE_KEY + '_' + profile.level;
+}
+
+function activeQuestionPool() {
+    if (profile.level === 'advanced') return QUESTION_POOL;
+    return QUESTION_POOL.filter(function (q) { return EASY_GRAMMAR[q.grammar]; });
+}
+
+function profileLabel() {
+    if (profile.level === 'easy') return 'Easy · choose only';
+    if (profile.level === 'supported') return 'Supported · short & simpler';
+    return 'Advanced · full practice';
+}
+
+function applyProfileFromUrl() {
+    var level = (new URLSearchParams(location.search).get('level') || 'advanced').toLowerCase();
+    if (level === 'easy') {
+        profile.level = 'easy';
+        profile.lockMode = true;
+        profile.setSize = 10;
+        state.mode = 'select';
+    } else if (level === 'supported') {
+        profile.level = 'supported';
+        profile.lockMode = false;
+        profile.setSize = 5;
+        state.mode = 'select';
+        document.documentElement.classList.add('ui-supported');
+    } else {
+        profile.level = 'advanced';
+        profile.lockMode = false;
+        profile.setSize = 10;
+    }
+}
+
 function loadState() {
     try {
-        var raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-        if (!raw || !Array.isArray(raw.setIds) || raw.setIds.length !== SET_SIZE) return false;
+        var raw = JSON.parse(localStorage.getItem(storageKey()) || 'null');
+        if (!raw || !Array.isArray(raw.setIds) || raw.setIds.length !== getSetSize()) return false;
         if (!raw.setIds.every(function (id) { return poolById[id]; })) return false;
         state.mode = raw.mode === 'fill' ? 'fill' : 'select';
         state.setIds = raw.setIds.slice();
@@ -140,7 +184,7 @@ function saveState() {
     document.querySelectorAll('[data-answer-kind="fill"]').forEach(function (el) {
         if (el.value) answersFill[el.id] = el.value;
     });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    localStorage.setItem(storageKey(), JSON.stringify({
         mode: state.mode,
         setIds: state.setIds,
         answersSelect: answersSelect,
@@ -150,7 +194,7 @@ function saveState() {
 
 function restoreAnswers() {
     try {
-        var raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        var raw = JSON.parse(localStorage.getItem(storageKey()) || '{}');
         var map = state.mode === 'fill' ? (raw.answersFill || {}) : (raw.answersSelect || {});
         for (var id in map) {
             var el = document.getElementById(id);
@@ -161,26 +205,26 @@ function restoreAnswers() {
 
 function clearSavedAnswers() {
     try {
-        var raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        var raw = JSON.parse(localStorage.getItem(storageKey()) || '{}');
         raw.answersSelect = {};
         raw.answersFill = {};
         raw.mode = state.mode;
         raw.setIds = state.setIds;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(raw));
+        localStorage.setItem(storageKey(), JSON.stringify(raw));
     } catch (e) {
-        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(storageKey());
     }
 }
 
 function pickRandomSet() {
-    var copy = QUESTION_POOL.slice();
+    var copy = activeQuestionPool().slice();
     for (var i = copy.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
         var t = copy[i];
         copy[i] = copy[j];
         copy[j] = t;
     }
-    state.setIds = copy.slice(0, SET_SIZE).map(function (q) { return q.id; });
+    state.setIds = copy.slice(0, getSetSize()).map(function (q) { return q.id; });
     state.activeSet = state.setIds.map(function (id, i) {
         var q = poolById[id];
         return { num: i + 1, poolId: id, time: q.time, correct: q.correct, options: q.options, grammar: q.grammar, hint: q.hint, appendix: q.appendix };
@@ -371,14 +415,18 @@ function renderWorksheet() {
         ? 'Type the full phrase after <strong>It\'s</strong> (e.g. <em>quarter past six</em>). You don\'t need to type "It\'s" again.'
         : 'Choose the correct phrase after <strong>It\'s</strong>. Use <em>o\'clock</em>, <em>past</em>, <em>to</em>, <em>half past</em>, and <em>quarter past / quarter to</em>.';
 
+    var modeBarHtml = profile.lockMode
+        ? ''
+        : '<div class="mode-bar">'
+            + '<button type="button" class="mode-btn' + (fillMode ? '' : ' active') + '" onclick="setMode(\'select\')">Choose answer</button>'
+            + '<button type="button" class="mode-btn' + (fillMode ? ' active' : '') + '" onclick="setMode(\'fill\')">Type answer</button>'
+            + '</div>';
+
     root.innerHTML = ''
-        + '<h2>Worksheet 6 – Telling the Time: What time is it?</h2>'
+        + '<h2>Worksheet 6 – Telling the Time: What time is it? <span class="profile-badge">' + profileLabel() + '</span></h2>'
         + '<p class="intro">' + modeIntro + '</p>'
-        + '<div class="mode-bar">'
-        + '<button type="button" class="mode-btn' + (fillMode ? '' : ' active') + '" onclick="setMode(\'select\')">Choose answer</button>'
-        + '<button type="button" class="mode-btn' + (fillMode ? ' active' : '') + '" onclick="setMode(\'fill\')">Type answer</button>'
-        + '</div>'
-        + '<p class="set-meta">' + SET_SIZE + ' questions in this set · pool of ' + QUESTION_POOL.length + ' · <strong>New set</strong> picks different times</p>'
+        + modeBarHtml
+        + '<p class="set-meta">' + getSetSize() + ' questions in this set · pool of ' + activeQuestionPool().length + ' · <strong>New set</strong> picks different times</p>'
         + questionsHtml
         + '<div class="controls">'
         + '<button type="button" onclick="checkAnswers()">Check Answers</button>'
@@ -399,6 +447,7 @@ function renderWorksheet() {
 }
 
 function setMode(mode) {
+    if (profile.lockMode) return;
     if (state.mode === mode) return;
     saveState();
     state.mode = mode === 'fill' ? 'fill' : 'select';
@@ -406,7 +455,7 @@ function setMode(mode) {
 }
 
 function newSet() {
-    if (!confirm('New set: ' + SET_SIZE + ' new random questions. Your current answers will be cleared.')) return;
+    if (!confirm('New set: ' + getSetSize() + ' new random questions. Your current answers will be cleared.')) return;
     pickRandomSet();
     clearSavedAnswers();
     renderWorksheet();
@@ -474,6 +523,7 @@ function toggleAppendix() {
 }
 
 function boot() {
+    applyProfileFromUrl();
     if (!loadState()) {
         pickRandomSet();
     }
