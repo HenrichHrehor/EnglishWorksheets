@@ -52,9 +52,10 @@ article.card { min-width:0; }
 .grid > .loading { grid-column:1 / -1; margin:0; }
 .level-row { display:flex; flex-wrap:wrap; gap:8px; width:100%; }
 .level-link { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:8px; font-size:0.82em; font-weight:bold; text-decoration:none; border:1px solid #dde3ea; background:#f8fafc; color:#334; transition:background .12s, border-color .12s, transform .12s; }
-.level-link svg { width:22px; height:22px; flex-shrink:0; }
+.level-link svg { width:17px; height:17px; flex-shrink:0; }
+.level-link { padding:7px 10px; font-size:0.78em; }
 .level-link:hover { transform:translateY(-1px); border-color:var(--primary); background:#eef6ff; color:var(--primary-dark); }
-.level-link--easy { border-color:#b8dfc4; background:#f3fbf5; }
+.level-link--starter { border-color:#b8dfc4; background:#f3fbf5; }
 .level-link--supported { border-color:#f0d9a8; background:#fffbf3; }
 .level-link--advanced { border-color:#c5cae9; background:#f5f6fc; }
 .card-badges { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
@@ -102,23 +103,16 @@ footer a { color:var(--primary-dark); text-decoration:none; }
 </div>
 </div>
 <footer>Built with plain HTML, CSS &amp; JavaScript · <a href="https://github.com/HenrichHrehor/EnglishWorksheets">View on GitHub</a><br>&copy; 2026 Henrich Hrehor</footer>
+<script src="english-levels.js"></script>
 <script>
 var MAX_WORKSHEETS=15;
 var SUBJECTS={english:{label:'English',color:'#0056b3',bg:'#e7f3ff'},slovak:{label:'Slovak Language',color:'#2e7d32',bg:'#e8f5e9'},electrical:{label:'Electrical Engineering',color:'#e65100',bg:'#fff3e0'},network:{label:'Network Technologies',color:'#6a1b9a',bg:'#f3e5f5'}};
 var allWorksheets=[];
 var searchDebounceTimer=null;
 var activeSubject='';
-var WORKSHEET_LEVELS={
-'worksheet6.html':[
-{level:'easy',href:'worksheet6.html?level=easy',title:'Easy — choose only (primary)',label:'Easy'},
-{level:'supported',href:'worksheet6.html?level=supported',title:'Supported — 5 questions, easier times, choose or type',label:'Supported'},
-{level:'advanced',href:'worksheet6.html?level=advanced',title:'Expert — 15 questions, full pool, choose and type',label:'Expert'}
-]
-};
 
 function escapeHtml(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function levelIconSvg(level){if(level==='easy')return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>';if(level==='supported')return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="8" cy="12" r="6"/><path d="M14 8l6 4-6 4V8z"/></svg>';return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 18V6M12 18V4M18 18v-8"/></svg>';}
-function cardFooterHtml(file){var levels=WORKSHEET_LEVELS[file];if(!levels)return '<div class="card-footer"><a class="open-link" href="'+file+'">Open worksheet</a></div>';return '<div class="card-footer"><div class="level-row">'+levels.map(function(lv){return '<a class="level-link level-link--'+lv.level+'" href="'+lv.href+'" title="'+escapeHtml(lv.title)+'">'+levelIconSvg(lv.level)+escapeHtml(lv.label)+'</a>';}).join('')+'</div></div>';}
+function cardFooterHtml(file){if(!EnglishLevels.ENGLISH_LEVEL_FILES[file])return '<div class="card-footer"><a class="open-link" href="'+file+'">Open worksheet</a></div>';return '<div class="card-footer"><div class="level-row">'+EnglishLevels.hubLevelLinksHtml(file,escapeHtml)+'</div></div>';}
 function cardHtml(ws){return '<article class="card" data-n="'+ws.n+'" data-subject="'+ws.subject+'"><div class="card-badges"><span class="badge">'+escapeHtml(ws.label)+'</span>'+subjectBadge(ws.subject)+'</div><h3>'+escapeHtml(ws.topic)+'</h3>'+cardFooterHtml(ws.file)+'</article>';}
 function inferSubject(raw,topic,n){var text=(raw+' '+topic).toLowerCase();if(/slovensk|čapek|hašek|literatúra|literatura/.test(text))return 'slovak';if(/elektrotechn|electrical|obvod|circuit/.test(text))return 'electrical';if(/network|sieť|siet/.test(text))return 'network';if(n>=3&&n<=5)return 'slovak';if(n<=2)return 'english';return 'english';}
 function readSubject(doc,raw,topic,n){var meta=doc.querySelector('meta[name="worksheet-subject"]');var slug=(meta&&meta.getAttribute('content')||'').trim().toLowerCase();if(!slug||!SUBJECTS[slug])slug=inferSubject(raw,topic,n);return slug;}

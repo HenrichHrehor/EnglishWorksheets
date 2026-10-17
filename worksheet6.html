@@ -16,7 +16,8 @@
         .level-switch a:hover { border-color: #007bff; background: #eef6ff; color: #0056b3; }
         .level-switch a.active { border-color: #007bff; background: #007bff; color: #fff; }
         .level-switch a.active svg { stroke: #fff; }
-        .level-switch svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .level-switch a { font-size: 0.82em; padding: 6px 10px; }
+        .level-switch svg { width: 16px; height: 16px; flex-shrink: 0; }
         .worksheet { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
         h2 { color: #333; text-align: center; margin-bottom: 12px; }
         .intro { max-width: 760px; margin: 0 auto 16px; padding: 12px 14px; background: #fff8e1; border-left: 4px solid #f1c40f; border-radius: 6px; color: #444; font-size: 0.95em; line-height: 1.5; }
@@ -69,6 +70,7 @@
 
 <div class="worksheet" id="timeWorksheet"></div>
 
+<script src="english-levels.js"></script>
 <script>
 var STORAGE_KEY = 'englishWorksheets_worksheet6_v2';
 var EASY_GRAMMAR = { 'Exact hour': true, 'Quarter past': true, 'Quarter to': true, 'Half past': true };
@@ -152,9 +154,7 @@ function activeQuestionPool() {
 }
 
 function profileLabel() {
-    if (profile.level === 'easy') return 'Easy · choose only';
-    if (profile.level === 'supported') return 'Supported · short & simpler';
-    return 'Expert · 15 choose + 15 type';
+    return EnglishLevels.profileBadgeText(profile.level);
 }
 
 function isExpertDualSets() {
@@ -178,47 +178,19 @@ function applySetIds(ids) {
     });
 }
 
-var LEVEL_NAV = [
-    { level: 'easy', href: 'worksheet6.html?level=easy', label: 'Easy' },
-    { level: 'supported', href: 'worksheet6.html?level=supported', label: 'Supported' },
-    { level: 'advanced', href: 'worksheet6.html?level=advanced', label: 'Expert' }
-];
-
-function levelIconSvg(level) {
-    if (level === 'easy') {
-        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>';
-    }
-    if (level === 'supported') {
-        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="8" cy="12" r="6"/><path d="M14 8l6 4-6 4V8z"/></svg>';
-    }
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 18V6M12 18V4M18 18v-8"/></svg>';
-}
-
-function buildLevelSwitch() {
-    var nav = document.getElementById('levelSwitch');
-    if (!nav) return;
-    nav.innerHTML = LEVEL_NAV.map(function (item) {
-        var active = profile.level === item.level ? ' active' : '';
-        return '<a href="' + item.href + '" class="' + active.trim() + '" title="' + item.label + '">'
-            + levelIconSvg(item.level) + item.label + '</a>';
-    }).join('');
-}
-
 function applyProfileFromUrl() {
-    document.documentElement.classList.remove('ui-supported');
-    var level = (new URLSearchParams(location.search).get('level') || 'advanced').toLowerCase();
-    if (level === 'expert') level = 'advanced';
-    if (level === 'easy') {
-        profile.level = 'easy';
+    var level = EnglishLevels.normalizeLevel(new URLSearchParams(location.search).get('level') || 'advanced');
+    EnglishLevels.applyDocumentLevelUi(level);
+    if (level === 'starter') {
+        profile.level = 'starter';
         profile.lockMode = true;
         profile.setSize = 10;
         state.mode = 'select';
     } else if (level === 'supported') {
         profile.level = 'supported';
         profile.lockMode = false;
-        profile.setSize = 5;
+        profile.setSize = 10;
         state.mode = 'select';
-        document.documentElement.classList.add('ui-supported');
     } else {
         profile.level = 'advanced';
         profile.lockMode = false;
@@ -617,7 +589,7 @@ function toggleAppendix() {
 
 function boot() {
     applyProfileFromUrl();
-    buildLevelSwitch();
+    EnglishLevels.buildWorksheetLevelSwitch('worksheet6.html', profile.level);
     if (!loadState()) {
         pickRandomSet();
     }
