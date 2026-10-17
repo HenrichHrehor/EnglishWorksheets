@@ -44,10 +44,10 @@
         .scene--under .scene-sub.dot { bottom: 6px; left: 50%; margin-left: -13px; z-index: 0; }
         .scene--in .scene-ref.block { width: 52px; height: 44px; bottom: 22px; margin-left: -26px; background: #8d6e63; border: 2px solid #5d4037; }
         .scene--in .scene-sub.dot { width: 18px; height: 18px; bottom: 36px; left: 50%; margin-left: -9px; }
-        .scene--next-to .scene-ref.block { margin-left: -10px; }
-        .scene--next-to .scene-sub.dot { bottom: 52px; left: 28%; margin-left: 0; }
-        .scene--behind .scene-ref.block { z-index: 3; opacity: 0.95; }
-        .scene--behind .scene-sub.dot { bottom: 50px; left: 38%; margin-left: 0; z-index: 1; width: 22px; height: 22px; opacity: 0.85; }
+        .scene--next-to .scene-ref.block { margin-left: 8px; }
+        .scene--next-to .scene-sub.dot { bottom: 48px; left: 12%; margin-left: 0; width: 24px; height: 24px; }
+        .scene--behind .scene-ref.block { z-index: 3; left: 50%; margin-left: -35px; }
+        .scene--behind .scene-sub.dot { bottom: 48px; left: 50%; margin-left: -11px; z-index: 1; width: 22px; height: 22px; opacity: 0.55; }
         .scene--in-front-of .scene-ref.block { z-index: 1; transform: scale(0.85); opacity: 0.75; bottom: 30px; }
         .scene--in-front-of .scene-sub.dot { bottom: 48px; left: 50%; margin-left: -16px; width: 32px; height: 32px; z-index: 4; }
         .scene--opposite .scene-ref.block { width: 50px; margin-left: -70px; }
@@ -179,14 +179,25 @@ function applySetIds(ids) {
     });
 }
 
+function allowedPoolIds() {
+    var map = {};
+    activeQuestionPool().forEach(function (q) { map[q.id] = true; });
+    return map;
+}
+
+function setIdsValidForProfile(ids) {
+    if (!Array.isArray(ids) || ids.length !== getSetSize()) return false;
+    var allowed = allowedPoolIds();
+    return ids.every(function (id) { return allowed[id]; });
+}
+
 function loadState() {
     try {
         var raw = JSON.parse(localStorage.getItem(storageKey()) || 'null');
         if (!raw) return false;
         state.mode = raw.mode === 'fill' ? 'fill' : 'select';
         var ids = setIdsFromStorageRaw(raw);
-        if (!Array.isArray(ids) || ids.length !== getSetSize()) return false;
-        if (!ids.every(function (id) { return poolById[id]; })) return false;
+        if (!setIdsValidForProfile(ids)) return false;
         applySetIds(ids);
         return true;
     } catch (e) { return false; }
@@ -235,13 +246,67 @@ function clearSavedAnswers() {
     } catch (e) { localStorage.removeItem(storageKey()); }
 }
 
-function pickRandomSet() {
-    var copy = activeQuestionPool().slice();
+function shuffleArray(arr) {
+    var copy = arr.slice();
     for (var i = copy.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
         var t = copy[i]; copy[i] = copy[j]; copy[j] = t;
     }
-    applySetIds(copy.slice(0, getSetSize()).map(function (q) { return q.id; }));
+    return copy;
+}
+
+function hasAdjacentSamePreposition(questions) {
+    for (var i = 1; i < questions.length; i++) {
+        if (questions[i].correct === questions[i - 1].correct) return true;
+    }
+    return false;
+}
+
+/** Reorder picked questions so the same preposition never appears twice in a row. */
+function orderWithoutAdjacentSamePreposition(questions) {
+    if (questions.length <= 1) return questions.slice();
+    var attempt, ordered, remaining, lastPrep, i, j, pickIdx, pick, tmp;
+    for (attempt = 0; attempt < 400; attempt++) {
+        ordered = shuffleArray(questions);
+        if (!hasAdjacentSamePreposition(ordered)) return ordered;
+    }
+    remaining = shuffleArray(questions);
+    ordered = [remaining.pop()];
+    lastPrep = ordered[0].correct;
+    while (remaining.length) {
+        pickIdx = -1;
+        for (i = 0; i < remaining.length; i++) {
+            if (remaining[i].correct !== lastPrep) { pickIdx = i; break; }
+        }
+        if (pickIdx < 0) pickIdx = 0;
+        pick = remaining.splice(pickIdx, 1)[0];
+        ordered.push(pick);
+        lastPrep = pick.correct;
+    }
+    for (i = 1; i < ordered.length; i++) {
+        if (ordered[i].correct === ordered[i - 1].correct) {
+            for (j = i + 1; j < ordered.length; j++) {
+                if (ordered[j].correct === ordered[i].correct) continue;
+                if (j + 1 < ordered.length && ordered[j].correct === ordered[j + 1].correct) continue;
+                if (i >= 2 && ordered[j].correct === ordered[i - 2].correct) continue;
+                tmp = ordered[i]; ordered[i] = ordered[j]; ordered[j] = tmp;
+                break;
+            }
+        }
+    }
+    return ordered;
+}
+
+function pickRandomSet() {
+    var picked = shuffleArray(activeQuestionPool()).slice(0, getSetSize());
+    var ordered = orderWithoutAdjacentSamePreposition(picked);
+    applySetIds(ordered.map(function (q) { return q.id; }));
+}
+
+function reorderExistingSetIfNeeded() {
+    var questions = state.setIds.map(function (id) { return poolById[id]; });
+    if (!hasAdjacentSamePreposition(questions)) return;
+    applySetIds(orderWithoutAdjacentSamePreposition(questions).map(function (q) { return q.id; }));
 }
 
 function escapeAttr(t) {
@@ -283,14 +348,21 @@ function normalizeFillAnswer(text) {
     return String(text || '').toLowerCase().trim().replace(/\s+/g, ' ');
 }
 
+function correctAnswerForEl(el) {
+    var box = el.closest('.box');
+    var poolId = box && box.getAttribute('data-pool-id');
+    if (poolId && poolById[poolId]) return poolById[poolId].correct;
+    return el.getAttribute('data-correct') || '';
+}
+
 function isAnswerCorrect(el) {
     var userAnswer = el.value;
-    var correctAnswer = el.getAttribute('data-correct');
+    var correctAnswer = correctAnswerForEl(el);
     if (userAnswer === '' || userAnswer === null) return null;
     if (el.getAttribute('data-answer-kind') === 'fill') {
         return normalizeFillAnswer(userAnswer) === normalizeFillAnswer(correctAnswer);
     }
-    return userAnswer === correctAnswer;
+    return normalizeFillAnswer(userAnswer) === normalizeFillAnswer(correctAnswer);
 }
 
 function clearQuestionFeedback(el) {
@@ -307,7 +379,7 @@ function evaluateQuestionEl(el, options) {
     var onBlur = options && options.onBlur;
     var resultDiv = document.getElementById('result' + el.id.replace('ans', ''));
     if (!resultDiv) return;
-    var correctAnswer = el.getAttribute('data-correct');
+    var correctAnswer = correctAnswerForEl(el);
     var fillMode = el.getAttribute('data-answer-kind') === 'fill';
 
     if (live && fillMode) {
@@ -408,7 +480,7 @@ function renderWorksheet() {
         questionsHtml += ''
             + '<div class="box" data-pool-id="' + item.poolId + '">'
             + '<p><strong>' + item.num + '.</strong></p>'
-            + buildSceneHtml(item.prep)
+            + buildSceneHtml(item.correct)
             + '<p class="answer-line">' + sentenceHtml(item).replace('___', inputHtml) + '</p>'
             + '<button type="button" class="hint-toggle" onclick="toggleHint(' + item.num + ')">Show / Hide Hint</button>'
             + '<div id="hint' + item.num + '" class="hint-content">'
@@ -521,7 +593,8 @@ function copyToClipboard() {
 function boot() {
     applyProfileFromUrl();
     EnglishLevels.buildWorksheetLevelSwitch('worksheet7.html', profile.level);
-    if (!loadState()) pickRandomSet();
+    if (loadState()) reorderExistingSetIfNeeded();
+    else pickRandomSet();
     renderWorksheet();
 }
 
