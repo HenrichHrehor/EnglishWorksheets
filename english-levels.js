@@ -24,7 +24,8 @@
     var ENGLISH_LEVEL_FILES = {
         'worksheet1.html': true,
         'worksheet2.html': true,
-        'worksheet6.html': true
+        'worksheet6.html': true,
+        'worksheet7.html': true
     };
 
     function normalizeLevel(raw) {

@@ -22,7 +22,13 @@ Aliases (still work in URLs): `easy` → starter, `expert` → advanced.
 - Top bar: **Home** + level switcher (same three links).
 - Show profile badge from `EnglishLevels.profileBadgeText(level)`.
 - `supported` → `html.ui-supported` (larger inputs where styled).
-- Implement level behaviour in each sheet’s JS (pool, set size, lock modes) — see Worksheet 6 as reference.
+- Implement level behaviour in each sheet’s JS (pool, set size, lock modes) — see Worksheet 6 / 7 as reference.
+
+## Worksheet 7 (prepositions)
+
+- **Picture + sentence + hint** — not context alone; CSS scene shows position (essential for *behind* / *in front of*).
+- **Starter / Supported:** `core` pool (in, on, under, next to) · 10 questions.
+- **Expert:** full pool (+ behind, opposite, in front of, above, below) · 15 choose + 15 type (separate sets).
 
 ## Check before publish
 
