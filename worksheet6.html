@@ -111,7 +111,19 @@ var QUESTION_POOL = [
     { id: 't0155', time: '1:55', correct: 'five to two', options: ['five to two', 'five past one', 'quarter to two', 'one fifty-five'], grammar: 'Minutes to', hint: 'Five minutes before two.', appendix: null },
     { id: 't0855', time: '8:55', correct: 'five to nine', options: ['five to nine', 'five past eight', 'quarter to nine', 'eight forty-five'], grammar: 'Minutes to', hint: 'Nearly nine.', appendix: null },
     { id: 't0505', time: '5:05', correct: 'five past five', options: ['five past five', 'five to five', 'quarter past five', 'five fifty-five'], grammar: 'Minutes past', hint: 'Five past five.', appendix: null },
-    { id: 't1015', time: '10:15', correct: 'quarter past ten', options: ['quarter past ten', 'quarter to ten', 'half past ten', 'ten forty-five'], grammar: 'Quarter past', hint: 'Quarter after ten.', appendix: null }
+    { id: 't1015', time: '10:15', correct: 'quarter past ten', options: ['quarter past ten', 'quarter to ten', 'half past ten', 'ten forty-five'], grammar: 'Quarter past', hint: 'Quarter after ten.', appendix: null },
+    { id: 't1138', time: '11:38', correct: 'twenty-two to twelve', options: ['twenty-two to twelve', 'twenty-two past eleven', 'eleven thirty-eight', 'quarter to twelve'], grammar: 'Minutes to', hint: ':38 → count minutes to the next hour (twelve).', appendix: null },
+    { id: 't0348', time: '3:48', correct: 'twelve minutes to four', options: ['twelve minutes to four', 'twelve past three', 'forty-eight past three', 'quarter to four'], grammar: 'Minutes to', hint: 'Forty-eight minutes past three = twelve minutes to four.', appendix: null },
+    { id: 't0217', time: '2:17', correct: 'seventeen past two', options: ['seventeen past two', 'seventeen to two', 'two seventeen o\'clock', 'quarter past two'], grammar: 'Minutes past', hint: 'Seventeen minutes after two.', appendix: null },
+    { id: 't0533', time: '5:33', correct: 'twenty-seven to six', options: ['twenty-seven to six', 'twenty-seven past five', 'five thirty-three', 'half past five'], grammar: 'Minutes to', hint: 'After half past — count to six.', appendix: null },
+    { id: 't0914', time: '9:14', correct: 'fourteen past nine', options: ['fourteen past nine', 'fourteen to nine', 'quarter past nine', 'nine fourteen past'], grammar: 'Minutes past', hint: 'Fourteen minutes past nine.', appendix: null },
+    { id: 't0742', time: '7:42', correct: 'eighteen to eight', options: ['eighteen to eight', 'eighteen past seven', 'seven forty-two', 'twenty past seven'], grammar: 'Minutes to', hint: 'Forty-two past seven = eighteen to eight.', appendix: null },
+    { id: 't1027', time: '10:27', correct: 'twenty-seven past ten', options: ['twenty-seven past ten', 'twenty-seven to ten', 'half past ten', 'ten twenty-seven'], grammar: 'Minutes past', hint: 'Twenty-seven minutes after ten.', appendix: null },
+    { id: 't1248', time: '12:48', correct: 'twelve minutes to one', options: ['twelve minutes to one', 'twelve past twelve', 'forty-eight past twelve', 'quarter to one'], grammar: 'Minutes to', hint: 'Almost one o\'clock.', appendix: null },
+    { id: 't0413', time: '4:13', correct: 'thirteen past four', options: ['thirteen past four', 'thirteen to four', 'quarter past four', 'four thirteen'], grammar: 'Minutes past', hint: 'Thirteen minutes past four.', appendix: null },
+    { id: 't0823', time: '8:23', correct: 'twenty-three past eight', options: ['twenty-three past eight', 'twenty-three to eight', 'twenty past eight', 'eight twenty-three'], grammar: 'Minutes past', hint: 'Twenty-three after eight.', appendix: null },
+    { id: 't0152', time: '1:52', correct: 'eight minutes to two', options: ['eight minutes to two', 'eight past one', 'fifty-two past one', 'ten to two'], grammar: 'Minutes to', hint: 'Fifty-two past one = eight minutes to two.', appendix: null },
+    { id: 't0637', time: '6:37', correct: 'twenty-three to seven', options: ['twenty-three to seven', 'twenty-three past six', 'half past six', 'six thirty-seven'], grammar: 'Minutes to', hint: 'Thirty-seven past six → twenty-three to seven.', appendix: null }
 ];
 
 var poolById = {};
@@ -142,13 +154,34 @@ function activeQuestionPool() {
 function profileLabel() {
     if (profile.level === 'easy') return 'Easy · choose only';
     if (profile.level === 'supported') return 'Supported · short & simpler';
-    return 'Advanced · full practice';
+    return 'Expert · 15 choose + 15 type';
+}
+
+function isExpertDualSets() {
+    return profile.level === 'advanced';
+}
+
+function setIdsFromStorageRaw(raw) {
+    var ids = raw.setIds;
+    if (isExpertDualSets()) {
+        ids = state.mode === 'fill' ? raw.setIdsFill : raw.setIdsSelect;
+        if (!ids || !ids.length) ids = raw.setIds;
+    }
+    return ids;
+}
+
+function applySetIds(ids) {
+    state.setIds = ids.slice();
+    state.activeSet = state.setIds.map(function (id, i) {
+        var q = poolById[id];
+        return { num: i + 1, poolId: id, time: q.time, correct: q.correct, options: q.options, grammar: q.grammar, hint: q.hint, appendix: q.appendix };
+    });
 }
 
 var LEVEL_NAV = [
     { level: 'easy', href: 'worksheet6.html?level=easy', label: 'Easy' },
     { level: 'supported', href: 'worksheet6.html?level=supported', label: 'Supported' },
-    { level: 'advanced', href: 'worksheet6.html?level=advanced', label: 'Advanced' }
+    { level: 'advanced', href: 'worksheet6.html?level=advanced', label: 'Expert' }
 ];
 
 function levelIconSvg(level) {
@@ -189,21 +222,19 @@ function applyProfileFromUrl() {
     } else {
         profile.level = 'advanced';
         profile.lockMode = false;
-        profile.setSize = 10;
+        profile.setSize = 15;
     }
 }
 
 function loadState() {
     try {
         var raw = JSON.parse(localStorage.getItem(storageKey()) || 'null');
-        if (!raw || !Array.isArray(raw.setIds) || raw.setIds.length !== getSetSize()) return false;
-        if (!raw.setIds.every(function (id) { return poolById[id]; })) return false;
+        if (!raw) return false;
         state.mode = raw.mode === 'fill' ? 'fill' : 'select';
-        state.setIds = raw.setIds.slice();
-        state.activeSet = state.setIds.map(function (id, i) {
-            var q = poolById[id];
-            return { num: i + 1, poolId: id, time: q.time, correct: q.correct, options: q.options, grammar: q.grammar, hint: q.hint, appendix: q.appendix };
-        });
+        var ids = setIdsFromStorageRaw(raw);
+        if (!Array.isArray(ids) || ids.length !== getSetSize()) return false;
+        if (!ids.every(function (id) { return poolById[id]; })) return false;
+        applySetIds(ids);
         return true;
     } catch (e) {
         return false;
@@ -219,12 +250,25 @@ function saveState() {
     document.querySelectorAll('[data-answer-kind="fill"]').forEach(function (el) {
         if (el.value) answersFill[el.id] = el.value;
     });
-    localStorage.setItem(storageKey(), JSON.stringify({
+    var payload = {
         mode: state.mode,
         setIds: state.setIds,
         answersSelect: answersSelect,
         answersFill: answersFill
-    }));
+    };
+    if (isExpertDualSets()) {
+        try {
+            var prev = JSON.parse(localStorage.getItem(storageKey()) || '{}');
+            payload.setIdsSelect = prev.setIdsSelect || [];
+            payload.setIdsFill = prev.setIdsFill || [];
+        } catch (e) {
+            payload.setIdsSelect = [];
+            payload.setIdsFill = [];
+        }
+        if (state.mode === 'fill') payload.setIdsFill = state.setIds.slice();
+        else payload.setIdsSelect = state.setIds.slice();
+    }
+    localStorage.setItem(storageKey(), JSON.stringify(payload));
 }
 
 function restoreAnswers() {
@@ -259,11 +303,7 @@ function pickRandomSet() {
         copy[i] = copy[j];
         copy[j] = t;
     }
-    state.setIds = copy.slice(0, getSetSize()).map(function (q) { return q.id; });
-    state.activeSet = state.setIds.map(function (id, i) {
-        var q = poolById[id];
-        return { num: i + 1, poolId: id, time: q.time, correct: q.correct, options: q.options, grammar: q.grammar, hint: q.hint, appendix: q.appendix };
-    });
+    applySetIds(copy.slice(0, getSetSize()).map(function (q) { return q.id; }));
 }
 
 function shuffleOptions(options, correct) {
@@ -447,8 +487,12 @@ function renderWorksheet() {
     });
 
     var modeIntro = fillMode
-        ? 'Type the full phrase after <strong>It\'s</strong> (e.g. <em>quarter past six</em>). You don\'t need to type "It\'s" again.'
-        : 'Choose the correct phrase after <strong>It\'s</strong>. Use <em>o\'clock</em>, <em>past</em>, <em>to</em>, <em>half past</em>, and <em>quarter past / quarter to</em>.';
+        ? (isExpertDualSets()
+            ? 'Expert type mode: 15 questions including uneven times (e.g. <em>11:38</em> → <em>twenty-two to twelve</em>). Type the phrase after <strong>It\'s</strong>.'
+            : 'Type the full phrase after <strong>It\'s</strong> (e.g. <em>quarter past six</em>). You don\'t need to type "It\'s" again.')
+        : (isExpertDualSets()
+            ? 'Expert choose mode: 15 questions from the full pool, including times like <em>3:48</em> and <em>11:38</em>.'
+            : 'Choose the correct phrase after <strong>It\'s</strong>. Use <em>o\'clock</em>, <em>past</em>, <em>to</em>, <em>half past</em>, and <em>quarter past / quarter to</em>.');
 
     var modeBarHtml = profile.lockMode
         ? ''
@@ -483,9 +527,23 @@ function renderWorksheet() {
 
 function setMode(mode) {
     if (profile.lockMode) return;
-    if (state.mode === mode) return;
+    var next = mode === 'fill' ? 'fill' : 'select';
+    if (state.mode === next) return;
     saveState();
-    state.mode = mode === 'fill' ? 'fill' : 'select';
+    state.mode = next;
+    if (isExpertDualSets()) {
+        try {
+            var raw = JSON.parse(localStorage.getItem(storageKey()) || '{}');
+            var ids = setIdsFromStorageRaw(raw);
+            if (Array.isArray(ids) && ids.length === getSetSize() && ids.every(function (id) { return poolById[id]; })) {
+                applySetIds(ids);
+            } else {
+                pickRandomSet();
+            }
+        } catch (e) {
+            pickRandomSet();
+        }
+    }
     renderWorksheet();
 }
 
