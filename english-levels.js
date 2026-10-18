@@ -56,10 +56,15 @@
         return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 18V6M12 18V4M18 18v-8"/></svg>';
     }
 
+    function worksheetHref(file, level) {
+        if (!ENGLISH_LEVEL_FILES[file]) return file;
+        return file + '?level=' + normalizeLevel(level || 'starter');
+    }
+
     function hubLevelLinksHtml(file, escapeHtml) {
         if (!ENGLISH_LEVEL_FILES[file]) return '';
         return LEVELS.map(function (lv) {
-            var href = file + '?level=' + lv.key;
+            var href = worksheetHref(file, lv.key);
             return '<a class="level-link level-link--' + lv.key + '" href="' + href + '" title="' + escapeHtml(lv.title) + '">'
                 + levelIconSvg(lv.key) + escapeHtml(lv.label) + '</a>';
         }).join('');
@@ -109,6 +114,7 @@
         levelFromUrl: levelFromUrl,
         profileBadgeText: profileBadgeText,
         levelIconSvg: levelIconSvg,
+        worksheetHref: worksheetHref,
         hubLevelLinksHtml: hubLevelLinksHtml,
         buildWorksheetLevelSwitch: buildWorksheetLevelSwitch,
         applyDocumentLevelUi: applyDocumentLevelUi,

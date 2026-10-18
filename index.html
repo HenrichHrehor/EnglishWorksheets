@@ -51,10 +51,14 @@ article.card { min-width:0; }
 .card.is-hidden { display:none; }
 .grid > .loading { grid-column:1 / -1; margin:0; }
 .level-row { display:flex; flex-wrap:wrap; gap:8px; width:100%; }
-.level-link { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:8px; font-size:0.82em; font-weight:bold; text-decoration:none; border:1px solid #dde3ea; background:#f8fafc; color:#334; transition:background .12s, border-color .12s, transform .12s; }
-.level-link svg { width:17px; height:17px; flex-shrink:0; }
-.level-link { padding:7px 10px; font-size:0.78em; }
+.level-row--inline { flex-wrap:nowrap; gap:5px; }
+.level-link { display:inline-flex; align-items:center; justify-content:center; gap:4px; padding:5px 6px; border-radius:6px; font-size:0.68em; font-weight:bold; text-decoration:none; border:1px solid #dde3ea; background:#f8fafc; color:#334; transition:background .12s, border-color .12s, transform .12s; min-width:0; flex:1 1 0; }
+.level-link svg { width:13px; height:13px; flex-shrink:0; }
 .level-link:hover { transform:translateY(-1px); border-color:var(--primary); background:#eef6ff; color:var(--primary-dark); }
+.card-footer--levels { display:flex; flex-direction:column; gap:10px; }
+.card-title-link, .badge-link { color:inherit; text-decoration:none; }
+.card-title-link:hover, .badge-link:hover { text-decoration:underline; color:var(--primary-dark); }
+.badge-link { display:inline-block; }
 .level-link--starter { border-color:#b8dfc4; background:#f3fbf5; }
 .level-link--supported { border-color:#f0d9a8; background:#fffbf3; }
 .level-link--advanced { border-color:#c5cae9; background:#f5f6fc; }
@@ -112,8 +116,19 @@ var searchDebounceTimer=null;
 var activeSubject='';
 
 function escapeHtml(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function cardFooterHtml(file){if(!EnglishLevels.ENGLISH_LEVEL_FILES[file])return '<div class="card-footer"><a class="open-link" href="'+file+'">Open worksheet</a></div>';return '<div class="card-footer"><div class="level-row">'+EnglishLevels.hubLevelLinksHtml(file,escapeHtml)+'</div></div>';}
-function cardHtml(ws){return '<article class="card" data-n="'+ws.n+'" data-subject="'+ws.subject+'"><div class="card-badges"><span class="badge">'+escapeHtml(ws.label)+'</span>'+subjectBadge(ws.subject)+'</div><h3>'+escapeHtml(ws.topic)+'</h3>'+cardFooterHtml(ws.file)+'</article>';}
+function hasEnglishLevels(file){return !!EnglishLevels.ENGLISH_LEVEL_FILES[file];}
+function starterWorksheetHref(file){return EnglishLevels.worksheetHref(file,'starter');}
+function cardFooterHtml(file){
+if(!hasEnglishLevels(file))return '<div class="card-footer"><a class="open-link" href="'+file+'">Open worksheet</a></div>';
+var open=starterWorksheetHref(file);
+return '<div class="card-footer card-footer--levels"><div class="level-row level-row--inline">'+EnglishLevels.hubLevelLinksHtml(file,escapeHtml)+'</div><a class="open-link" href="'+open+'">Open worksheet</a></div>';
+}
+function cardHtml(ws){
+var open=hasEnglishLevels(ws.file)?starterWorksheetHref(ws.file):ws.file;
+var labelHtml=hasEnglishLevels(ws.file)?'<a class="badge badge-link" href="'+open+'">'+escapeHtml(ws.label)+'</a>':'<span class="badge">'+escapeHtml(ws.label)+'</span>';
+var titleHtml=hasEnglishLevels(ws.file)?'<a class="card-title-link" href="'+open+'">'+escapeHtml(ws.topic)+'</a>':escapeHtml(ws.topic);
+return '<article class="card" data-n="'+ws.n+'" data-subject="'+ws.subject+'"><div class="card-badges">'+labelHtml+subjectBadge(ws.subject)+'</div><h3>'+titleHtml+'</h3>'+cardFooterHtml(ws.file)+'</article>';
+}
 function inferSubject(raw,topic,n){var text=(raw+' '+topic).toLowerCase();if(/slovensk|čapek|hašek|literatúra|literatura/.test(text))return 'slovak';if(/elektrotechn|electrical|obvod|circuit/.test(text))return 'electrical';if(/network|sieť|siet/.test(text))return 'network';if(n>=3&&n<=5)return 'slovak';if(n<=2)return 'english';return 'english';}
 function readSubject(doc,raw,topic,n){var meta=doc.querySelector('meta[name="worksheet-subject"]');var slug=(meta&&meta.getAttribute('content')||'').trim().toLowerCase();if(!slug||!SUBJECTS[slug])slug=inferSubject(raw,topic,n);return slug;}
 function subjectBadge(slug){var s=SUBJECTS[slug]||{label:slug,color:'#555',bg:'#eee'};return '<span class="subject-badge" style="background:'+s.bg+';color:'+s.color+'">'+escapeHtml(s.label)+'</span>';}
